@@ -201,8 +201,10 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'includes/class-i4-custom-login.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-force-login.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-admin-menu.php';
+       require_once I4_PLUGIN_DIR . 'includes/class-i4-announcements-widget.php';
        require_once I4_PLUGIN_DIR . 'includes/emails/class-i4-emails.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw.php';
+       require_once I4_PLUGIN_DIR . 'includes/widgets.php';
 
        //Admin Files
        require_once I4_PLUGIN_DIR . 'admin/admin-theme.php';
