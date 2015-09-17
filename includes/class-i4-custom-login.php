@@ -79,7 +79,7 @@ class I4Web_LMS_Login{
     ?>
     <style type="text/css">
     body{
-      background-color: #F6F6F6;
+      background-color: <?php echo $brand_secondary; ?>;
     }
     body.login div#login h1 a {
       background-image: url(<?php echo $brand_logo; ?>);
@@ -138,7 +138,7 @@ class I4Web_LMS_Login{
       background: #F6F6F6;
     }
     .login-footer {
-      color: #AFB2B6;
+      color: <?php echo $brand_primary; ?>
       height: 100%;
       margin-top: 25px;
       max-height: 50px;
