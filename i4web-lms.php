@@ -211,8 +211,12 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
 
        //Template Functions
        require_once I4_PLUGIN_DIR . 'includes/template-functions.php';
+
        //Emails
        require_once I4_PLUGIN_DIR . 'includes/emails.php';
+
+       //Post Meta Functions
+       require_once I4_PLUGIN_DIR . 'includes/post-meta-functions.php';
 
 
      } //end includes
