@@ -10,9 +10,20 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+//Retrieve the Branding Settings
+
+$email_branding = I4Web_LMS()->i4_custom_login_page->retrieve_custom_settings();
+$email_logo = esc_attr( $email_branding['i4-lms-login-logo'] );
+$email_bg = esc_attr( $email_branding['i4-lms-secondary-color'] );
+$email_font_color = esc_attr( $email_branding['i4-lms-primary-color'] );
+
+$branding_settings = (array) get_option( 'i4-lms-settings' );
+
+$email_logo = esc_attr( $email_branding['i4-lms-login-logo'] );
+
 // For gmail compatibility, including CSS styles in head/body are stripped out therefore styles need to be inline. These variables contain rules which are added to the template inline. !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
 $body = "
-	background-color: #f6f6f6;
+	background-color: ".$email_bg.";
 	border: 1px solid #EEE;
 	font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 ";
@@ -62,9 +73,7 @@ $header_content_h1 = "
 	line-height: 1.2;
 ";
 
-$branding_settings = (array) get_option( 'i4-lms-settings' );
 
-$header_img = esc_attr( $branding_settings['i4-lms-login-logo'] );
 ?>
 <!DOCTYPE html>
 <html>
@@ -77,9 +86,9 @@ $header_img = esc_attr( $branding_settings['i4-lms-login-logo'] );
 		<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
 			<tr>
 				<td align="center" valign="top">
-					<?php if( ! empty( $header_img ) ) : ?>
+					<?php if( ! empty( $email_logo ) ) : ?>
 						<div id="template_header_image">
-							<?php echo '<p style="margin-top:0;"><img src="' . esc_url( $header_img ) . '" alt="' . get_bloginfo( 'name' ) . '" /></p>'; ?>
+							<?php echo '<p style="margin-top:0;"><img src="' . esc_url( $email_logo ) . '" alt="' . get_bloginfo( 'name' ) . '" /></p>'; ?>
 						</div>
 					<?php endif; ?>
 					<table border="0" cellpadding="0" cellspacing="0" width="520" id="template_container" style="<?php echo $template_container; ?>">
