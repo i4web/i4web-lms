@@ -39,15 +39,27 @@
         echo $args['before_title'] . $title . $args['after_title'];
       }
 
+    // Start the query for the latest 3 posts
+    $args = array(
+    	'post_type' => array( 'post' ),
+    	'posts_per_page' => 3
+    );
+    $the_query = new WP_Query( $args );
+
+     if ( $the_query->have_posts() ) :
+       while ( $the_query->have_posts() ) : $the_query->the_post();
       echo '<ul class="announcements-list no-bullet">
-              <li><span class="announcement-feat-img"><img src="https://www.floridahospital.com/sites/default/files/styles/what-is-happening/public/little_magic_baby_onesie_sm.jpg?itok=T9yBG6L7"></span><a href="#">A Culture of Caffeine</a>
-              <p class="announcement-posted-date">November 1, 2015</p>
-              </li>
-              <li><span class="announcement-feat-img"><img src="https://www.floridahospital.com/sites/default/files/styles/what-is-happening/public/body-weight-workout.jpg?itok=kEvxu4Pt"></span><a href="#">10 Minute Workout to Jumpstart Your Day</a>
-              <p class="announcement-posted-date">November 1, 2015</p>
+              <li><span class="announcement-feat-img"><img src="https://www.floridahospital.com/sites/default/files/styles/what-is-happening/public/little_magic_baby_onesie_sm.jpg?itok=T9yBG6L7"></span><a href="'. get_the_permalink(). '">'. get_the_title() .'</a>
+              <p>'. i4_lms_posted_on() .'</p>
               </li>
             </ul>';
-      echo '<a href="#" class="button expand">Read All</a>';
+      endwhile;
+        $posts_page = get_option( 'page_for_posts' ); //Get the ID of the page set as the Posts Page
+        echo '<a href="'. get_permalink( $posts_page ).'" class="button expand">Read All</a>';
+        wp_reset_postdata();
+    else :
+      echo '<p>Sorry, there are no announcements available at this time</p>';
+    endif;
 
       echo $args['after_widget'];
 
