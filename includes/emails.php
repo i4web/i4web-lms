@@ -14,6 +14,7 @@ if ( !function_exists('wp_new_user_notification') ) :
  *
  * @since 2.0.0
  * @since 4.3.0 The `$plaintext_pass` parameter was changed to `$notify`.
+ * @since 4.3.1 The $plaintext_pass parameter was deprecated. $notify added as a third parameter.
  *
  * @param int    $user_id User ID.
  * @param string $notify  Whether admin and user should be notified ('both') or
@@ -47,7 +48,7 @@ function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) 
 	if ( 'admin' === $notify || empty( $notify ) ) {
 		return;
 	}
-	
+
 	// Generate something random for a password reset key.
 	$key = wp_generate_password( 20, false );
 
