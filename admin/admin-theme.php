@@ -38,6 +38,20 @@
  add_action( 'wp_before_admin_bar_render', 'remove_wp_toolbar_nodes', 999 );
 
  /**
+ * Removes the Toolbar for the Front-End of the site for the Student Role
+ *
+ * @since 0.0.1
+ */
+ function remove_wp_toolbar(){
+   if(current_user_can('student')){
+    show_admin_bar( false );
+   }
+ }
+
+ add_action('after_setup_theme', 'remove_wp_toolbar');
+
+
+ /**
  * Removes the WordPress version from the WordPress Dashboard
  *
  * WordPress prints the current version and update information,
