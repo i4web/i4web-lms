@@ -19,8 +19,12 @@ if ( !function_exists('wp_new_user_notification') ) :
  * @param string $notify  Whether admin and user should be notified ('both') or
  *                        only the admin ('admin' or empty).
  */
-function wp_new_user_notification( $user_id, $notify = '' ) {
-	global $wpdb;
+function wp_new_user_notification( $user_id, $deprecated = null, $notify = '' ) {
+	if ( $deprecated !== null ) {
+		_deprecated_argument( __FUNCTION__, '4.3.1' );
+	}
+
+	global $wpdb, $wp_hasher;
 	$user = get_userdata( $user_id );
 
 	// The blogname option is escaped with esc_html on the way into the database in sanitize_option
@@ -43,7 +47,7 @@ function wp_new_user_notification( $user_id, $notify = '' ) {
 	if ( 'admin' === $notify || empty( $notify ) ) {
 		return;
 	}
-
+	
 	// Generate something random for a password reset key.
 	$key = wp_generate_password( 20, false );
 
