@@ -54,7 +54,7 @@
 
       }
       else{
-        echo '<li><span class="announcement-feat-img"><img src="https://www.floridahospital.com/sites/default/files/styles/what-is-happening/public/little_magic_baby_onesie_sm.jpg?itok=T9yBG6L7"></span><a href="'. get_the_permalink(). '">'. get_the_title() .'</a>';
+        echo '<li><a href="'. get_the_permalink(). '">'. get_the_title() .'</a>';
       }
       echo '<p>'. i4_lms_posted_on() .'</p>
               </li>
