@@ -94,6 +94,16 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
     */
     public $i4_wpcw;
 
+    /**
+    * I4Web_LMS WPCW Front End Unit Object
+    *
+    * @var object
+    * @since 1.0.0
+    */
+    public $i4_wpcw_front_end_unit;
+
+
+
 
     /**
      * Main I4Web_LMS instance
@@ -113,13 +123,14 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
          self::$instance = new I4Web_LMS;
          self::$instance->i4_constants();
          self::$instance->includes();
-         self::$instance->i4_roles               = new I4Web_LMS_Roles();
-         self::$instance->i4_custom_login_page   = new I4Web_LMS_Login();
-         self::$instance->i4_force_login         = new I4Web_LMS_Force_Login();
-         self::$instance->i4_admin_menu          = new I4Web_LMS_Admin_Menu();
-         self::$instance->i4_db                  = new I4Web_LMS_DB();
-         self::$instance->i4_emails              = new I4_LMS_EMAILS();
-         self::$instance->i4_wpcw                = new I4_LMS_WPCW();
+         self::$instance->i4_roles                = new I4Web_LMS_Roles();
+         self::$instance->i4_custom_login_page    = new I4Web_LMS_Login();
+         self::$instance->i4_force_login          = new I4Web_LMS_Force_Login();
+         self::$instance->i4_admin_menu           = new I4Web_LMS_Admin_Menu();
+         self::$instance->i4_db                   = new I4Web_LMS_DB();
+         self::$instance->i4_emails               = new I4_LMS_EMAILS();
+         self::$instance->i4_wpcw                 = new I4_LMS_WPCW();
+         self::$instance->i4_wpcw_front_end_unit  = new I4Web_LMS_Front_End_Unit( $post );
 
        }
        return self::$instance;
@@ -179,6 +190,11 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
          define( 'I4_PLUGIN_FILE', __FILE__ );
        }
 
+       // WPCourseware Plugin Folder URL
+       if( !defined( 'I4_WPCW_PLUGIN_URL' ) ){
+         define( 'I4_WPCW_PLUGIN_URL', plugins_url( 'wp-courseware','') );
+       }
+
        //Make sure that CAL_GREGORIAN is defined
        if ( ! defined( 'CAL_GREGORIAN' ) ){
          define( 'CAL_GREGORIAN', 1 );
@@ -204,6 +220,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'includes/class-i4-announcements-widget.php';
        require_once I4_PLUGIN_DIR . 'includes/emails/class-i4-emails.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw.php';
+       require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw-front-end-unit.php';
        require_once I4_PLUGIN_DIR . 'includes/widgets.php';
 
        //Admin Files
@@ -238,5 +255,6 @@ endif; // End if class_exists check
        return I4Web_LMS::instance();
      }
 
-     //Start I4Web_LMS
-     I4Web_LMS();
+     //Start I4Web_LMS...  Previously was just I4Web_LMS(); but we added a priority so our plugin will load after the WPCourseware has loaded
+     add_action('plugins_loaded', 'I4Web_LMS', 11);
+     //I4Web_LMS();
