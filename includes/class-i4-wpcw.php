@@ -421,4 +421,47 @@
     return $completed_unit_ids;
   }
 
+  /**
+   * Checks if the Unit has been completed
+   *
+   * @param Integer $course_id The ID of the course that's being checked.
+   * @param Integer $user_id The ID of the user.
+   * @param Integer $unit_id The ID of the unit.
+   */
+  function i4_is_unit_complete( $course_id, $user_id, $unit_id ){
+    global $wpcwdb, $wpdb;
+    $wpdb->show_errors();
+
+     $completed_status = "complete";
+
+     //Here we grab the unit info for units that are completed for the users course.
+     $SQL = $wpdb->prepare("
+       SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
+       ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
+       WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d
+     ", $course_id, $completed_status, $user_id);
+
+     //Store the Completed units Array
+     $completed_units = $wpdb->get_results($SQL);
+
+     $completed_unit_ids = array();
+
+     //set the counter
+     $i = 0;
+
+     //Store the Unit ID's into the completed unit id's array
+     foreach ($completed_units as $completed_unit){
+         $completed_unit_ids[$i] =  $completed_unit->unit_id;
+         $i++;
+     }
+     //If the unit is in the completed units array, display the completed checkmark.
+     if (in_array ( $unit_id, $completed_unit_ids )){
+        return true;
+     }
+     else {
+       return false;
+     }
+
+   }
+
  }
