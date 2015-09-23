@@ -40,7 +40,7 @@
   }
 
   /**
-   * Adds the menu for CandidateSpace Site Managers
+   * Adds the menu
    *
    * @since 0.0.1
    */
