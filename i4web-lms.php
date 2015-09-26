@@ -225,6 +225,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
 
        //Admin Files
        require_once I4_PLUGIN_DIR . 'admin/admin-theme.php';
+       require_once I4_PLUGIN_DIR . 'admin/units/metabox.php';
 
        //Template Functions
        require_once I4_PLUGIN_DIR . 'includes/template-functions.php';
