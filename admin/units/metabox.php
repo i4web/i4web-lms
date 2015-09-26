@@ -30,15 +30,27 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @since 0.0.1
  * @return void
  */
- function i4_render_video_meta_box(){
+ function i4_render_video_meta_box( $post ){
 
-   wp_nonce_field(basename(__FILE__), "video-meta-box-nonce"); ?>
+   wp_nonce_field(basename(__FILE__), "video-meta-box-nonce");
 
-   <div>
-   <label for="meta-box-text">Video URL</label>
-   <input name="meta-box-text" type="text" value="<?php echo get_post_meta($object->ID, "meta-box-text", true); ?>">
-
-   </div>
+   $video_id = get_post_meta( $post->ID, 'video-id', true );
+   $video_length = get_post_meta ( $post->ID, 'video-length', true );
+   ?>
+   <table class="form-table">
+     <tr>
+       <th style="width:15%"><label for="video-id">Video ID</label> </th>
+       <td>
+         <input name="video-id" type="text" value="<?php echo esc_attr( $video_id ); ?>">
+       </td>
+     </tr>
+     <tr>
+       <th style="width:15%"><label for="video-length">Video Length</label></th>
+       <td>
+         <input name="video-length" type="text" value="<?php echo esc_attr( $video_length ); ?>">
+       </td>
+     </tr>
+   </table>
 
 <?php
   }
@@ -51,29 +63,41 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  */
  function i4_save_video_meta_box( $post_id, $post, $update ){
 
+   //Check the nonce to prevent CSRF attacks during form submission
    if (!isset($_POST["video-meta-box-nonce"]) || !wp_verify_nonce($_POST["video-meta-box-nonce"], basename(__FILE__)))
       return $post_id;
 
+   //Check if the user has the proper permissions
    if(!current_user_can("edit_post", $post_id))
       return $post_id;
 
    if(defined("DOING_AUTOSAVE") && DOING_AUTOSAVE)
       return $post_id;
 
+   //Store the slug of the CPT
    $slug = "course_unit";
 
+   //If we are not saving the correct CPT, return.
    if($slug != $post->post_type)
       return $post_id;
 
-   $meta_box_text_value = "";
-   $meta_box_dropdown_value = "";
-   $meta_box_checkbox_value = "";
+   $video_id = "";
 
-   if(isset( $_POST["meta-box-text"] )){
-      $meta_box_text_value = $_POST["meta-box-text"];
+   //If our video id field was set, store the value
+   if(isset( $_POST["video-id"] )){
+      //Sanitize the users input by forcing the video id to be an int. Any non integer values are stripped here.
+      $video_id = intval( $_POST["video-id"] );
    }
 
-  update_post_meta($post_id, "meta-box-text", $meta_box_text_value);
+   //If our video id field was set, store the value
+   if(isset( $_POST["video-length"] )){
+      //Sanitize the users input by forcing the video id to be an int. Any non integer values are stripped here.
+      $video_length = sanitize_text_field( $_POST["video-length"] );
+   }
+
+   //Update the Post Meta
+   update_post_meta($post_id, "video-id", $video_id);
+   update_post_meta($post_id, "video-length", $video_length);
 
  }
 
