@@ -37,14 +37,14 @@
    *
    * @since 1.0.0
    */
-       function i4_assigned_courses_shortcode(){
+  function i4_assigned_courses_shortcode(){
 
-         if ( is_user_logged_in() ) { //Simple check to see if the user is logged in or not
-           ob_start();
-           $this->i4_assigned_courses();
-           return ob_get_clean();
-         }
-       }
+     if ( is_user_logged_in() ) { //Simple check to see if the user is logged in or not
+       ob_start();
+       $this->i4_assigned_courses();
+       return ob_get_clean();
+     }
+   }
 
   /**
    * Displays the Assigned courses for the i4_assigned_courses shortcode
@@ -304,8 +304,7 @@
    * @param Integer $userID The ID of the user to check.
    * @return Boolean True if the user can access this course, false otherwise.
    */
-  function I4_LMS_User_Can_Access($courseID, $userID)
-  {
+  function I4_LMS_User_Can_Access($courseID, $userID){
   	global $wpcwdb, $wpdb;
   	$wpdb->show_errors();
 
@@ -461,7 +460,25 @@
      else {
        return false;
      }
-
    }
+
+   /**
+    * Return a list of courses assigned to the user
+    *
+    * @param Integer $user_id The ID of the current user.
+    * @return Array of courses.
+    */
+    function i4_get_assigned_courses( $user_id ){
+      global $wpcwdb, $wpdb;
+
+      $wpdb->show_errors();
+      //SELECT `course_title` FROM `wp_wpcw_user_courses` LEFT JOIN wp_wpcw_courses ON wp_wpcw_user_courses.course_id=wp_wpcw_courses.course_id WHERE `user_id`= 3
+
+      $SQL = $wpdb->prepare( "SELECT `course_title` FROM $wpcwdb->user_courses LEFT JOIN $wpcwdb->courses ON $wpcwdb->user_courses.course_id=$wpcwdb->courses.course_id WHERE user_id = %d", $user_id );
+
+      $user_courses = $wpdb->get_results($SQL);
+
+      return $user_courses;
+    }
 
  }
