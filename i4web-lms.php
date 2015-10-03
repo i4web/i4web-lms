@@ -159,7 +159,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
      */
     public function __wakeup(){
       //Unserializing instances of the class is forbidden
-      _doing_it_wrong( __FUNCTION__, __( 'Word? That aint allowed son!', 'cs' ), '0.0.1' );
+      _doing_it_wrong( __FUNCTION__, __( 'Word? That aint allowed son!', 'i4' ), '0.0.1' );
     }
 
     /**
@@ -223,9 +223,15 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw-front-end-unit.php';
        require_once I4_PLUGIN_DIR . 'includes/widgets.php';
 
+       //Front End Scripts
+       require_once I4_PLUGIN_DIR . 'includes/front-end-scripts.php';
+
        //Admin Files
        require_once I4_PLUGIN_DIR . 'admin/admin-theme.php';
        require_once I4_PLUGIN_DIR . 'admin/units/metabox.php';
+
+       //Front End Ajax functions
+       require_once I4_PLUGIN_DIR . 'includes/ajax/ajax-front-end.php';
 
        //Template Functions
        require_once I4_PLUGIN_DIR . 'includes/template-functions.php';
@@ -235,6 +241,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
 
        //Post Meta Functions
        require_once I4_PLUGIN_DIR . 'includes/post-meta-functions.php';
+
 
 
      } //end includes
@@ -258,4 +265,5 @@ endif; // End if class_exists check
 
      //Start I4Web_LMS...  Previously was just I4Web_LMS(); but we added a priority so our plugin will load after the WPCourseware has loaded
      add_action('plugins_loaded', 'I4Web_LMS', 11);
-     //I4Web_LMS();
+
+    // I4Web_LMS();
