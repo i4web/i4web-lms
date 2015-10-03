@@ -18,19 +18,15 @@
  * @since 0.0.1
  */
  function i4_installation(){
-
+   global $wp_roles;
    //Create the I4Web_LMS Roles Object
-   $i4_roles = new I4Web_LMS_Roles;
+   $i4_roles = new I4Web_LMS_Roles();
 
    $i4_roles->i4_add_roles();
 
-   $i4_roles->i4_remove_roles();
-
    $i4_roles->i4_add_capabilities();
 
-   I4Web_LMS()->i4_db->create_i4_settings_table();
-
-
+   I4Web_LMS()->i4_db->create_i4_settings_table(); //current an unused table but can be used in the future
 
  }
 
@@ -42,10 +38,10 @@
   */
  function i4_uninstall(){
 
-  remove_role( 'student' );
+   //$i4_roles->i4_remove_roles();  //Currently not being used. Only for debugging purposes
 
 }
 
  register_activation_hook( I4_PLUGIN_FILE, 'i4_installation' );
 
- register_deactivation_hook( I4_PLUGIN_FILE, 'i4_uninstall'); //For debugging purposes only. We don't ever want to delete roles in production
+ register_deactivation_hook( I4_PLUGIN_FILE, 'i4_uninstall'); //Trigger things to happen if the plugin is ever uninstalled
