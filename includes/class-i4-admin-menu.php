@@ -46,7 +46,12 @@
    */
   function i4_admin_menu(){
 
-  add_menu_page( 'i-4Web LMS', 'i-4Web LMS', 'activate_plugins', 'i4web-lms-settings', array( $this, 'i4_admin_page' ), 'dashicons-admin-generic', 76);
+  add_menu_page( 'i-4Web LMS', 'i-4Web LMS', 'manage_options', 'i4web-lms-settings', array( $this, 'i4_admin_page' ), 'dashicons-admin-generic', 76);
+
+  add_submenu_page( 'i4web-lms-settings', 'i-4Web LMS Settings', 'Settings', 'manage_options', 'i4web-lms-settings');
+
+  add_submenu_page( 'i4web-lms-settings', 'Coordinators', 'Coordinators', 'manage_options', 'coordinators', array($this, 'i4_coordinators_page' ) );
+
   }
 
  /**
@@ -56,7 +61,7 @@
   */
   function i4_admin_page(){
     //Deny access unless the user is an Administrator ( activate_plugins capability )
-    if ( ! current_user_can( 'activate_plugins' ) ){
+    if ( ! current_user_can( 'manage_options' ) ){
       wp_die( __( 'Sorry! You do not have sufficient permissions to access this page' ) );
     }
 
@@ -171,5 +176,31 @@
   	wp_register_script('i4_lms_uploader', I4_PLUGIN_URL . '/assets/js/custom-media-uploader.js', array('jquery'));
   	wp_enqueue_script('i4_lms_uploader');
   }
+
+
+  /**
+   * Sets up our Site Settings Page
+   *
+   * @since 0.0.1
+   */
+   function i4_coordinators_page(){
+     //Deny access unless the user is an Administrator ( activate_plugins capability )
+     if ( ! current_user_can( 'manage_options' ) ){
+       wp_die( __( 'Sorry! You do not have sufficient permissions to access this page' ) );
+     }
+
+     echo '<div class="wrap">';
+     echo '<h2>Manage Coordinators</h2>';
+
+     ?>
+     <form action="options.php" method="POST">
+       <?php settings_fields( 'i4-lms-settings-group' ); ?>
+       <?php do_settings_sections( 'i4web-lms-settings' ); ?>
+       <?php submit_button(); ?>
+     </form>
+     <?php
+
+     echo '</div> <!-- end .wrap -->';
+   }
 
 }
