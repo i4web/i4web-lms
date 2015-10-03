@@ -28,13 +28,15 @@
      }
 
      /**
-      * Adds the student role
+      * Adds the patient role
       *
-      * This role is reserved for students. We explicitly deny capabilities by using 'false'
+      * This role is reserved for patients with limited access. We explicitly deny capabilities by using 'false'
       *
       */
       public function i4_add_roles(){
-        add_role( 'student', __( 'Student', 'i4'), array(
+        global $wp_roles;
+
+        add_role( 'patient', __( 'Patient', 'i4'), array(
           'delete_others_pages'               => false,
           'delete_others_posts'               => false,
           'delete_pages'                      => false,
@@ -92,6 +94,6 @@
        * @since 1.0.0
        */
        public function i4_remove_roles(){
-         remove_role( 'subscriber' );
+         remove_role( 'student' );
        }
   }
