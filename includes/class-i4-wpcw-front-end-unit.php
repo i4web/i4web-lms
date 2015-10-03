@@ -16,7 +16,6 @@
   /**
     * I4Web_LMS_Front_End_Unit Class
     *
-    * This handles creating the plugin menu for us.
     *
     * @since 0.0.1
     */
@@ -96,7 +95,49 @@
   	 */
   	function __construct( $post )
   	{
+      $this->unitPost = $post;
+      $this->createdAfterAJAX = false;
 
+      // Initialise any raw data
+      $this->unchecked_QuizAnswersToGrade = $this->fetch_quizzes_loadRawAnswersSoFarForThisQuiz(false);
+
+      // Load parent data for this unit
+      $this->parentData = WPCW_units_getAssociatedParentData($post->ID);
+
+      // Load the user ID for the user who is logged in
+      $this->currentUserID = get_current_user_id();
+
+      $this->extraMessagesToShow_preQuizResults = array();
+
+      // Defaults
+      $this->userProgress = false;
+      $this->unitQuizDetails = false;
+      $this->unitQuizProgress = false;
+      $this->unitQuizProgress_incompleteQs = false;
+
+      $this->cached_resultsByTag = false;
+
+
+      // Try to load the progress data for this user
+      if ($this->parentData)
+      {
+        // Main user progress data
+        $this->userProgress = new UserProgress($this->parentData->course_id, $this->currentUserID);
+
+        // Quiz details (if applicable)
+        // Get quiz details
+        $this->unitQuizDetails = WPCW_quizzes_getAssociatedQuizForUnit($this->unitPost->ID, true, $this->currentUserID);
+
+        // Get quiz progress details
+        if ($this->check_quizzes_validQuizDetails())
+        {
+          // Got the user progress, determine if it's pending marking or not.
+          $this->unitQuizProgress = WPCW_quizzes_getUserResultsForQuiz($this->currentUserID, $this->unitPost->ID, $this->unitQuizDetails->quiz_id);
+
+          // Try to work out which questions are still incomplete.
+          $this->updateInternalVariable_quizzes_getIncompleteQuestions();
+        }
+      }
   	}
 
     /**
