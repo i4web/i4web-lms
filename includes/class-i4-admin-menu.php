@@ -25,12 +25,6 @@
    * @since 0.0.1
    */
   public function __construct(){
-    global $wpdb;
-
-    //Set the table name and other table variables for our settings table
-    $this->i4_settings_table_name  = $wpdb->base_prefix . 'i4_lms_settings';
-    $this->i4_settings_primary_key = 'id';
-    $this->i4_settings_version     = '1.0';
 
     add_action( 'admin_enqueue_scripts', array( $this, 'mediaUploader' ) );
     add_action( 'admin_menu', array( $this, 'i4_admin_menu' ) );
@@ -192,14 +186,15 @@
      echo '<div class="wrap">';
      echo '<h2>Manage Coordinators</h2>';
 
+     //add the New Coordinator Form
+     I4Web_LMS()->i4_coordinators->new_coordinator_form();
      ?>
-     <form action="options.php" method="POST">
-       <?php settings_fields( 'i4-lms-settings-group' ); ?>
-       <?php do_settings_sections( 'i4web-lms-settings' ); ?>
-       <?php submit_button(); ?>
-     </form>
-     <?php
 
+
+     <hr>
+
+     <?php
+     I4Web_LMS()->i4_coordinators->display_coordinators();
      echo '</div> <!-- end .wrap -->';
    }
 
