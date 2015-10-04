@@ -19,6 +19,7 @@
  */
  function i4_installation(){
    global $wp_roles;
+
    //Create the I4Web_LMS Roles Object
    $i4_roles = new I4Web_LMS_Roles();
 
@@ -26,7 +27,7 @@
 
    $i4_roles->i4_add_capabilities();
 
-   I4Web_LMS()->i4_db->create_i4_settings_table(); //current an unused table but can be used in the future
+   I4Web_LMS()->i4_db->create_i4_coordinators_table(); //current an unused table but can be used in the future
 
  }
 
@@ -41,6 +42,8 @@
    //$i4_roles->i4_remove_roles();  //Currently not being used. Only for debugging purposes
 
 }
+
+
 
  register_activation_hook( I4_PLUGIN_FILE, 'i4_installation' );
 
