@@ -102,6 +102,14 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
     */
     public $i4_wpcw_front_end_unit;
 
+    /**
+    * I4Web_LMS Coordinators Object
+    *
+    * @var object
+    * @since 1.0.0
+    */
+    public $i4_coordinators;
+
 
 
 
@@ -119,6 +127,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
      * @return The one and only I4Web_LMS
      */
      public static function instance(){
+
        if( ! isset( self::$instance ) && ! ( self::$instance instanceof I4Web_LMS ) ) {
          self::$instance = new I4Web_LMS;
          self::$instance->i4_constants();
@@ -127,6 +136,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
          self::$instance->i4_custom_login_page    = new I4Web_LMS_Login();
          self::$instance->i4_force_login          = new I4Web_LMS_Force_Login();
          self::$instance->i4_admin_menu           = new I4Web_LMS_Admin_Menu();
+         self::$instance->i4_coordinators         = new I4Web_LMS_Coordinators();
          self::$instance->i4_db                   = new I4Web_LMS_DB();
          self::$instance->i4_emails               = new I4_LMS_EMAILS();
          self::$instance->i4_wpcw                 = new I4_LMS_WPCW();
@@ -217,6 +227,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'includes/class-i4-custom-login.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-force-login.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-admin-menu.php';
+       require_once I4_PLUGIN_DIR . 'includes/class-i4-coordinators.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-announcements-widget.php';
        require_once I4_PLUGIN_DIR . 'includes/emails/class-i4-emails.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw.php';
@@ -264,6 +275,6 @@ endif; // End if class_exists check
      }
 
      //Start I4Web_LMS...  Previously was just I4Web_LMS(); but we added a priority so our plugin will load after the WPCourseware has loaded
-     add_action('plugins_loaded', 'I4Web_LMS', 11);
+    // add_action('plugins_loaded', 'I4Web_LMS', 11);
 
-    // I4Web_LMS();
+     I4Web_LMS();
