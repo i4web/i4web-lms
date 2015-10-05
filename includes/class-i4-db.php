@@ -63,6 +63,7 @@ class I4Web_LMS_DB{
     $sql = "CREATE TABLE ". $this->i4_coordinators_table_name ."(
       id bigint(20) NOT NULL AUTO_INCREMENT,
       coordinator_name varchar(250) NOT NULL,
+      coordinator_email varchar(100) NOT NULL,
       course_id int(11) NOT NULL,
       coordinator_img longtext NOT NULL,
       PRIMARY KEY  (id)
