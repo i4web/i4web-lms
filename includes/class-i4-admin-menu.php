@@ -194,7 +194,7 @@
      <hr>
 
      <?php
-     I4Web_LMS()->i4_coordinators->display_coordinators();
+     I4Web_LMS()->i4_coordinators->i4_lms_display_coordinators(); //Display all coordinators
      echo '</div> <!-- end .wrap -->';
    }
 
