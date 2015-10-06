@@ -79,7 +79,10 @@
           <tr>
             <th scope="row">Upload Image</th>
             <td>
-              <input type="text" name="coordinator_image" value="">
+              <div class="section-nav-logo section-upload">
+                <input type="text" name="coordinator_image" class="login-logo-url" value="" />
+                <input id="nav-logo" class="upload-button button button-primary" type="button" value="Upload Image" /> <br />
+                <span class='description'>Required dimensions: 75px X 75px.</span>
             </td>
           </tr>
         </tbody>
