@@ -26,10 +26,8 @@
    */
   public function __construct(){
 
-    add_action( 'admin_enqueue_scripts', array( $this, 'mediaUploader' ) );
     add_action( 'admin_menu', array( $this, 'i4_admin_menu' ) );
     add_action( 'admin_init', array( $this,'i4_settings_init' ));
-
 
   }
 
@@ -156,20 +154,6 @@
      echo "<span class='description'>Don't make it too wide. Max 150px width.</span>";
    }
 
-  /**
-   * Setup the custom media uploader script only on the the i-4Web LMS Settings Page to avoid conflicts with any other scripts
-   *
-   * @since 0.0.1
-   */
-  public function mediaUploader($hook){
-
-    if( 'toplevel_page_i4web-lms-settings' != $hook ) // Retrieve the hook by echo'ing out the $hook variable
-  				return;
-
-  	wp_enqueue_media();
-  	wp_register_script('i4_lms_uploader', I4_PLUGIN_URL . '/assets/js/custom-media-uploader.js', array('jquery'));
-  	wp_enqueue_script('i4_lms_uploader');
-  }
 
 
   /**
