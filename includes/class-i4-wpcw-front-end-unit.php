@@ -1409,7 +1409,7 @@
   					<div class="wpcw_fe_progress_box wpcw_fe_progress_box_pending wpcw_fe_progress_box_updating">
   						<div class="wpcw_fe_progress_box_mark">
   							<img src="%s/ajax_loader.gif" class="wpcw_loader" style="display: none;" />
-  							<a href="#" class="fe_btn fe_btn_completion btn_completion button blue" id="unit_complete_%d">%s</a>
+  							<a href="#" class="fe_btn fe_btn_completion btn_completion button blue tiny" id="unit_complete_%d">%s</a>
   						</div>
   					%s</div>
   				</div>',
