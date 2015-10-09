@@ -47,6 +47,9 @@
     elseif( isset( $_GET['add_coordinator'] ) && $_GET['add_coordinator'] == 'false'){
       $this->i4_lms_coordinator_error_msg();
     }
+    elseif( isset( $_GET['action'] ) && $_GET['action'] = 'delete'){
+      $this->i4_lms_coordinator_delete( $_GET['coordinator_id'] );
+    }
     ?>
     <form action="" method="POST">
       <h3>Add a New Coordinator</h3>
@@ -187,6 +190,7 @@
       echo '<p>' . $coordinator->coordinator_name . '</p>';
       echo '<p>' . $coordinator->coordinator_email . '</p>';
       echo '<p>Course ID - ' . $coordinator->course_id . '</p>';
+      echo '<span><a href="?page=coordinators&action=delete&coordinator_id='.$coordinator->id.'">Delete</a>';
       echo '</div>';
     }
     echo '</div>';
@@ -241,6 +245,28 @@
   }
 
   /**
+   * Deletes a Coordinator from the database
+   *
+   * @since 0.0.1
+   * @param string $name - The Coordinator's ID
+   * @return Returns the number of rows affected or false if the query did not execute
+   */
+  function i4_lms_coordinator_delete( $coordinator_id ){
+    global $wpdb;
+    $wpdb->show_errors();
+    $table_name = $wpdb->prefix . 'i4_lms_coordinators';
+
+    $result = $wpdb->query( $wpdb->prepare(
+      	"
+        DELETE FROM $table_name WHERE `id` = %d
+      	",
+        $coordinator_id
+      ) );
+
+    return $result;
+  }
+
+  /**
    * Displays the Error message when a Coordinator is not successfully added to the DB
    *
    * @since 0.0.1
@@ -260,6 +286,26 @@
     $class = "error";
 	  $message = "An error occurred when adding a new Coordinator. Please check your information and try again";
     echo"<div class=\"$class\"> <p>$message</p></div>";
+  }
+
+  /**
+   * Displays the Error message when a Coordinator is not successfully added to the DB
+   *
+   * @since 0.0.1
+   */
+  function i4_lms_get_coordinator( $course_id ){
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'i4_lms_coordinators';
+	   $wpdb->show_errors();
+
+  	$SQL = $wpdb->prepare("
+  		SELECT *
+  		FROM $table_name
+  		WHERE course_id = %d
+  	", $course_id);
+
+	return $wpdb->get_row($SQL);
+
   }
 
   }
