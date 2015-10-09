@@ -277,7 +277,7 @@
 
   //    printf('</tbody></table>');
       if($i4_percent_completed == 100){
-        printf('<div class="my-courses-congrats">Congrats, Course Complete!</div>');
+        printf('<div class="my-courses-congrats"><p class="text-center"><i class="fa fa-check completed-icon"></i> Congrats, Course Complete!</p></div>');
       }
       printf('</div> <!--end my-course-outline-wrapper -->');
       printf('</div> <!-- end my-course-wrapper -->');
