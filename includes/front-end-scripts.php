@@ -15,6 +15,7 @@ function i4_lms_scripts() {
 
   //Load the scripts that we'll need to use for the theme
   wp_enqueue_script( 'i4-ajax-front-end', I4_PLUGIN_URL .'assets/js/ajax-front-end.js', array('jquery', 'wpcw-jquery-form', 'wpcw-countdown'), '0.0.1', true);
+  wp_enqueue_script( 'vimeo-frogaloop', I4_PLUGIN_URL . 'assets/js/froogaloop.min.js', '2.0.0', false); 
   wp_dequeue_script( 'wpcw-frontend');
 
   // Variable declarations
