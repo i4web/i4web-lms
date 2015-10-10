@@ -32,6 +32,9 @@
        //Restrict the Admin area
        add_action( 'admin_init', array($this, 'i4_restrict_admin' ) );
 
+       //Remove the admin bar from the front page of the website
+       add_action( 'after_setup_theme', array($this, 'i4_remove_admin_bar' ) );
+
      }
 
     /**
@@ -58,6 +61,14 @@
             exit;
       	}
       }
+
+      /**
+       * Once logged in, remove the admin bar from the front page of the website
+       *
+       */
+       public function i4_remove_admin_bar(){
+         show_admin_bar(false);
+       }
 
 
   }
