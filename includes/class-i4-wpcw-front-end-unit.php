@@ -1409,14 +1409,15 @@
   					<div class="wpcw_fe_progress_box wpcw_fe_progress_box_pending wpcw_fe_progress_box_updating">
   						<div class="wpcw_fe_progress_box_mark">
   							<img src="%s/ajax_loader.gif" class="wpcw_loader" style="display: none;" />
-  							<a href="#" class="fe_btn fe_btn_completion btn_completion button blue tiny" id="unit_complete_%d">%s</a>
+  							<a href="#" class="fe_btn fe_btn_completion btn_completion button blue tiny tip-top" data-tooltip aria-haspopup="true" title="%s" id="unit_complete_%d">%s</a>
   						</div>
-  					%s</div>
+  					</div>
   				</div>',
   					$this->unitPost->ID,
   					WPCW_plugin_getPluginPath() . 'img',
-  					$this->unitPost->ID, __('Mark as Completed', 'wp_courseware'),
-  					$this->parentData->course_message_unit_pending
+            $this->parentData->course_message_unit_pending,
+  					$this->unitPost->ID, __('Mark as Completed', 'wp_courseware')
+
   				);
   		}
 
