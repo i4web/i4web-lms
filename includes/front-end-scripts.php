@@ -30,10 +30,10 @@ function i4_lms_scripts() {
 	        'str_uploading'         => __('Uploading:', 'wp_courseware'),        // Uploading message.
 	        'str_quiz_all_fields'   => __('Please provide an answer for all of the questions on this page.', 'wp_courseware'),
 
-	        // Timer units
-	        'timer_units_hrs'		=> __('hrs', 'wp_courseware'),
-	        'timer_units_mins'		=> __('mins', 'wp_courseware'),
-	        'timer_units_secs'		=> __('secs', 'wp_courseware'),
+			// Timer units
+			'timer_units_hrs'		=> __('hrs', 'wp_courseware'),
+			'timer_units_mins'		=> __('mins', 'wp_courseware'),
+			'timer_units_secs'		=> __('secs', 'wp_courseware'),
 
 	));
 
