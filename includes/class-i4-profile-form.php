@@ -50,48 +50,57 @@
 
         ?>
 
-         <div class="col-md-9 col-md-offset-1">
-
         <?php $this->i4_lms_profile_form_alerts(); //display the form alerts depending on the query param returned ?>
 
            <div class="form-container">
              <form action="" method="POST" id="profile-form-form" class="form-horizontal profile-form-form">
-               <div class="large-12 columns">
-                 <label><?php _e('Username', 'i4' );?></label>
-                     <p class="form-control-static"><strong><?php echo $current_i4_user->user_login;?></strong></p>
-               </div> <!-- end large-12 -->
-               <div class="large-12 columns">
-                 <label><?php _e('Email *', 'i4' );?></label>
-                     <input type="text" class="patient-email" name="patient_email" value="<?php echo $current_i4_user->user_email;?>"/>
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('Username', 'i4' );?></label>
+                       <p class="form-control-static"><strong><?php echo $current_i4_user->user_login;?></strong></p>
                  </div> <!-- end large-12 -->
-               <div class="large-12 columns">
-                 <label><?php _e('First Name *', 'i4' );?></label>
-                     <input type="text" class="patient-fname" name="patient_fname" value="<?php echo $current_i4_user->user_firstname;?>"/>
-               </div> <!-- end large-12 -->
-               <div class="large-12 columns">
-                 <label><?php _e('Last Name *', 'i4' );?></label>
-                     <input type="text" class="patient-lname" name="patient_lname" value="<?php echo $current_i4_user->user_lastname;?>"/>
-               </div> <!-- end large-12 -->
-               <div class="large-12 columns">
-                 <label><?php _e('Password', 'i4' );?></label>
-                     <input type="password" class="patient-password" name="patient_password" value="<?php echo $community; ?>"/>
-               </div> <!-- end large-12 -->
-               <div class="large-12 columns">
-                 <label><?php _e('Re-Type Password', 'i4' );?></label>
-                     <input type="password" class="patient-password" name="patient_password_retyped" value="<?php echo $community; ?>"/>
-                     <div class="password-strength-wrapper">
-                       <div id="password-strength"></div>
-                     </div>
-               </div> <!-- end large-12 -->
+               </div> <!-- end row -->
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('Email *', 'i4' );?></label>
+                       <input type="text" class="patient-email" name="patient_email" value="<?php echo $current_i4_user->user_email;?>"/>
+                 </div> <!-- end large-12 -->
+               </div> <!-- end row -->
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('First Name *', 'i4' );?></label>
+                       <input type="text" class="patient-fname" name="patient_fname" value="<?php echo $current_i4_user->user_firstname;?>"/>
+                 </div> <!-- end large-12 -->
+              </div> <!-- end row -->
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('Last Name *', 'i4' );?></label>
+                       <input type="text" class="patient-lname" name="patient_lname" value="<?php echo $current_i4_user->user_lastname;?>"/>
+                 </div> <!-- end large-12 -->
+               </div> <!-- end row -->
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('Password', 'i4' );?></label>
+                       <input type="password" class="patient-password" name="patient_password" value="<?php echo $community; ?>"/>
+                 </div> <!-- end large-12 -->
+               </div> <!-- end row -->
+               <div class="row">
+                 <div class="large-12 columns">
+                   <label><?php _e('Re-Type Password', 'i4' );?></label>
+                       <input type="password" class="patient-password" name="patient_password_retyped" value="<?php echo $community; ?>"/>
+                       <div class="password-strength-wrapper">
+                         <div id="password-strength"></div>
+                       </div>
+                 </div> <!-- end large-12 -->
+               </div> <!-- end row -->
 
                <input type="hidden" name="action" value="profile-form"/>
                <input type="hidden" name="redirect" value="<?php echo get_permalink(); ?>"/>
                <input type="hidden" name="profile_form_nonce" value="<?php echo wp_create_nonce('profile-form-nonce'); ?>"/>
                <hr>
-               <button type="submit" class="btn btn-primary btn-lg center-block" id="profile-form-submit"><?php _e('Save', 'i4'); ?></button>
+               <button type="submit" class="button small" id="profile-form-submit"><?php _e('Save', 'i4'); ?></button>
              </form>
            </div>
-         </div>
 
 
 <?php }
