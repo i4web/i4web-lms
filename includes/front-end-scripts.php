@@ -20,7 +20,7 @@ function i4_lms_scripts() {
     wp_enqueue_script( 'password-strength-meter' );
     wp_dequeue_script( 'wpcw-frontend');
 
-    // Variable declarations
+	// Variable declarations
 	wp_localize_script(
 		'i4-ajax-front-end',     // What we're attaching too
 		'wpcw_js_consts_fe',        // Handle for this code
