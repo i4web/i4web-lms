@@ -110,6 +110,14 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
     */
     public $i4_coordinators;
 
+    /**
+    * I4Web_LMS Profile Form Object
+    *
+    * @var object
+    * @since 1.0.0
+    */
+    public $i4_profile;
+
 
 
 
@@ -139,6 +147,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
          self::$instance->i4_coordinators         = new I4Web_LMS_Coordinators();
          self::$instance->i4_db                   = new I4Web_LMS_DB();
          self::$instance->i4_emails               = new I4_LMS_EMAILS();
+         self::$instance->i4_profile              = new I4Web_LMS_Profile_Form();
          self::$instance->i4_wpcw                 = new I4_LMS_WPCW();
          self::$instance->i4_wpcw_front_end_unit  = new I4Web_LMS_Front_End_Unit( $post );
 
@@ -229,6 +238,7 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'includes/class-i4-admin-menu.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-coordinators.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-announcements-widget.php';
+       require_once I4_PLUGIN_DIR . 'includes/class-i4-profile-form.php';
        require_once I4_PLUGIN_DIR . 'includes/emails/class-i4-emails.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw.php';
        require_once I4_PLUGIN_DIR . 'includes/class-i4-wpcw-front-end-unit.php';
@@ -243,6 +253,9 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        //Admin Files
        require_once I4_PLUGIN_DIR . 'admin/admin-theme.php';
        require_once I4_PLUGIN_DIR . 'admin/units/metabox.php';
+
+       //User Functions
+       require_once I4_PLUGIN_DIR . 'includes/user-functions.php';
 
        //Front End Ajax functions
        require_once I4_PLUGIN_DIR . 'includes/ajax/ajax-front-end.php';
