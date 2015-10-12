@@ -21,21 +21,21 @@ function i4_lms_scripts() {
     wp_dequeue_script( 'wpcw-frontend');
 
     // Variable declarations
-wp_localize_script(
-            'i4-ajax-front-end',     // What we're attaching too
-            'wpcw_js_consts_fe',        // Handle for this code
-array(
-        'ajaxurl'                => admin_url('admin-ajax.php'), // URL for admin AJAX
-        'progress_nonce'        => wp_create_nonce('wpcw-progress-nonce'),     // Nonce security token
-        'str_uploading'            => __('Uploading:', 'wp_courseware'),        // Uploading message.
-        'str_quiz_all_fields'    => __('Please provide an answer for all of the questions on this page.', 'wp_courseware'),
+	wp_localize_script(
+		'i4-ajax-front-end',     // What we're attaching too
+		'wpcw_js_consts_fe',        // Handle for this code
+	array(
+	        'ajaxurl'				=> admin_url('admin-ajax.php'), // URL for admin AJAX
+	        'progress_nonce'        => wp_create_nonce('wpcw-progress-nonce'),     // Nonce security token
+	        'str_uploading'         => __('Uploading:', 'wp_courseware'),        // Uploading message.
+	        'str_quiz_all_fields'   => __('Please provide an answer for all of the questions on this page.', 'wp_courseware'),
 
-        // Timer units
-        'timer_units_hrs'         => __('hrs', 'wp_courseware'),
-        'timer_units_mins'         => __('mins', 'wp_courseware'),
-        'timer_units_secs'         => __('secs', 'wp_courseware'),
+	        // Timer units
+	        'timer_units_hrs'		=> __('hrs', 'wp_courseware'),
+	        'timer_units_mins'		=> __('mins', 'wp_courseware'),
+	        'timer_units_secs'		=> __('secs', 'wp_courseware'),
 
-));
+	));
 
 }
 
