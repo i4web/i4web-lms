@@ -12,6 +12,21 @@ jQuery( document ).ready( function( $ ) {
             );
         }
     );
+
+    $(function() {
+        var iframe = $('#unit-video')[0];
+        var player = $f(iframe);
+
+        // When the player is ready, add listener for finish event
+        player.addEvent('ready', function() {
+            player.addEvent('finish', onFinish);
+        });
+
+        function onFinish(id) {
+            // Programmatically click the "complete" button
+            $('.wpcw_fe_progress_box_mark a').click();
+        }
+    });
 });
 
 function checkPasswordStrength( $pass1,
