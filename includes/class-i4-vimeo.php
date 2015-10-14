@@ -16,24 +16,18 @@
    *
    * @since 0.0.1
    */
-   class I4Web_LMS_Vimeo{
+   class I4Web_LMS_Vimeo {
 
-     /**
-     * The vimeo lib object
-     *
-     * @access  public
-     * @since   0.0.1
-     */
-     public $vimeo_lib;
+    private $vimeo_lib;
+    private $duration_cache;
 
      /**
       * Class Construct to get started
       *
       * @since 0.0.1
       */
-      public function __construct(){
+      public function __construct() {
         global $current_i4_user; //global user object
-
         $this->init();
 
       } //end construct
@@ -43,29 +37,7 @@
        *
        * @since 0.0.1
        */
-      private function init(){
-        //Vimeo API Call
-        //Retrieve Vimeo API Settings
-        $i4_settings = get_option( 'i4-lms-settings' ); //Retrieve the i4 LMS Settings
-        $access_token = esc_attr( $i4_settings['i4-lms-vimeo-access-token'] );
-        $client_id = esc_attr( $i4_settings['i4-lms-vimeo-client-identifier'] );
-        $client_secret = esc_attr( $i4_settings['i4-lms-vimeo-client-secrets'] );
-
-        $this->vimeo_lib = new \Vimeo\Vimeo($client_id, $client_secret);
-        $scope = array('public', 'private' );
-
-        $token = $this->vimeo_lib->clientCredentials($scope);
-
-        $this->vimeo_lib->setToken($access_token);
-      }
-
-      /**
-       * Retrieve the vimeo settings
-       *
-       * @since 0.0.1
-       */
-      function get_vimeo_settings(){
-
+      function get_vimeo_settings() {
         //Retrieve the Vimeo Settings from the options table
         $i4_settings = get_option( 'i4-lms-settings' );
         $access_token = esc_attr( $i4_settings['i4-lms-vimeo-access-token'] );
@@ -81,18 +53,55 @@
         //return array of vimeo settings
         return $vimeo_settings;
       }
-      /**
-       * Setup the Account Settings form shortcode
-       *
-       * @since 0.0.1
-       */
-      function demo_get_vimeo_response_body(){
 
+      private function init() {
+        $this->duration_cache = [];
+
+        //Vimeo API Call
+        //Retrieve Vimeo API Settings
         $vimeo_settings = $this->get_vimeo_settings();
 
-        $response = $this->vimeo_lib->request('/users/44252338/videos', array('per_page' => 2), 'GET');
+        $this->vimeo_lib = new \Vimeo\Vimeo($vimeo_settings['client_id'], $vimeo_settings['client_secret']);
+        $scope = array('public', 'private' );
 
-        return var_dump($response['body']->duration); //Dump the respondse body
+        $token = $this->vimeo_lib->clientCredentials($scope);
+
+        $this->vimeo_lib->setToken($vimeo_settings['access_token']);
       }
 
+      function get_duration($video_id) {
+        $duration = null;
+        if (isset($this->duration_cache[$video_id])) {
+          $duration = $this->duration_cache[$video_id];
+        }
+        else {
+          $response = $this->vimeo_lib->request('/me/videos/'.$video_id);
+          $duration = $this->format_duration($response['body']['duration']);
+          $this->duration_cache[$video_id] = $duration;
+        }
+        return $duration;
+      }
+
+      private function format_duration($duration) {
+        $duration_minutes = (int) ($duration / 60);
+        $duration_hours = (int) ($duration_minutes / 60);
+
+        $hours = $this->convert_time_to_two_digits($duration_hours);
+        $minutes = $this->convert_time_to_two_digits($duration_minutes - ($duration_hours * 60));
+        $seconds = $this->convert_time_to_two_digits($duration % 60);
+
+        $formatted_duration = $minutes . ":" . $seconds;
+        if ($hours != "00") {
+          $formatted_duration = $hours . ":" . $formatted_duration;
+        }
+        return $formatted_duration;
+      }
+
+      private function convert_time_to_two_digits($time) {
+        $result = strval(intval($time));
+        if ($time < 10) {
+          $result = "0" . $time;
+        }
+        return $result;
+      }
    }
