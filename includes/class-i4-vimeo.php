@@ -86,13 +86,12 @@
         $duration_minutes = (int) ($duration / 60);
         $duration_hours = (int) ($duration_minutes / 60);
 
-        $hours = $this->convert_time_to_two_digits($duration_hours);
         $minutes = $this->convert_time_to_two_digits($duration_minutes - ($duration_hours * 60));
         $seconds = $this->convert_time_to_two_digits($duration % 60);
 
         $formatted_duration = $minutes . ":" . $seconds;
-        if ($hours != "00") {
-          $formatted_duration = $hours . ":" . $formatted_duration;
+        if ($duration_hours > 0) {
+          $formatted_duration = $duration_hours . ":" . $formatted_duration;
         }
         return $formatted_duration;
       }
