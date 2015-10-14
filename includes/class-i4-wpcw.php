@@ -65,8 +65,6 @@
   	$courseCount = 0;
   	$courses = $wpdb->get_results($SQL);
 
-    I4Web_LMS()->i4_vimeo->demo_get_vimeo_response_body(); //Call the Vimeo class function (just a sample)
-
     if ($courses){
       foreach ($courses as $course){
 
