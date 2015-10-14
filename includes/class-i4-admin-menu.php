@@ -87,6 +87,10 @@
      add_settings_field( 'i4-lms-login-logo', 'Upload the Login Page Logo', array($this, 'login_logo_callback'), 'i4web-lms-settings', 'i4-lms-branding-section' );
      add_settings_field( 'i4-lms-nav-logo', 'Upload the Navigation Menu Logo', array($this, 'nav_logo_callback'), 'i4web-lms-settings', 'i4-lms-branding-section' );
 
+     add_settings_section( 'i4-lms-vimeo-api-settings', 'Vimeo Settings', array( $this, 'vimeo_section_callback'), 'i4web-lms-settings');
+     add_settings_field( 'i4-lms-vimeo-access-token', 'Access Token', array($this, 'access_token_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
+
+
    }
 
   /**
@@ -153,6 +157,18 @@
      echo '<input id="nav-logo" class="upload-button button button-primary" type="button" value="Upload Image" /> <br />';
      echo "<span class='description'>Don't make it too wide. Max 150px width.</span>";
    }
+
+   /**
+    * Call back to our Access Token Field
+    *
+    * @since 0.0.1
+    */
+    public function access_token_callback(){
+      $settings = (array) get_option( 'i4-lms-settings');
+      $vimeo_access_token = esc_attr( $settings['i4-lms-vimeo-access-token'] );
+
+      echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-access-token]' value='$vimeo_access_token' />";
+    }
 
 
 
