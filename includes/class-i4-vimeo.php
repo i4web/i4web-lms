@@ -19,6 +19,14 @@
    class I4Web_LMS_Vimeo{
 
      /**
+     * The vimeo lib object
+     *
+     * @access  public
+     * @since   0.0.1
+     */
+     public $vimeo_lib;
+
+     /**
       * Class Construct to get started
       *
       * @since 0.0.1
@@ -26,8 +34,30 @@
       public function __construct(){
         global $current_i4_user; //global user object
 
+        $this->init();
 
       } //end construct
+
+      /**
+       * Retrieve the vimeo settings
+       *
+       * @since 0.0.1
+       */
+      private function init(){
+        //Vimeo API Call
+        //Retrieve Vimeo API Settings
+        $i4_settings = get_option( 'i4-lms-settings' ); //Retrieve the i4 LMS Settings
+        $access_token = esc_attr( $i4_settings['i4-lms-vimeo-access-token'] );
+        $client_id = esc_attr( $i4_settings['i4-lms-vimeo-client-identifier'] );
+        $client_secret = esc_attr( $i4_settings['i4-lms-vimeo-client-secrets'] );
+
+        $this->vimeo_lib = new \Vimeo\Vimeo($client_id, $client_secret);
+        $scope = array('public', 'private' );
+
+        $token = $this->vimeo_lib->clientCredentials($scope);
+
+        $this->vimeo_lib->setToken($access_token);
+      }
 
       /**
        * Retrieve the vimeo settings
@@ -60,23 +90,9 @@
 
         $vimeo_settings = $this->get_vimeo_settings();
 
+        $response = $this->vimeo_lib->request('/users/44252338/videos', array('per_page' => 2), 'GET');
 
-        //Vimeo API Call
-        //Retrieve Vimeo API Settings
-        $i4_settings = get_option( 'i4-lms-settings' ); //Retrieve the i4 LMS Settings
-        $access_token = esc_attr( $i4_settings['i4-lms-vimeo-access-token'] );
-        $client_id = esc_attr( $i4_settings['i4-lms-vimeo-client-identifier'] );
-        $client_secret = esc_attr( $i4_settings['i4-lms-vimeo-client-secrets'] );
-
-        $lib = new \Vimeo\Vimeo($client_id, $client_secret);
-        $scope = array('public', 'private' );
-
-        $token = $lib->clientCredentials($scope);
-
-        $lib->setToken($access_token);
-        $response = $lib->request('/users/44252338/videos', array('per_page' => 2), 'GET');
-
-        return var_dump($response['body']); //Dump the respondse body
+        return var_dump($response['body']->duration); //Dump the respondse body
       }
 
    }
