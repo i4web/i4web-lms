@@ -30,11 +30,36 @@
       } //end construct
 
       /**
+       * Retrieve the vimeo settings
+       *
+       * @since 0.0.1
+       */
+      function get_vimeo_settings(){
+
+        //Retrieve the Vimeo Settings from the options table
+        $i4_settings = get_option( 'i4-lms-settings' );
+        $access_token = esc_attr( $i4_settings['i4-lms-vimeo-access-token'] );
+        $client_id = esc_attr( $i4_settings['i4-lms-vimeo-client-identifier'] );
+        $client_secret = esc_attr( $i4_settings['i4-lms-vimeo-client-secrets'] );
+
+        $vimeo_settings = array(
+            "access_token"    => $access_token,
+            "client_id"       => $client_id,
+            "client_secret"   => $client_secret
+        );
+
+        //return array of vimeo settings
+        return $vimeo_settings;
+      }
+      /**
        * Setup the Account Settings form shortcode
        *
        * @since 0.0.1
        */
       function demo_get_vimeo_response_body(){
+
+        $vimeo_settings = $this->get_vimeo_settings();
+
 
         //Vimeo API Call
         //Retrieve Vimeo API Settings
