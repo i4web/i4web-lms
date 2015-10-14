@@ -25,6 +25,23 @@ jQuery( document ).ready( function( $ ) {
         function onFinish(id) {
             // Programmatically click the "complete" button
             $('.wpcw_fe_progress_box_mark a').click();
+
+            var nextUnit = jQuery('#next-unit').get(0);
+            var banner = jQuery('.banner-wrapper');
+            if (nextUnit) {
+                var nextUnitLink = nextUnit.href
+                var bannerLinkSpan = jQuery('#completed-next-link').get(0);
+                bannerLinkSpan.innerHTML = "Move on to the ";
+
+                var bannerLink = document.createElement('a');
+                bannerLink.setAttribute('href', nextUnitLink);
+                bannerLink.innerHTML = "next unit";
+
+                bannerLinkSpan.appendChild(bannerLink);
+            }
+
+            // Show the success banner
+            banner.show();
         }
     });
 });
