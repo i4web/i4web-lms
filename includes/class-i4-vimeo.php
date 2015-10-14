@@ -70,7 +70,6 @@
         $transient_name = $video_id . '-duration';
         $duration = get_transient($transient_name);
         if ($duration === false) {
-          print("Not from cache");
           $response = $this->vimeo_lib->request('/me/videos/'.$video_id);
           $duration = $this->format_duration($response['body']['duration']);
           set_transient($transient_name, $duration, DAY_IN_SECONDS);
