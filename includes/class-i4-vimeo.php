@@ -19,7 +19,6 @@
    class I4Web_LMS_Vimeo {
 
     private $vimeo_lib;
-    private $duration_cache;
 
      /**
       * Class Construct to get started
@@ -55,8 +54,6 @@
       }
 
       private function init() {
-        $this->duration_cache = [];
-
         //Vimeo API Call
         //Retrieve Vimeo API Settings
         $vimeo_settings = $this->get_vimeo_settings();
@@ -70,14 +67,13 @@
       }
 
       function get_duration($video_id) {
-        $duration = null;
-        if (isset($this->duration_cache[$video_id])) {
-          $duration = $this->duration_cache[$video_id];
-        }
-        else {
+        $transient_name = $video_id . '-duration';
+        $duration = get_transient($transient_name);
+        if ($duration === false) {
+          print("Not from cache");
           $response = $this->vimeo_lib->request('/me/videos/'.$video_id);
           $duration = $this->format_duration($response['body']['duration']);
-          $this->duration_cache[$video_id] = $duration;
+          set_transient($transient_name, $duration, DAY_IN_SECONDS);
         }
         return $duration;
       }
