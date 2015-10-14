@@ -1765,7 +1765,7 @@
 
   		if ($nextAndPrev['prev'] > 0)
   		{
-  			$html .= sprintf('<a href="%s" class="fe_btn fe_btn_navigation button">&laquo; %s</a> ',
+  			$html .= sprintf('<a href="%s" id="prev-unit" class="fe_btn fe_btn_navigation button">&laquo; %s</a> ',
   				get_permalink($nextAndPrev['prev']),
   				__('Previous Unit', 'wp_courseware')
   			);
@@ -1777,7 +1777,7 @@
   			//$urlToUse = ($disableNextButton ? '#' : get_permalink($nextAndPrev['next']));
   			//($disableNextButton ? 'fe_btn_navigation_disabled' : ''), // Add a disabled class if not active.
 
-  			$html .= sprintf('<a href="%s" class="fe_btn fe_btn_navigation button %s">%s &raquo;</a>',
+  			$html .= sprintf('<a href="%s" id="next-unit" class="fe_btn fe_btn_navigation button %s">%s &raquo;</a>',
   				get_permalink($nextAndPrev['next']),
   				false,
   				__('Next Unit', 'wp_courseware')
