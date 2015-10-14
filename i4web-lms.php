@@ -269,6 +269,9 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        //Post Meta Functions
        require_once I4_PLUGIN_DIR . 'includes/post-meta-functions.php';
 
+       //Vimeo API Library
+       require_once I4_PLUGIN_DIR . 'lib/vimeo.php-1.2.3/autoload.php';
+
 
 
      } //end includes
