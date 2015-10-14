@@ -89,6 +89,10 @@
 
      add_settings_section( 'i4-lms-vimeo-api-settings', 'Vimeo Settings', array( $this, 'vimeo_section_callback'), 'i4web-lms-settings');
      add_settings_field( 'i4-lms-vimeo-access-token', 'Access Token', array($this, 'access_token_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
+     add_settings_field( 'i4-lms-vimeo-access-token-url', 'Access Token URL', array($this, 'access_token_url_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
+     add_settings_field( 'i4-lms-vimeo-client-identifier', 'Client Identifier', array($this, 'client_identifier_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
+     add_settings_field( 'i4-lms-vimeo-client-secrets', 'Client Secrets', array($this, 'client_secrets_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
+     add_settings_field( 'i4-lms-vimeo-authorize-url', 'Authorize URL', array($this, 'authorize_url_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
 
 
    }
@@ -169,6 +173,54 @@
 
       echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-access-token]' value='$vimeo_access_token' />";
     }
+
+    /**
+     * Call back to our Access Token URL Field
+     *
+     * @since 0.0.1
+     */
+     public function access_token_url_callback(){
+       $settings = (array) get_option( 'i4-lms-settings');
+       $vimeo_access_token_url = esc_attr( $settings['i4-lms-vimeo-access-token-url'] );
+
+       echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-access-token-url]' value='$vimeo_access_token_url' />";
+     }
+
+    /**
+     * Call back to our Client Identifier Field
+     *
+     * @since 0.0.1
+     */
+     public function client_identifier_callback(){
+       $settings = (array) get_option( 'i4-lms-settings');
+       $vimeo_client_identifier = esc_attr( $settings['i4-lms-vimeo-client-identifier'] );
+
+       echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-client-identifier]' value='$vimeo_client_identifier' />";
+     }
+
+     /**
+      * Call back to our Client Secrets Field
+      *
+      * @since 0.0.1
+      */
+      public function client_secrets_callback(){
+        $settings = (array) get_option( 'i4-lms-settings');
+        $vimeo_client_secrets = esc_attr( $settings['i4-lms-vimeo-client-secrets'] );
+
+        echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-client-secrets]' value='$vimeo_client_secrets' />";
+      }
+
+      /**
+       * Call back to our Authorize URL field
+       *
+       * @since 0.0.1
+       */
+       public function authorize_url_callback(){
+         $settings = (array) get_option( 'i4-lms-settings');
+         $vimeo_authorize_url = esc_attr( $settings['i4-lms-vimeo-authorize-url'] );
+
+         echo "<input type='text' class='regular-text ltr' name='i4-lms-settings[i4-lms-vimeo-authorize-url]' value='$vimeo_authorize_url' />";
+       }
 
 
 
