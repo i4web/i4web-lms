@@ -21,7 +21,7 @@ if ( is_admin() ) {
  */
 function I4web_LMS_AJAX_units_handleQuizRetakeRequest()
 {
-  echo '<h1>Test</h1>';
+
 	// Security check
 	if (!wp_verify_nonce(WPCW_arrays_getValue($_POST, 'progress_nonce'), 'wpcw-progress-nonce')) {
         die (__('Security check failed!', 'wp_courseware'));
