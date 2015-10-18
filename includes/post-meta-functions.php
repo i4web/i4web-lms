@@ -42,3 +42,44 @@ function i4_lms_posted_on() {
 
 }
 endif;
+
+/**
+ * Returns the Category of the Post
+ *
+ * @since 1.2
+ * @return string
+ */
+
+if ( ! function_exists( 'i4_lms_post_category' ) ) :
+/**
+ * Returns HTML string with category information for the current post.
+ */
+function i4_lms_post_category() {
+
+  $categories = get_the_category();
+
+  $i = 1; //counter
+
+  $num_categories = count($categories);
+
+  foreach ( $categories as $category ){
+
+    $category_link = get_category_link( $category->cat_ID ); //store the URL for the category
+
+    if ( $num_categories == $i  ){ //If we are at the end of the category list we don't need a comma displayed after the link
+      $category_link_html .= '<a href="' . $category_link . '">'.$category->name . '</a>';
+    }
+    else
+    $category_link_html .= '<a href="'. $category_link . '">' . $category->name . '</a>, ';
+
+    $i++; //increment our counter
+
+  }
+
+  $category_string = '<span class="announcement-posted-date">in ' . $category_link_html . '</span>';
+
+
+	return $category_string; // WPCS: XSS OK.
+
+}
+endif;
