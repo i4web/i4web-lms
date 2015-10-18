@@ -35,7 +35,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
    wp_nonce_field(basename(__FILE__), "video-meta-box-nonce");
 
    $video_id = get_post_meta( $post->ID, 'video-id', true );
-   $video_length = get_post_meta ( $post->ID, 'video-length', true );
    $video_description = get_post_meta ( $post->ID, 'video-description', true );
 
    ?>
@@ -47,13 +46,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
        </td>
      </tr>
      <tr>
-       <th style="width:15%"><label for="video-length">Video Length</label></th>
-       <td>
-         <input name="video-length" type="text" value="<?php echo esc_attr( $video_length ); ?>">
-       </td>
-     </tr>
-     <tr>
-       <th style="width:15%"><label for="video-length">Video Description</label></th>
+       <th style="width:15%"><label for="video-description">Video Description</label></th>
        <td>
          <textarea name="video-description"><?php echo esc_attr( $video_description ); ?></textarea>
        </td>
@@ -98,12 +91,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
    }
 
    //If our video id field was set, store the value
-   if(isset( $_POST["video-length"] )){
-      //Sanitize the users input by forcing the video id to be an int. Any non integer values are stripped here.
-      $video_length = sanitize_text_field( $_POST["video-length"] );
-   }
-
-   //If our video id field was set, store the value
    if(isset( $_POST["video-description"] )){
       //Sanitize the users input by forcing the video id to be an int. Any non integer values are stripped here.
       $video_description = sanitize_text_field( $_POST["video-description"] );
@@ -111,7 +98,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
    //Update the Post Meta
    update_post_meta($post_id, "video-id", $video_id);
-   update_post_meta($post_id, "video-length", $video_length);
    update_post_meta($post_id, "video-description", $video_description);
 
  }
