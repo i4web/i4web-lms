@@ -27,3 +27,20 @@
   }
 
   add_action( 'plugins_loaded', 'i4_get_user');
+
+  /**
+   * Grab the site settings and store as a global
+   *
+   * @since 0.0.1
+   */
+   function i4_get_site_settings(){
+     global $i4_settings;
+     //Check if the user is logged in
+     if( is_user_logged_in() ){
+       global $i4_settings;
+       $i4_settings = get_option( 'i4-lms-settings' ); //Retrieve the i4 LMS Settings
+     }
+
+    }
+
+    add_action( 'plugins_loaded', 'i4_get_site_settings');

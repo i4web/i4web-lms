@@ -264,8 +264,8 @@ if ( ! class_exists( 'I4Web_LMS' ) ) :
        require_once I4_PLUGIN_DIR . 'admin/admin-theme.php';
        require_once I4_PLUGIN_DIR . 'admin/units/metabox.php';
 
-       //User Functions
-       require_once I4_PLUGIN_DIR . 'includes/user-functions.php';
+       //Global Functions
+       require_once I4_PLUGIN_DIR . 'includes/global-functions.php';
 
        //Front End Ajax functions
        require_once I4_PLUGIN_DIR . 'includes/ajax/ajax-front-end.php';

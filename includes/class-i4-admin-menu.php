@@ -87,6 +87,9 @@
      add_settings_field( 'i4-lms-login-logo', 'Upload the Login Page Logo', array($this, 'login_logo_callback'), 'i4web-lms-settings', 'i4-lms-branding-section' );
      add_settings_field( 'i4-lms-nav-logo', 'Upload the Navigation Menu Logo', array($this, 'nav_logo_callback'), 'i4web-lms-settings', 'i4-lms-branding-section' );
 
+     add_settings_section( 'i4-lms-course-settings', 'Course Settings', array( $this, 'course_section_callback'), 'i4web-lms-settings');
+     add_settings_field( 'i4-lms-course-force-viewing', 'Force Video Viewing', array($this, 'force_viewing_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
+
      add_settings_section( 'i4-lms-vimeo-api-settings', 'Vimeo Settings', array( $this, 'vimeo_section_callback'), 'i4web-lms-settings');
      add_settings_field( 'i4-lms-vimeo-access-token', 'Access Token', array($this, 'access_token_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
      add_settings_field( 'i4-lms-vimeo-access-token-url', 'Access Token URL', array($this, 'access_token_url_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
@@ -148,7 +151,7 @@
    }
 
    /**
-    * Call back to our Login page Logo URL
+    * Call back to our Navigation Menu logo URL
     *
     * @since 0.0.1
     */
@@ -161,6 +164,29 @@
      echo '<input id="nav-logo" class="upload-button button button-primary" type="button" value="Upload Image" /> <br />';
      echo "<span class='description'>Don't make it too wide. Max 150px width.</span>";
    }
+
+   /**
+    * Call back to our Course Settings Section verbiage
+    *
+    * @since 0.0.1
+    */
+   public function course_settings_section_callback(){
+     echo 'Customize your course settings below';
+   }
+
+   /**
+    * Call back to our Force Video Viewing option
+    *
+    * @since 0.0.1
+    */
+    public function force_viewing_callback(){
+      $settings = (array) get_option( 'i4-lms-settings');
+      $force_viewing = esc_attr( $settings['i4-lms-course-force-viewing'] );
+
+       echo "<input name='i4-lms-settings[i4-lms-course-force-viewing]' id='i4-lms-course-force-viewing' type='checkbox'  value='1' ". checked(1, $force_viewing, false) ." /><br />";
+       echo '<span class="description">Checking this box will force users to watch the complete video before enabling the mark as completed button.</span>';
+
+     }
 
    /**
     * Call back to our Access Token Field
