@@ -60,7 +60,10 @@
     echo '<div class="wrap">';
     echo '<h2><span class="dashicons dashicons-admin-generic"></span> i-4Web LMS - General Settings</h2>';
 
-    ?>
+
+    if( isset($_GET['settings-updated']) ) {
+      $this->i4_lms_settings_success_msg();
+    } ?>
     <form action="options.php" method="POST">
       <?php settings_fields( 'i4-lms-settings-group' ); ?>
       <?php do_settings_sections( 'i4web-lms-settings' ); ?>
@@ -275,5 +278,16 @@
      I4Web_LMS()->i4_coordinators->i4_lms_display_coordinators(); //Display all coordinators
      echo '</div> <!-- end .wrap -->';
    }
+
+  /**
+   * Displays the Error message when a Coordinator is not successfully added to the DB
+   *
+   * @since 0.0.1
+   */
+  function i4_lms_settings_success_msg(){
+   $class = "updated";
+    $message = "i-4Web Settings Updated";
+   echo"<div class=\"$class\"> <p>$message</p></div>";
+  }
 
 }
