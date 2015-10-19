@@ -62,13 +62,15 @@
 
 
     if( isset($_GET['settings-updated']) ) {
-      $this->i4_lms_settings_success_msg();
+      $this->i4_lms_settings_success_msg(); //Display a success message if the settings were updated
     } ?>
+
     <form action="options.php" method="POST">
       <?php settings_fields( 'i4-lms-settings-group' ); ?>
       <?php do_settings_sections( 'i4web-lms-settings' ); ?>
       <?php submit_button(); ?>
     </form>
+    
     <?php
 
     echo '</div> <!-- end .wrap -->';
