@@ -1,6 +1,6 @@
 <?php
 /**
-  * i-4Web LMS User Functions
+  * i-4Web LMS Functions
   *
   * @package I4Web_LMS
   * @subpackage Classes/Profile Form
@@ -44,3 +44,15 @@
     }
 
     add_action( 'plugins_loaded', 'i4_get_site_settings');
+
+    /**
+     * Return a list of courses assigned to the user
+     *
+     * @param Integer $user_id The ID of the current user.
+     * @return Array of courses.
+     */
+     function remove_permalink_notice(){
+       remove_action('admin_notices', 'WPCW_plugin_permalinkCheck');
+     }
+
+     add_action( 'admin_notices', 'remove_permalink_notice', 0 );
