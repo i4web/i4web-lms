@@ -114,19 +114,19 @@
             if( $units ){
               foreach ( $units as $unit ){
                 printf('<tr>');
-                printf('<td class="large-12 columns">');
-                printf(('<a href="%s" title="%s"><i class="fa fa-play-circle-o"></i> %s</a>'), get_the_permalink($unit->ID), $unit->post_title, $unit->post_title);
+                printf('<td class="large-8 columns">');
+                printf(('<a href="%s" title="%s" class="my-course-link"><i class="fa fa-play-circle-o"></i> %s</a>'), get_the_permalink($unit->ID), $unit->post_title, $unit->post_title);
               //  printf('</td>');
-                printf('<span class="right">');
-
+                printf('</td>');
+                printf('<td class="large-4 columns">');
                 //If the unit is in the completed units array, display the completed checkmark.
                 if (in_array ( $unit->ID, $i4_completed_units )){
-                  printf('<i class="fa fa-check font-success completed-icon"></i>');
+                  printf('<div class="right completed-icon"><i class="fa fa-check font-success completed-icon"></i> Completed!</div>');
                 }
                 else{
-                  printf(__('<a class="button round tiny blue" title="Begin %s" href="%s">Begin</a>'), $unit->post_title, get_the_permalink($unit->ID) ) ;
+                  printf(__('<a class="button my-courses-button tiny blue right" title="Begin %s" href="%s">Begin</a>'), $unit->post_title, get_the_permalink($unit->ID) ) ;
                 }
-                printf('</span></td>');
+                printf('</td>');
                 printf('</tr>');
               }
             }
