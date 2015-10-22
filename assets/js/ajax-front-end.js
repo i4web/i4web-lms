@@ -236,6 +236,9 @@ jQuery(document).ready(function($j)
 	// Function that's called when setting up the quiz form.
 	function quizHandler_setup()
 	{
+		$j('.wpcw_fe_submit_loader').hide(); //Hide the loader gif before the Submit button is clicked
+		$j('.wpcw_progress_percent').hide(); //Hide the progress until the Submit button is clicked
+
 		var quizForm = $j('.wpcw_fe_quiz_box_wrap form');
 		if (quizForm.length > 0)
 		{
@@ -326,8 +329,10 @@ jQuery(document).ready(function($j)
 					} // end of check for expired timer.
 
 
-					// Hide button, show that progress is happening.
-					quizForm.find('.wpcw_fe_quiz_submit input').hide();
+						// Hide button, show that progress is happening.
+						quizForm.find('.wpcw_fe_quiz_submit input').hide();
+						quizForm.find('.wpcw_progress_percent').show();
+
 			    	quizForm.find('.wpcw_loader').show();
 
 			    	// Hide any navigation boxes
