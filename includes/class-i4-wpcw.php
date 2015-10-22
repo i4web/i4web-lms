@@ -114,11 +114,11 @@
             if( $units ){
               foreach ( $units as $unit ){
                 printf('<tr>');
-                printf('<td class="large-8 columns">');
+                printf('<td class="large-8 small-6 columns">');
                 printf(('<a href="%s" title="%s" class="my-course-link"><i class="fa fa-play-circle-o"></i> %s</a>'), get_the_permalink($unit->ID), $unit->post_title, $unit->post_title);
               //  printf('</td>');
                 printf('</td>');
-                printf('<td class="large-4 columns">');
+                printf('<td class="large-4 small-6 columns">');
                 //If the unit is in the completed units array, display the completed checkmark.
                 if (in_array ( $unit->ID, $i4_completed_units )){
                   printf('<div class="right completed-icon"><i class="fa fa-check font-success completed-icon"></i> Completed!</div>');
