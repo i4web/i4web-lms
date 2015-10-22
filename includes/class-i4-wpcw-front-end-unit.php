@@ -1555,7 +1555,7 @@
   			$html .= '<div class="wpcw_fe_quiz_box wpcw_fe_quiz_box_pending">';
 
   				// #### 1 - Quiz Title - constant for all quizzes
-  				$html .= sprintf('<div class="wpcw_fe_quiz_title">%s</div>', $this->unitQuizDetails->quiz_title);
+  			//	$html .= sprintf('<div class="wpcw_fe_quiz_title"><h3>%s</h3></div>', $this->unitQuizDetails->quiz_title); Quiz Title not needed for the i-4Web Quiz template
 
   				// #### 2 - Pass mark - just needed for blocking quizes
   				if ('quiz_block' == $this->unitQuizDetails->quiz_type)
@@ -1564,7 +1564,7 @@
   					$passQs  = ceil(($this->unitQuizDetails->quiz_pass_mark / 100) * $totalQs);
 
   					$html .= '<div class="wpcw_fe_quiz_pass_mark">';
-  					$html .= sprintf(__('You\'ll need to correctly answer at least <b>%d of the %d</b> questions below (<b>at least %d%%</b>) to progress to the next unit.', 'wp_courseware'),
+  					$html .= sprintf(__('To successfully pass this quiz you\'ll need to correctly answer at least <b>%d of the %d</b> questions below (<b>at least %d%%</b>) to progress to the next unit.', 'wp_courseware'),
   								$passQs, $totalQs, $this->unitQuizDetails->quiz_pass_mark);
   					$html .= '</div>';
   				}
