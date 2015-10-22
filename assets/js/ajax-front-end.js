@@ -40,7 +40,7 @@ jQuery(document).ready(function($j)
 
 		// Trigger AJAX request to allow the user to retake the quiz.
 		var data = {
-				action 			: 'wpcw_handle_unit_quiz_retake_request',
+				action 			: 'i4_lms_handle_unit_quiz_retake_request',
 				quizid 			: wpcw_quizid,
 				unitid 			: wpcw_unitid,
 				progress_nonce	: wpcw_js_consts_fe.progress_nonce
@@ -69,7 +69,7 @@ jQuery(document).ready(function($j)
 
 		// Trigger AJAX request to allow the user to retake the quiz.
 		var data = {
-				action 			: 'wpcw_handle_unit_quiz_timer_begin',
+				action 			: 'i4_lms_handle_unit_quiz_timer_begin',
 				quizid 			: wpcw_quizid,
 				unitid 			: wpcw_unitid,
 				progress_nonce	: wpcw_js_consts_fe.progress_nonce
@@ -211,7 +211,7 @@ jQuery(document).ready(function($j)
 
 		// Trigger AJAX request to go to the previous item.
 		var data = {
-				action 			: 'wpcw_handle_unit_quiz_jump_question',
+				action 			: 'i4_lms_handle_unit_quiz_jump_question',
 				quizid 			: wpcw_quizid,
 				unitid 			: wpcw_unitid,
 				qu_direction	: direction,
@@ -248,7 +248,7 @@ jQuery(document).ready(function($j)
 
 			// Configure the AJAX request
 			var configdata = {
-				action 			: 'wpcw_handle_unit_quiz_response',
+				action 			: 'i4_lms_handle_unit_quiz_response',
 				id 				: quizid,
 				timerexpired	: quizForm.attr('data-wpcw_expired'),
 				progress_nonce	: wpcw_js_consts_fe.progress_nonce

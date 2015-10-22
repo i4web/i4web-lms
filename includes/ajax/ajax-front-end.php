@@ -12,6 +12,14 @@ include_once WPCW_plugin_getPluginDirPath() . 'classes/class_frontend_unit.inc.p
 // Add the action that will be called by the Ajax function in ajax-front-end.js
 if ( is_admin() ) {
   add_action('wp_ajax_i4_lms_handle_unit_track_progress', 			'I4web_LMS_AJAX_units_handleUserProgress');
+  add_action('wp_ajax_i4_lms_handle_unit_quiz_retake_request', 			'I4web_LMS_AJAX_units_handleQuizRetakeRequest');
+  add_action('wp_ajax_i4_lms_handle_unit_quiz_response', 			'I4web_LMS_AJAX_units_handleQuizResponse');
+  add_action('wp_ajax_i4_lms_handle_unit_quiz_timer_begin', 		'I4web_LMS_AJAX_units_handleQuizTimerBegin');
+  add_action('wp_ajax_i4_lms_handle_unit_quiz_jump_question', 		'I4web_LMS_AJAX_units_handleQuizJumpQuestion');
+
+
+
+
 }
 
 /**
@@ -34,16 +42,16 @@ function I4web_LMS_AJAX_units_handleQuizRetakeRequest()
 	// Get the post object for this quiz item.
 	$post = get_post($unitID);
 	if (!$post) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
 		die();
 	}
 
 	// Initalise the unit details
-	$fe = new WPCW_UnitFrontend($post);
+	$fe = new I4Web_LMS_Front_End_Unit($post);
 
 	// #### Get associated data for this unit. No course/module data, then it's not a unit
 	if (!$fe->check_unit_doesUnitHaveParentData()) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -56,7 +64,7 @@ function I4web_LMS_AJAX_units_handleQuizRetakeRequest()
 	// #### See if we're in a position to retake this quiz?
 	if (!$fe->check_quizzes_canUserRequestRetake())
 	{
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('You are not permitted to retake this quiz.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not request a retake for the quiz.', 'wp_courseware') . ' ' . __('You are not permitted to retake this quiz.', 'wp_courseware'));
 		die();
 	}
 
@@ -85,7 +93,7 @@ function I4web_LMS_AJAX_units_handleUserProgress()
 
 	// Validate the course ID
 	if (!preg_match('/unit_complete_(\d+)/', $unitID, $matches)) {
-		echo WPCW_UnitFrontend::message_error_getCompletionBox_error();
+		echo I4Web_LMS_Front_End_Unit::message_error_getCompletionBox_error();
 		die();
 	}
 	$unitID = $matches[1];
@@ -94,7 +102,7 @@ function I4web_LMS_AJAX_units_handleUserProgress()
 	// Get the post object for this quiz item.
 	$post = get_post($unitID);
 	if (!$post) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not save your progress.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not save your progress.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -103,7 +111,7 @@ function I4web_LMS_AJAX_units_handleUserProgress()
 
 	// #### Get associated data for this unit. No course/module data, then it's not a unit
 	if (!$fe->check_unit_doesUnitHaveParentData()) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not save your progress.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not save your progress.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -140,7 +148,7 @@ function I4web_LMS_AJAX_units_handleQuizResponse()
 
 	// e.g. quiz_complete_69_1 or quiz_complete_17_2 (first ID is unit, 2nd ID is quiz)
 	if (!preg_match('/quiz_complete_(\d+)_(\d+)/', $quizAndUnitID, $matches)) {
-		echo WPCW_UnitFrontend::message_error_getCompletionBox_error();
+		echo I4Web_LMS_Front_End_Unit::message_error_getCompletionBox_error();
 		die();
 	}
 
@@ -151,18 +159,18 @@ function I4web_LMS_AJAX_units_handleQuizResponse()
 	// Get the post object for this quiz item.
 	$post = get_post($unitID);
 	if (!$post) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
 		die();
 	}
 
 	// Initalise the unit details
-	$fe = new WPCW_UnitFrontend($post);
+	$fe = new I4Web_LMS_Front_End_Unit($post);
 	$fe->setTriggeredAfterAJAXRequest();
 
 
 	// #### Get associated data for this unit. No course/module data, then it's not a unit
 	if (!$fe->check_unit_doesUnitHaveParentData()) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -174,7 +182,7 @@ function I4web_LMS_AJAX_units_handleQuizResponse()
 
 	// #### Check that the quiz is valid and belongs to this unit
 	if (!$fe->check_quizzes_isQuizValidForUnit($quizID)) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Quiz data does not match quiz for this unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not save your quiz results.', 'wp_courseware') . ' ' . __('Quiz data does not match quiz for this unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -253,17 +261,17 @@ function I4web_LMS_AJAX_units_handleQuizJumpQuestion()
 	// Get the post object for this quiz item.
 	$post = get_post($unitID);
 	if (!$post) {
-		echo WPCW_UnitFrontend::message_createMessage_error($msgPrefix . __('Could not find training unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error($msgPrefix . __('Could not find training unit.', 'wp_courseware'));
 		die();
 	}
 
 	// Initalise the unit details
-	$fe = new WPCW_UnitFrontend($post);
+	$fe = new I4Web_LMS_Front_End_Unit($post);
 
 
 	// #### Get associated data for this unit. No course/module data, then it's not a unit
 	if (!$fe->check_unit_doesUnitHaveParentData()) {
-		echo WPCW_UnitFrontend::message_createMessage_error($msgPrefix . __('Could not find course details for unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error($msgPrefix . __('Could not find course details for unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -275,7 +283,7 @@ function I4web_LMS_AJAX_units_handleQuizJumpQuestion()
 
 	// #### Check that the quiz is valid and belongs to this unit
 	if (!$fe->check_quizzes_isQuizValidForUnit($quizID)) {
-		echo WPCW_UnitFrontend::message_createMessage_error($msgPrefix . __('Quiz data does not match quiz for this unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error($msgPrefix . __('Quiz data does not match quiz for this unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -309,16 +317,16 @@ function I4web_LMS_AJAX_units_handleQuizTimerBegin()
 	// Get the post object for this quiz item.
 	$post = get_post($unitID);
 	if (!$post) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('Could not find training unit.', 'wp_courseware'));
 		die();
 	}
 
 	// Initalise the unit details
-	$fe = new WPCW_UnitFrontend($post);
+	$fe = new I4Web_LMS_Front_End_Unit($post);
 
 	// #### Get associated data for this unit. No course/module data, then it's not a unit
 	if (!$fe->check_unit_doesUnitHaveParentData()) {
-		echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
+		echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('Could not find course details for unit.', 'wp_courseware'));
 		die();
 	}
 
@@ -331,7 +339,7 @@ function I4web_LMS_AJAX_units_handleQuizTimerBegin()
 	// #### See if we're in a position to retake this quiz?
 	// if (!$fe->check_quizzes_canUserRequestRetake())
 	// {
-	// 	echo WPCW_UnitFrontend::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('You are not permitted to retake this quiz.', 'wp_courseware'));
+	// 	echo I4Web_LMS_Front_End_Unit::message_createMessage_error(__('Error - could not start the timer for the quiz.', 'wp_courseware') . ' ' . __('You are not permitted to retake this quiz.', 'wp_courseware'));
 	// 	die();
 	// }
 
