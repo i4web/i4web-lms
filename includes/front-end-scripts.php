@@ -12,11 +12,12 @@
  * Enqueue scripts and styles.
  */
 function i4_lms_scripts() {
+	global $current_i4_user, $i4_settings; //pass in the globals
 
 	//Load the scripts that we'll need to use for the theme
 	wp_enqueue_script( 'i4-ajax-front-end', I4_PLUGIN_URL .'assets/js/ajax-front-end.js', array('jquery', 'wpcw-jquery-form', 'wpcw-countdown'), '0.0.1', true);
 	wp_enqueue_script( 'vimeo-froogaloop', I4_PLUGIN_URL . 'assets/js/froogaloop.min.js', array( ), '2.0', false);
-	wp_enqueue_script( 'i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery', 'vimeo-froogaloop'), '0.0.1', false);
+	wp_enqueue_script( 'i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery', 'vimeo-froogaloop'), '0.0.1', true);
 	wp_enqueue_script( 'password-strength-meter' );
 	wp_dequeue_script( 'wpcw-frontend');
 
@@ -36,6 +37,11 @@ function i4_lms_scripts() {
 			'timer_units_secs'		=> __('secs', 'wp_courseware'),
 
 	));
+
+	//Store the data we want to send over to our Script
+	$force_viewing_setting = esc_attr( $i4_settings['i4-lms-course-force-viewing'] );
+
+	wp_localize_script( 'i4-main-js', 'i4_site_settings', array( 'force_video_viewing' => $force_viewing_setting )); //pass in the i-4Web settings to the main.js file
 
 }
 
