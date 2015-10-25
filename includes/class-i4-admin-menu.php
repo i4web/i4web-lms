@@ -300,7 +300,7 @@
      }
      else{ //if the input is not numeric and is not within the 0 to 100 range. Save the setting as 0 and output an error to the user
        $output[ 'i4-lms-course-min-view-pct' ] = 0;
-       add_settings_error( 'i4-lms-settings[i4-lms-course-min-view-pct]', 'invalid-min-viewing-pct', 'You have entered an invalid value for the minimum video viewing percentage and we were unable to update the setting. Please make sure you are setting a value between 0 and 100.' );
+       add_settings_error( 'i4-lms-settings', 'invalid-min-viewing-pct', 'You have entered an invalid value for the minimum video viewing percentage and we were unable to update the setting. Please make sure you are setting a value between 0 and 100.' );
 
      }
 
