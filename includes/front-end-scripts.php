@@ -44,13 +44,14 @@ function i4_lms_scripts() {
 	$minimum_viewing_pct = esc_attr( $i4_settings['i4-lms-course-min-view-pct'] );
 
 	//pass in the i-4Web settings to the main.js file
-	wp_localize_script( 'i4-main-js',
-											'i4_site_settings',
-											array(
-												'force_video_viewing' => $force_viewing_setting,
-												'min_viewing' 				=> $minimum_viewing,
-												'min_viewing_pct' 		=> $minimum_viewing_pct
-											)
+	wp_localize_script(
+		'i4-main-js',
+		'i4_site_settings',
+		array(
+			'force_video_viewing' => $force_viewing_setting,
+			'min_viewing' 				=> $minimum_viewing,
+			'min_viewing_pct' 		=> $minimum_viewing_pct
+		)
 	);
 }
 
