@@ -1564,7 +1564,7 @@
   					$passQs  = ceil(($this->unitQuizDetails->quiz_pass_mark / 100) * $totalQs);
 
   					$html .= '<div class="wpcw_fe_quiz_pass_mark">';
-  					$html .= sprintf(__('To successfully pass this quiz you\'ll need to correctly answer at least <b>%d of the %d</b> questions below (<b>at least %d%%</b>) to progress to the next unit.', 'wp_courseware'),
+  					$html .= sprintf(__('To successfully pass this quiz you\'ll need to correctly answer at least <b>%d of the %d</b> questions below (<b>at least %d%%</b>).', 'wp_courseware'),
   								$passQs, $totalQs, $this->unitQuizDetails->quiz_pass_mark);
   					$html .= '</div>';
   				}
