@@ -17,7 +17,7 @@ jQuery( document ).ready( function( $ ) {
         var iframe = $('#unit-video')[0];
         var player = $f(iframe);
 
-        alert( i4_site_settings.force_video_viewing);
+        alert( 'The minimum viewing time of a video is set to : ' + i4_site_settings.min_viewing_pct + '%');
         // When the player is ready, add listener for finish event
         player.addEvent('ready', function() {
             player.addEvent('finish', onFinish);
