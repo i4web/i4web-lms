@@ -81,13 +81,13 @@
                <div class="row">
                  <div class="large-12 columns">
                    <label><?php _e('Password', 'i4' );?></label>
-                       <input type="password" class="patient-password" name="patient_password" value="<?php echo $community; ?>"/>
+                       <input type="password" class="patient-password" name="patient_password" value=""/>
                  </div> <!-- end large-12 -->
                </div> <!-- end row -->
                <div class="row">
                  <div class="large-12 columns">
                    <label><?php _e('Re-Type Password', 'i4' );?></label>
-                       <input type="password" class="patient-password" name="patient_password_retyped" value="<?php echo $community; ?>"/>
+                       <input type="password" class="patient-password" name="patient_password_retyped" value=""/>
                        <div class="password-strength-wrapper">
                          <div id="password-strength"></div>
                        </div>
