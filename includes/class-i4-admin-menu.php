@@ -70,7 +70,7 @@
       <?php do_settings_sections( 'i4web-lms-settings' ); ?>
       <?php submit_button(); ?>
     </form>
-    
+
     <?php
 
     echo '</div> <!-- end .wrap -->';
@@ -94,6 +94,9 @@
 
      add_settings_section( 'i4-lms-course-settings', 'Course Settings', array( $this, 'course_section_callback'), 'i4web-lms-settings');
      add_settings_field( 'i4-lms-course-force-viewing', 'Force Video Viewing', array($this, 'force_viewing_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
+     add_settings_field( 'i4-lms-course-min-viewing', 'Enable Mininum Viewing', array($this, 'minimum_viewing_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
+     add_settings_field( 'i4-lms-course-min-view-pct', 'Minimum Viewing Percent', array($this, 'minimum_viewing_pct_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
+
 
      add_settings_section( 'i4-lms-vimeo-api-settings', 'Vimeo Settings', array( $this, 'vimeo_section_callback'), 'i4web-lms-settings');
      add_settings_field( 'i4-lms-vimeo-access-token', 'Access Token', array($this, 'access_token_callback'), 'i4web-lms-settings', 'i4-lms-vimeo-api-settings' );
@@ -192,6 +195,33 @@
        echo '<span class="description">Checking this box will force users to watch the complete video before enabling the mark as completed button.</span>';
 
      }
+
+   /**
+    * Call back to our minimum viewing setting
+    *
+    * @since 0.0.1
+    */
+    public function minimum_viewing_callback(){
+      $settings = (array) get_option( 'i4-lms-settings' );
+      $min_viewing = esc_attr( $settings[ 'i4-lms-course-min-viewing' ] );
+      echo "<input name='i4-lms-settings[i4-lms-course-min-viewing]' id='i4-lms-course-min-viewing' type='checkbox'  value='1' ". checked(1, $min_viewing, false) ." /><br />";
+      echo '<span class="description">Checking this box will enable a minimum viewing time for users to watch a video. This setting will take priority over the Force video viewing setting.</span>';
+
+    }
+
+   /**
+    *
+    *
+    * @since 0.0.1
+    */
+    public function minimum_viewing_pct_callback(){
+      $settings = (array) get_option( 'i4-lms-settings' );
+      $min_viewing_pct = esc_attr( $settings[ 'i4-lms-course-min-view-pct'] );
+
+      echo "<input type='text' name='i4-lms-settings[i4-lms-course-min-view-pct]' value='$min_viewing_pct' />";
+
+    }
+
 
    /**
     * Call back to our Access Token Field
