@@ -60,16 +60,14 @@
     echo '<div class="wrap">';
     echo '<h2><span class="dashicons dashicons-admin-generic"></span> i-4Web LMS - General Settings</h2>';
 
+    //Display the errors/success messages when settings are saved.
+    settings_errors(); ?>
 
-    if( isset($_GET['settings-updated']) ) {
-      $this->i4_lms_settings_success_msg(); //Display a success message if the settings were updated
-    } ?>
-
-    <form action="options.php" method="POST">
-      <?php settings_fields( 'i4-lms-settings-group' ); ?>
-      <?php do_settings_sections( 'i4web-lms-settings' ); ?>
-      <?php submit_button(); ?>
-    </form>
+      <form action="options.php" method="POST">
+        <?php settings_fields( 'i4-lms-settings-group' ); ?>
+        <?php do_settings_sections( 'i4web-lms-settings' ); ?>
+        <?php submit_button(); ?>
+      </form>
 
     <?php
 
@@ -83,7 +81,7 @@
    */
    function i4_settings_init(){
      //Register our settings
-     register_setting( 'i4-lms-settings-group', 'i4-lms-settings' );
+     register_setting( 'i4-lms-settings-group', 'i4-lms-settings', array( $this, 'i4_validate_settings' ) );
 
      //add a Section
      add_settings_section( 'i4-lms-branding-section', 'Branding', array( $this, 'branding_section_callback'), 'i4web-lms-settings');
@@ -93,9 +91,7 @@
      add_settings_field( 'i4-lms-nav-logo', 'Upload the Navigation Menu Logo', array($this, 'nav_logo_callback'), 'i4web-lms-settings', 'i4-lms-branding-section' );
 
      add_settings_section( 'i4-lms-course-settings', 'Course Settings', array( $this, 'course_section_callback'), 'i4web-lms-settings');
-     add_settings_field( 'i4-lms-course-force-viewing', 'Force Video Viewing', array($this, 'force_viewing_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
-     add_settings_field( 'i4-lms-course-min-viewing', 'Enable Mininum Viewing', array($this, 'minimum_viewing_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
-     add_settings_field( 'i4-lms-course-min-view-pct', 'Minimum Viewing Percent', array($this, 'minimum_viewing_pct_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
+     add_settings_field( 'i4-lms-course-min-view-pct', 'Minimum Video Viewing %', array($this, 'minimum_viewing_pct_callback'), 'i4web-lms-settings', 'i4-lms-course-settings' );
 
 
      add_settings_section( 'i4-lms-vimeo-api-settings', 'Vimeo Settings', array( $this, 'vimeo_section_callback'), 'i4web-lms-settings');
@@ -183,34 +179,7 @@
    }
 
    /**
-    * Call back to our Force Video Viewing option
-    *
-    * @since 0.0.1
-    */
-    public function force_viewing_callback(){
-      $settings = (array) get_option( 'i4-lms-settings');
-      $force_viewing = esc_attr( $settings['i4-lms-course-force-viewing'] );
-
-       echo "<input name='i4-lms-settings[i4-lms-course-force-viewing]' id='i4-lms-course-force-viewing' type='checkbox'  value='1' ". checked(1, $force_viewing, false) ." /><br />";
-       echo '<span class="description">Checking this box will force users to watch the complete video before enabling the mark as completed button.</span>';
-
-     }
-
-   /**
-    * Call back to our minimum viewing setting
-    *
-    * @since 0.0.1
-    */
-    public function minimum_viewing_callback(){
-      $settings = (array) get_option( 'i4-lms-settings' );
-      $min_viewing = esc_attr( $settings[ 'i4-lms-course-min-viewing' ] );
-      echo "<input name='i4-lms-settings[i4-lms-course-min-viewing]' id='i4-lms-course-min-viewing' type='checkbox'  value='1' ". checked(1, $min_viewing, false) ." /><br />";
-      echo '<span class="description">Checking this box will enable a minimum viewing time for users to watch a video. This setting will take priority over the Force video viewing setting.</span>';
-
-    }
-
-   /**
-    *
+    * Call back to our minimum viewing pct setting
     *
     * @since 0.0.1
     */
@@ -218,7 +187,9 @@
       $settings = (array) get_option( 'i4-lms-settings' );
       $min_viewing_pct = esc_attr( $settings[ 'i4-lms-course-min-view-pct'] );
 
-      echo "<input type='text' name='i4-lms-settings[i4-lms-course-min-view-pct]' value='$min_viewing_pct' />";
+      echo "<input type='text' name='i4-lms-settings[i4-lms-course-min-view-pct]' value='$min_viewing_pct' /> <br />";
+      echo "<span class='description'>Set the minimum % of each video that the patient must watch before they can manually advance. <br> Setting this to 0 will disable the forced viewing of videos</span>";
+
 
     }
 
@@ -311,15 +282,29 @@
      echo '</div> <!-- end .wrap -->';
    }
 
+
   /**
-   * Displays the Error message when a Coordinator is not successfully added to the DB
+   * Validates the settings input. Reference https://kovshenin.com/2012/the-wordpress-settings-api/
    *
    * @since 0.0.1
    */
-  function i4_lms_settings_success_msg(){
-   $class = "updated";
-    $message = "i-4Web Settings Updated";
-   echo"<div class=\"$class\"> <p>$message</p></div>";
-  }
+   function i4_validate_settings( $input ){
+
+     $output = get_option( 'i4-lms-settings'); //store the options
+
+     $min_viewing_pct_bool = is_numeric( $input['i4-lms-course-min-view-pct']); //Check if the input is a numeric value. Returns false if it is is not
+     $min_viewing_pct = $input['i4-lms-course-min-view-pct']; //store the input
+
+     if( $min_viewing_pct_bool && ($min_viewing_pct >= 0 && $min_viewing_pct <= 100) ){ //only set the input for saving if it is numeric and is within a 0 to 100 range
+       $output[ 'i4-lms-course-min-view-pct' ] = $min_viewing_pct;
+     }
+     else{ //if the input is not numeric and is not within the 0 to 100 range. Save the setting as 0 and output an error to the user
+       $output[ 'i4-lms-course-min-view-pct' ] = 0;
+       add_settings_error( 'i4-lms-settings[i4-lms-course-min-view-pct]', 'invalid-min-viewing-pct', 'You have entered an invalid value for the minimum video viewing percentage and we were unable to update the setting. Please make sure you are setting a value between 0 and 100.' );
+
+     }
+
+     return $output; //return the settings to be saved
+   }
 
 }
