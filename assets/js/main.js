@@ -13,11 +13,16 @@ jQuery( document ).ready( function( $ ) {
         }
     );
 
+    $(function () {
+      setCurrentLinkActive();
+    });
+
     $(function() {
         var iframe = $('#unit-video')[0];
         var player = $f(iframe);
 
         alert( 'The minimum viewing time of a video is set to : ' + i4_site_settings.min_viewing_pct + '%');
+
         // When the player is ready, add listener for finish event
         player.addEvent('ready', function() {
             player.addEvent('finish', onFinish);
@@ -46,6 +51,25 @@ jQuery( document ).ready( function( $ ) {
         }
     });
 });
+
+function setCurrentLinkActive() {
+    var path = window.location.pathname;
+    path = path.replace(/\/$/, "");
+    path = decodeURIComponent(path);
+
+    jQuery(".top-bar-menu a").each(function () {
+        var href = jQuery(this).attr('href');
+
+        if (path == href) {
+            jQuery(this).closest('li').addClass('active');
+        }
+        if (path == '' && href == 'http://celebrationhealtheducation.com'){ // for the home page since the path is empty
+          jQuery(this).closest('li').addClass('active');
+
+        }
+
+    });
+}
 
 function checkPasswordStrength( $pass1,
                                 $pass2,
