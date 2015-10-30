@@ -290,7 +290,7 @@
    */
    function i4_validate_settings( $input ){
 
-     $output = get_option( 'i4-lms-settings'); //store the options
+     $output = $input; //store the options
 
      $min_viewing_pct_bool = is_numeric( $input['i4-lms-course-min-view-pct']); //Check if the input is a numeric value. Returns false if it is is not
      $min_viewing_pct = $input['i4-lms-course-min-view-pct']; //store the input
