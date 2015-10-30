@@ -38,16 +38,19 @@ function i4_lms_scripts() {
 
 	));
 
-	//Store the data we want to send over to our Script
-
+	//Store the minimum viewing percentage set in the i-4Web LMS settings
 	$minimum_viewing_pct = esc_attr( $i4_settings['i4-lms-course-min-view-pct'] );
+
+	//Retrieve the status of the unit
+	$unit_status = I4Web_LMS()->i4_wpcw->i4_get_unit_status();
 
 	//pass in the i-4Web settings to the main.js file
 	wp_localize_script(
 		'i4-main-js',
 		'i4_site_settings',
 		array(
-			'min_viewing_pct' 		=> $minimum_viewing_pct
+			'min_viewing_pct' 		=> $minimum_viewing_pct,
+			'unit_status'					=> $unit_status
 		)
 	);
 }

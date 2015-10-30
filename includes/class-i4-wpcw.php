@@ -480,4 +480,23 @@
       return $user_courses;
     }
 
+   /**
+    * Return the unit status without needing parameters.
+    *
+    * @since 0.0.1
+    * @return bool True if unit is complete, false if not
+    */
+    function i4_get_unit_status(){
+      global $current_i4_user, $post;
+
+    	//Store the Parent Data for the Unit for use.
+    	$unit_parent_data = WPCW_units_getAssociatedParentData($post->ID);
+
+    	$user_id = $current_i4_user->ID;
+
+    	//Check if the Unit is complete
+    	$unit_status = $this->i4_is_unit_complete( $unit_parent_data->course_id, $user_id, $post->ID );
+
+      return $unit_status;
+    }
  }
