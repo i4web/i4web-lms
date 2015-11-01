@@ -17,7 +17,7 @@ function i4_lms_scripts() {
 	//Load the scripts that we'll need to use for the theme
 	wp_enqueue_script( 'i4-ajax-front-end', I4_PLUGIN_URL .'assets/js/ajax-front-end.js', array('jquery', 'wpcw-jquery-form', 'wpcw-countdown'), '0.0.1', true);
 	wp_enqueue_script( 'vimeo-froogaloop', I4_PLUGIN_URL . 'assets/js/froogaloop.min.js', array( ), '2.0', false);
-	wp_enqueue_script( 'i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery', 'vimeo-froogaloop'), '0.0.1', true);
+	wp_enqueue_script( 'i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery', 'vimeo-froogaloop', 'i4-ajax-front-end'), '0.0.1', true);
 	wp_enqueue_script( 'password-strength-meter' );
 	wp_dequeue_script( 'wpcw-frontend');
 
@@ -38,8 +38,11 @@ function i4_lms_scripts() {
 
 	));
 
-	//Store the minimum viewing percentage set in the i-4Web LMS settings
-	$minimum_viewing_pct = esc_attr( $i4_settings['i4-lms-course-min-view-pct'] );
+	// Normalize to a value between 0 and 1
+	$minimum_viewing_pct = esc_attr( $i4_settings['i4-lms-course-min-view-pct'] ) / 100;
+	if ($minimum_viewing_pct < 0 || $minimum_viewing_pct > 1) {
+		$minimum_viewing_pct = 1;
+	}
 
 	//Retrieve the status of the unit
 	$unit_status = I4Web_LMS()->i4_wpcw->i4_get_unit_status();
