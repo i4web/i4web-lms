@@ -13,41 +13,99 @@ jQuery( document ).ready( function( $ ) {
         }
     );
 
-    $(function () {
-      setCurrentLinkActive();
-    });
-
     $(function() {
+        setCurrentLinkActive();
+
         var iframe = $('#unit-video')[0];
         var player = $f(iframe);
+        var duration = undefined;
+        var minViewPct = i4_site_settings.min_viewing_pct;
+        var userCompletedUnit = i4_site_settings.unit_status;
+        var viewedMinPct = false || userCompletedUnit;
 
-        alert( 'The minimum viewing time of a video is set to : ' + i4_site_settings.min_viewing_pct + '% and the unit status is - ' + i4_site_settings.unit_status );
+        // Get the Mark as Completed button and disable it until the user completes the unit
+        var markCompleteButton = $('.wpcw_fe_progress_box_mark a');
+        markCompleteButton.addClass('disabled');
 
         // When the player is ready, add listener for finish event
         player.addEvent('ready', function() {
+            if (userCompletedUnit) {
+                enableMarkCompleteButton();
+                showCompletionBanner();
+            }
             player.addEvent('finish', onFinish);
+            player.addEvent('playProgress', onPlayProgress);
         });
 
-        function onFinish(id) {
-            // Programmatically click the "complete" button
-            $('.wpcw_fe_progress_box_mark a').click();
+        function onPlayProgress(data, id) {
+            // Only check view percentage if we haven't already viewed the minimum amount of the video
+            if (!viewedMinPct) {
+                if (!duration) {
+                    duration = data.duration
+                }
 
+                var currTime = data.seconds;
+                var currPct = currTime / duration;
+                if (currPct >= minViewPct) {
+                    enableMarkCompleteButton();
+                    viewedMinPct = true;
+                }
+            }
+        }
+
+        function onFinish(id) {
+            // Programmatically enable and click the "complete" button
+            enableMarkCompleteButton();
+            markCompleteButton.click();
+        }
+
+        function enableMarkCompleteButton() {
+            markCompleteButton.click(markUnitComplete);
+            markCompleteButton.removeClass('disabled');
+        }
+
+        function markUnitComplete() {
+            var courseid = $j(this).attr('id');
+            var data = {
+                action:         'i4_lms_handle_unit_track_progress',
+                id:             courseid,
+                progress_nonce: wpcw_js_consts_fe.progress_nonce
+            };
+
+            $j(this).hide();
+            $j(this).parent().find('.wpcw_loader').show();
+
+            // Hide any navigation boxes
+            $j('.wpcw_fe_navigation_box').hide();
+
+            $j.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
+                $j('#wpcw_fe_' + courseid).hide().html(response).fadeIn();
+            });
+
+            showCompletionBanner();
+
+            return false;
+        }
+
+        function showCompletionBanner() {
             var nextUnit = jQuery('#next-unit').get(0);
             var banner = jQuery('.banner-wrapper');
             if (nextUnit) {
-                var nextUnitLink = nextUnit.href
+                var nextUnitLink = nextUnit.href;
                 var bannerLinkSpan = jQuery('#completed-next-link').get(0);
                 bannerLinkSpan.innerHTML = "Move on to the ";
 
                 var bannerLink = document.createElement('a');
                 bannerLink.setAttribute('href', nextUnitLink);
-                bannerLink.innerHTML = "next unit";
+                bannerLink.innerHTML = "next unit.";
 
                 bannerLinkSpan.appendChild(bannerLink);
             }
 
             // Show the success banner
             banner.show();
+
+            return false;
         }
     });
 });
