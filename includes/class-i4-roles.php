@@ -67,6 +67,41 @@
           'switch_themes'                     => false,
           'upload_files'                      => false
           ));
+
+        add_role( 'coordinator', __( 'Coordinator', 'i4'), array(
+          'create_users'                  => true,
+          'delete_users'                  => true,
+          'edit_users'                    => true,
+          'delete_others_pages'               => false,
+          'delete_others_posts'               => false,
+          'delete_pages'                      => false,
+          'delete_posts'                      => false,
+          'delete_private_pages'              => false,
+          'delete_private_posts'              => false,
+          'delete_published_pages'            => false,
+          'delete_published_posts'            => false,
+          'edit_dashboard'                    => true,
+          'edit_others_pages'                 => true,
+          'edit_others_posts'                 => true,
+          'edit_pages'                        => true,
+          'edit_posts'                        => true,
+          'edit_private_pages'                => true,
+          'edit_private_posts'                => true,
+          'edit_published_pages'              => true,
+          'edit_published_posts'              => true,
+          'edit_theme_options'                => false,
+          'manage_categories'                 => false,
+          'manage_links'                      => false,
+          'manage_options'                    => true,
+          'moderate_comments'                 => false,
+          'publish_pages'                     => false,
+          'publish_posts'                     => false,
+          'read'                              => true,
+          'read_private_pages'                => false,
+          'read_private_posts'                => false,
+          'switch_themes'                     => false,
+          'upload_files'                      => true
+          ));
       }
 
       /**
@@ -77,23 +112,22 @@
          // gets the editor role
          $role = get_role( 'editor' );
 
+         //Add 'manage_patients' capability to the Coordinator and Admin roles
          // This only works, because it accesses the class instance.
-        // would allow the author to edit others' posts for current theme only
-        $role->add_cap( 'create_users' );
+         // would allow the author to edit others' posts for current theme only        
+         $coordinator_role = get_role( 'coordinator' );
+         $coordinator_role->add_cap( 'manage_patients' );
 
-        $role->add_cap( 'edit_users' );
-
-        $role->add_cap( 'delete_users' );
-
-        $role->add_cap( 'list_users' );
+         $admin_role = get_role( 'administrator' );
+         $admin_role->add_cap( 'manage_patients' );
 
        }
       /**
-       * Remove Roles from the Site
+       * Remove Roles from the Site (for devs only)
        *
        * @since 1.0.0
        */
        public function i4_remove_roles(){
-         remove_role( 'student' );
+         //remove_role( 'student' ); For development purposes only
        }
   }
