@@ -2,30 +2,6 @@ var $j = jQuery.noConflict();
 //$j(function()
 jQuery(document).ready(function($j)
 {
-	// Marking a unit as completed
-	$j('.wpcw_fe_progress_box_mark a').click(function() {
-
-		var courseid = $j(this).attr('id');
-		var data = {
-				action: 		'i4_lms_handle_unit_track_progress',
-				id:				courseid,
-				progress_nonce: wpcw_js_consts_fe.progress_nonce
-			};
-
-		$j(this).hide();
-		$j(this).parent().find('.wpcw_loader').show();
-
-		// Hide any navigation boxes
-		$j('.wpcw_fe_navigation_box').hide();
-
-		$j.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
-			$j('#wpcw_fe_' + courseid).hide().html(response).fadeIn();
-		});
-
-		return false;
-	});
-
-
 	// The quiz retake button.
 	$j('#wpcw_fe_outer_wrap').on('click', '.wpcw_fe_quiz_retake a.fe_btn', function(e)
 	{
