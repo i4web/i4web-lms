@@ -51,11 +51,7 @@
          <h3><?php echo get_the_title();?> <span><a href="#" data-reveal-id="new-patient-modal" class="button tiny blue">Add New Patient</a></h3>
        </div>
 
-       <div id="new-patient-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-         <h2 id="modalTitle">Add New Patient</h2>
-
-         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-       </div>
+       <?php $this->i4_new_patient_modal( 'new-patient-modal' );?>
 
        <table>
          <thead>
@@ -114,6 +110,22 @@
        $patients = $wpdb->get_results($SQL, OBJECT_K);
 
        return $patients;
+     }
+
+    /**
+     * Generate a New Patient Modal
+     *
+     * @since 0.0.1
+     * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
+     */
+     function i4_new_patient_modal( $modal_id ){
+
+        $html =    '<div id="' .$modal_id. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                      <h3 id="modalTitle">Add New Patient</h3>
+                      <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                    </div>';
+
+        echo $html;
      }
 
 
