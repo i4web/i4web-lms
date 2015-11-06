@@ -53,7 +53,7 @@
 
        <?php $this->i4_new_patient_modal( 'new-patient-modal' );?>
 
-       <table>
+       <table class="manage-patients-table">
          <thead>
            <tr>
              <th>Patient Username</th>
@@ -76,17 +76,12 @@
                </td>
                <td>
                  <span class="manage-patient-action"><a href="#" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" title="Modify Courses" data-reveal-id="<?php echo $patient->user_login;?>"><i class="fa fa-list"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" title="Modify Courses" data-reveal-id="<?php echo 'modify-courses-' .$patient->user_login;?>"><i class="fa fa-list"></i></a></span>
                  <span class="manage-patient-action"><a href="#" title="Remove Patient"><i class="fa fa-times"></i></a>
                </td>
              </tr>
 
-             <div id="<?php echo $patient->user_login;?>" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-               <h2 id="modalTitle">Awesome. I have it.</h2>
-               <p class="lead">Your couch.  It is mine.</p>
-               <p>I'm a cool paragraph that lives inside of an even cooler modal. Wins!</p>
-               <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-             </div>
+             <?php $this->i4_modify_courses_modal( $patient->user_login  ); ?>
 
            <?php } ?>
          </tbody>
@@ -126,6 +121,21 @@
                     </div>';
 
         echo $html;
+     }
+
+    /**
+     * Generate Manage Courses Modal
+     *
+     * @since 0.0.1
+     * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
+     */
+     function i4_modify_courses_modal( $patient_login ){
+
+       $html =    '<div id="modify-courses-' .$patient_login. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                     <h3 id="modalTitle">Manage Courses for <i>'.$patient_login .'</i> </h3>
+                     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                   </div>';
+       echo $html;
      }
 
 
