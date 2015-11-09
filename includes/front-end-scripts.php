@@ -30,6 +30,7 @@ function i4_lms_scripts() {
 	        'progress_nonce'        => wp_create_nonce('wpcw-progress-nonce'),     // Nonce security token
 	        'str_uploading'         => __('Uploading:', 'wp_courseware'),        // Uploading message.
 	        'str_quiz_all_fields'   => __('Please provide an answer for all of the questions on this page.', 'wp_courseware'),
+          'new_patient_nonce'     => wp_create_nonce('add_new_patient_nonce'),
 
 			// Timer units
 			'timer_units_hrs'		=> __('hrs', 'wp_courseware'),
