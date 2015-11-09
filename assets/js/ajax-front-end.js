@@ -2,6 +2,10 @@ var $j = jQuery.noConflict();
 //$j(function()
 jQuery(document).ready(function($j)
 {
+
+  // Add a New Patient
+  i4_js_add_new_patient();
+
 	// The quiz retake button.
 	$j('#wpcw_fe_outer_wrap').on('click', '.wpcw_fe_quiz_retake a.fe_btn', function(e)
 	{
@@ -118,6 +122,42 @@ jQuery(document).ready(function($j)
 	});
 
 
+  /**
+   * Called when the Add New Patient form is submitted
+   *
+   */
+   function i4_js_add_new_patient(){
+
+    var newPatientForm = $j('#add-new-patient-form form');
+
+
+    // The submit button.
+   	$j('#add-new-patient-submit').on('click', function(e)
+   	{
+   		e.preventDefault();
+
+      var i4_patient_email = $j('#patient_email').val(); //retrieve the patients email
+      var i4_patient_username = $j('#patient_username').val(); //retrieve the patients email
+
+
+      // Trigger AJAX request to allow the user to retake the quiz.
+  		var data = {
+  				action 			: 'i4_lms_handle_add_new_patient',
+          security    : wpcw_js_consts_fe.new_patient_nonce,
+  				patient_email 			: i4_patient_email,
+  				patient_username 		: i4_patient_username
+      //    patient_fname       : wpcw_quizid,
+      //    patient_lname       : wpcw_quizid,
+  		//		patient_nonce	      : wpcw_js_consts_fe.progress_nonce
+  			};
+
+      jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
+          {
+          	$j('#i4_new_patient_message').html(response);
+
+      	});
+   	});
+   }
 	/**
 	 * Function called when the timer reaches 0.
 	 */

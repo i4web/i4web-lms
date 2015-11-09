@@ -17,10 +17,32 @@ if ( is_admin() ) {
   add_action('wp_ajax_i4_lms_handle_unit_quiz_timer_begin', 		'I4web_LMS_AJAX_units_handleQuizTimerBegin');
   add_action('wp_ajax_i4_lms_handle_unit_quiz_jump_question', 		'I4web_LMS_AJAX_units_handleQuizJumpQuestion');
 
-
-
+  add_action('wp_ajax_i4_lms_handle_add_new_patient', 'i4_ajax_add_new_patient');
 
 }
+
+/**
+ * Called when adding a new patient.
+ *
+ */
+ function i4_ajax_add_new_patient(){
+   global $current_i4_user;
+
+   // Security check
+   $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
+
+   if ( !$security_check ) {
+     die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
+   }
+
+   //Perform a permissions check just in case
+   if ( !user_can( $current_i4_user, 'manage_patients' ) ){
+     die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
+   }
+
+  echo 'Testing';
+  die();
+ }
 
 /**
  * Function called when user is requesting a retake of a quiz. Lots of checking
