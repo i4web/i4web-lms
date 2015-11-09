@@ -479,6 +479,25 @@
 
       return $user_courses;
     }
+   /**
+    * Return a list of courses assigned to the user
+    *
+    * @return Array of courses.
+    */
+    function i4_get_all_courses(){
+      global $wpcwdb, $wpdb;
+
+      $course_table_name = $wpdb->prefix . 'wpcw_courses';
+
+      $wpdb->show_errors();
+
+      $SQL = "SELECT course_id, course_title FROM $course_table_name ORDER BY course_title";
+      $courses = $wpdb->get_results($SQL, OBJECT_K);
+
+      return $courses;
+
+    }
+
 
    /**
     * Return the unit status without needing parameters.
