@@ -19,6 +19,9 @@ if ( is_admin() ) {
 
   add_action('wp_ajax_i4_lms_handle_add_new_patient', 'i4_ajax_add_new_patient');
   add_action('wp_ajax_i4_lms_handle_check_email', 'i4_ajax_check_new_patient_email');
+  add_action('wp_ajax_i4_lms_handle_check_username', 'i4_ajax_check_new_patient_username');
+
+
 
 }
 
@@ -42,7 +45,7 @@ if ( is_admin() ) {
      die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
    }
 
-    echo json_encode($response); 
+    echo json_encode($response);
   die();
  }
 
@@ -80,6 +83,47 @@ if ( is_admin() ) {
     elseif ( !email_exists( $new_patient_email ) && is_email( $new_patient_email ) ){ //when an email does not exist and is in a valid email format
       $response['status']   = 200; //ok Status
       $response['email']    = $new_patient_email;
+      $response['icon']     = '<i class="fa fa-check"></i>';
+    }
+
+    echo json_encode($response); //sends the response endcoded via JSON to the AJAX call
+   die();
+  }
+
+ /**
+  * Called when adding a new patient.
+  *
+  */
+  function i4_ajax_check_new_patient_username(){
+    global $current_i4_user;
+
+    $response = array();
+
+    // Security check
+    $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
+
+    if ( !$security_check ) {
+      die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
+    }
+
+    //Perform a permissions check just in case
+    if ( !user_can( $current_i4_user, 'manage_patients' ) ){
+      die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
+    }
+
+    //Check if the email is already taken
+    $new_patient_username = sanitize_text_field($_POST['patient_username']);
+
+    if( username_exists( $new_patient_username ) || !validate_username( $new_patient_username ) ){
+      $response['status']   = 409; //Conflict response code
+      $response['username']    = $new_patient_username;
+      $response['icon']     = '<i class="fa fa-exclamation"></i>';
+
+
+    }
+    elseif ( !username_exists( $new_patient_username ) && validate_username( $new_patient_username ) ){ //when an email does not exist and is in a valid email format
+      $response['status']   = 200; //ok Status
+      $response['username']    = $new_patient_username;
       $response['icon']     = '<i class="fa fa-check"></i>';
     }
 

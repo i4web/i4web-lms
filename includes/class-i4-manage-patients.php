@@ -161,14 +161,20 @@
                             </div> <!-- end .small-2 columns -->
                           </div> <!-- end .row collapse -->
                           </div> <!-- end large-12 -->
-
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">
-                            <label>Username</label>
-                            <input type="text" class="patient-username" id="patient_username" name="patient_username" value="" required/>
+                          <div class="row collapse">
+                            <div class="small-10 columns">
+                              <input type="email" class="patient-username" id="patient_username" name="patient_username" placeholder="Username" value="" required/>
+                            </div> <!-- end .small-10 columns -->
+                            <div class="small-2 columns">
+                              <span id="i4_username_availability_status" class="postfix"></span>
+                            </div> <!-- end .small-2 columns -->
+                          </div> <!-- end .row collapse -->
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
+
                         <div class="row">
                           <div class="large-12 columns">
                             <label>First Name</label>

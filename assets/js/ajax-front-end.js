@@ -128,6 +128,7 @@ jQuery(document).ready(function($j)
    *
    */
    function verifyPatientInput(){
+
      $j("#patient_email").change(function (e) {
 
        var i4_patient_email = $j(this).val(); //retrieve the patients email
@@ -143,6 +144,26 @@ jQuery(document).ready(function($j)
        jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
            {
                $j('#i4_email_availability_status').html(response.icon);
+               //@TODO setup conditional logic based on response.status
+           }, 'json');
+
+     });
+
+     $j("#patient_username").change(function (e) {
+
+       var i4_patient_username = $j(this).val(); //retrieve the patients email
+
+
+       var data = {
+         action                 : 'i4_lms_handle_check_username',
+         security               : wpcw_js_consts_fe.new_patient_nonce,
+         patient_username       : i4_patient_username
+       };
+
+
+       jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
+           {
+               $j('#i4_username_availability_status').html(response.icon);
                //@TODO setup conditional logic based on response.status
            }, 'json');
 
