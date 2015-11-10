@@ -53,8 +53,6 @@
 
        <?php $this->i4_new_patient_modal( 'new-patient-modal' );?>
 
-       <div id="i4_new_patient_message"></div>
-
        <table class="manage-patients-table">
          <thead>
            <tr>
@@ -154,9 +152,16 @@
                       <form action="" method="POST" id="add-new-patient-form" class="form-horizontal add-new-patient-form">
                         <div class="row">
                           <div class="large-12 columns">
-                            <label>Email</label>
-                            <input type="email" class="patient-email" id="patient_email" name="patient_email" value="" required/>
+                          <div class="row collapse">
+                            <div class="small-10 columns">
+                              <input type="email" class="patient-email" id="patient_email" name="patient_email" placeholder="Email" value="" required/>
+                            </div> <!-- end .small-10 columns -->
+                            <div class="small-2 columns">
+                              <span id="i4_email_availability_status" class="postfix"></span>
+                            </div> <!-- end .small-2 columns -->
+                          </div> <!-- end .row collapse -->
                           </div> <!-- end large-12 -->
+
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">
@@ -176,48 +181,22 @@
                             <input type="text" class="patient-lname" id="patient_lname" name="patient_lname" value="" required/>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
-        ';
-
-        $content .=    '<div class="row">
+                        <div class="row">
                           <div class="large-12 columns">
-                            <label>Select Courses <span class="description">(Select all that apply)</span></label>';
-
-        $content .= $this->i4_display_new_patient_courses(); //generate the courses HTML
-
-        $content .=    '  </div> <!-- end large-12 -->
+                          <input type="hidden" name="action" value="add-new-patient"/>
+                          <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
+                          </div> <!-- end large-12 -->
                         </div> <!-- end row -->
-                        <input type="hidden" name="action" value="add-new-patient"/>
-                        <button class="button tiny blue" type="submit" id="add-new-patient-submit">Submit</button>
                         </form>
+                        <div class="row">
+                          <div class="large-12 columns">
+                          <div id="i4_new_patient_message"></div>
+                          </div> <!-- end large-12 -->
+                        </div> <!-- end row -->
                     </div>
        ';
 
        return $content;
      }
-
-    /**
-     * Retrieves courses and generates the HTML for courses available for selection when adding a new patient
-     *
-     * @since 0.0.1
-     */
-     function i4_display_new_patient_courses(){
-
-       //retrieve the courses
-      $courses =  I4Web_LMS()->i4_wpcw->i4_get_all_courses();
-
-      //Display checkboxes for course selection
-      foreach ($courses as $course){
-          //sanitize the course title
-          $course_title_sanitized = sanitize_title( $course->course_title );
-          $content .= '<div class="small-6 columns">';
-          $content .= '<input id="'.$course_title_sanitized.'" type="checkbox"><label for="'.$course_title_sanitized .' ">'.$course->course_title .'</label> <br>';
-          $content .= '</div>';
-      }
-
-      return $content;
-     }
-
-
-
 
   }
