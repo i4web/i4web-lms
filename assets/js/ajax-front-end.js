@@ -131,19 +131,20 @@ jQuery(document).ready(function($j)
      $j("#patient_email").change(function (e) {
 
        var i4_patient_email = $j(this).val(); //retrieve the patients email
+
+
        var data = {
          action           : 'i4_lms_handle_check_email',
          security         : wpcw_js_consts_fe.new_patient_nonce,
          patient_email    : i4_patient_email
        };
 
+
        jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
            {
-               $j('#i4_email_availability_status').html(response);
-
-
-
-           });
+               $j('#i4_email_availability_status').html(response.icon);
+               //@TODO setup conditional logic based on response.status
+           }, 'json');
 
      });
    }
@@ -185,7 +186,7 @@ jQuery(document).ready(function($j)
           {
               $j('#i4_new_patient_message').html(response);
 
-          });
+          }, 'json');
        });
    }
     /**

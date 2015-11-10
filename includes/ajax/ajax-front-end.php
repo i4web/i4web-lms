@@ -29,6 +29,7 @@ if ( is_admin() ) {
  function i4_ajax_add_new_patient(){
    global $current_i4_user;
 
+   $response = array();
    // Security check
    $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
 
@@ -41,9 +42,7 @@ if ( is_admin() ) {
      die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
    }
 
-   //Finally lets do add a new patient
-
-  echo 'Add New Patient AJAX still works';
+    echo json_encode($response); 
   die();
  }
 
@@ -72,20 +71,19 @@ if ( is_admin() ) {
     $new_patient_email = sanitize_text_field($_POST['patient_email']);
 
     if( email_exists( $new_patient_email ) || !is_email( $new_patient_email ) ){
-      $response['status'] = 'unavailable';
-      $respnse['email'] = $new_patient_email;
-      $response['html'] = '<i class="fa fa-exclamation"></i>';
+      $response['status']   = 409; //Conflict response code
+      $response['email']    = $new_patient_email;
+      $response['icon']     = '<i class="fa fa-exclamation"></i>';
 
 
     }
     elseif ( !email_exists( $new_patient_email ) && is_email( $new_patient_email ) ){ //when an email does not exist and is in a valid email format
-      $response['status'] = 'available';
-      $respnse['email'] = $new_patient_email;
-      echo '<i class="fa fa-check"></i>';
+      $response['status']   = 200; //ok Status
+      $response['email']    = $new_patient_email;
+      $response['icon']     = '<i class="fa fa-check"></i>';
     }
 
-    //echo json_encode($response);
-    return $response;
+    echo json_encode($response); //sends the response endcoded via JSON to the AJAX call
    die();
   }
 
