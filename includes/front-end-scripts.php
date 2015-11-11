@@ -19,7 +19,7 @@ function i4_lms_scripts() {
     wp_enqueue_script( 'vimeo-froogaloop', I4_PLUGIN_URL . 'assets/js/froogaloop.min.js', array( ), '2.0', false );
     wp_enqueue_script( 'i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery'), '0.0.1', true );
     wp_enqueue_script( 'i4-course-js', I4_PLUGIN_URL . 'assets/js/course.js', array('jquery', 'vimeo-froogaloop', 'i4-ajax-front-end'), '0.0.1', true );
-    wp_enqueue_script( 'i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery'), '0.0.1', true );
+    wp_enqueue_script( 'i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable'), '0.0.1', true );
     wp_enqueue_script( 'password-strength-meter' );
     wp_dequeue_script( 'wpcw-frontend' );
 
