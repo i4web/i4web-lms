@@ -17,37 +17,11 @@ if ( is_admin() ) {
   add_action('wp_ajax_i4_lms_handle_unit_quiz_timer_begin',         'I4web_LMS_AJAX_units_handleQuizTimerBegin');
   add_action('wp_ajax_i4_lms_handle_unit_quiz_jump_question',         'I4web_LMS_AJAX_units_handleQuizJumpQuestion');
 
-  add_action('wp_ajax_i4_lms_handle_add_new_patient', 'i4_ajax_add_new_patient');
   add_action('wp_ajax_i4_lms_handle_check_email', 'i4_ajax_check_new_patient_email');
   add_action('wp_ajax_i4_lms_handle_check_username', 'i4_ajax_check_new_patient_username');
 
 
-
 }
-
-/**
- * Called when adding a new patient.
- *
- */
- function i4_ajax_add_new_patient(){
-   global $current_i4_user;
-
-   $response = array();
-   // Security check
-   $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
-
-   if ( !$security_check ) {
-     die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
-   }
-
-   //Perform a permissions check just in case
-   if ( !user_can( $current_i4_user, 'manage_patients' ) ){
-     die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
-   }
-
-    echo json_encode($response);
-  die();
- }
 
  /**
   * Called when adding a new patient.

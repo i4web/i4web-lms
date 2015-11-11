@@ -25,7 +25,9 @@
 
      public function __construct(){
        add_shortcode( 'i4_manage_patients', array( $this, 'i4_lms_manage_patients_shortcode' ) );
-       add_action('wp_ajax_i4_lms_handle_update_patient_courses', 'i4_update_patient_courses');
+       add_action('wp_ajax_i4_lms_handle_update_patient_courses', array( $this, 'i4_update_patient_courses') );
+       add_action('wp_ajax_i4_lms_handle_add_new_patient', array( $this, 'i4_ajax_add_new_patient') );
+
      }
 
     /**
@@ -226,6 +228,47 @@
          echo $html;
      }
 
+    /**
+     * Called when adding a new patient.
+     *
+     */
+     function i4_ajax_add_new_patient(){
+         global $current_i4_user;
+
+         $response = array();
+         // Security check
+         $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
+
+         if ( !$security_check ) {
+             die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
+         }
+
+         //Perform a permissions check just in case
+         if ( !user_can( $current_i4_user, 'manage_patients' ) ){
+             die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
+         }
+
+         $patient_array = array(
+             'user_login'   => sanitize_text_field($_POST['patient_username']),
+             'user_email'   => sanitize_text_field($_POST['patient_email']),
+             'first_name'   => sanitize_text_field($_POST['patient_fname']),
+             'last_name'    => sanitize_text_field($_POST['patient_lname']),
+             'role'         => 'patient'
+         );
+
+         $patient_id = I4Web_LMS()->i4_manage_patients->i4_insert_patient( $patient_array );
+
+         if( !$patient_id){
+             $response['status'] = 409;
+         }
+         else{
+             $response['status'] = 200;
+             $response['patient_id'] = $patient_id;
+         }
+         echo json_encode($response);
+
+         die();
+     }
      /**
       * Generate the list elements from a list of courses
       */
@@ -278,6 +321,21 @@
                      sanitize_text_field($course)
                  )
              );
+         }
+     }
+
+     function i4_insert_patient( $patient_array ){
+
+         $patient_id = wp_insert_user( $patient_array );
+
+         if ( ! is_wp_error( $patient_id ) ) {
+             //Send off a new user notification to the admin and the new patient
+             wp_new_user_notification( $patient_id, $deprecated = null, $notify = 'both' );
+
+             return $patient_id;
+         }
+         else{
+             return false;
          }
      }
   }
