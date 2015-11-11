@@ -128,40 +128,55 @@ jQuery(document).ready(function($j)
     *
     */
     function verifyPatientInput(){
+
+        //set the emailCheck and usernameCheck to false before we do anything
         var emailCheck = false;
         var usernameCheck = false;
-        var nextButton = $j('#add-new-patient-submit');
 
-        nextButton.prop( "disabled", true );
+        //declare the patient's email and username variables
+        var i4_patient_email;
+        var i4_patient_username;
 
+        var nextButton = $j('#add-new-patient-submit'); //store the nextButton element
+
+        nextButton.prop( "disabled", true ); //lets disable the button immediately.
+
+        //the patient email field changes
         $j("#patient_email").change(function (e) {
 
-        var i4_patient_email = $j(this).val(); //retrieve the patients email
+            emailCheck = false; //assume the email is false everytime we begin this
+            nextButton.prop( "disabled", true ); //disable the button in case it was enabled previously
 
-        var data = {
-         action           : 'i4_lms_handle_check_email',
-         security         : wpcw_js_consts_fe.new_patient_nonce,
-         patient_email    : i4_patient_email
-        };
+            i4_patient_email = $j(this).val(); //retrieve the patients email
+
+            var data = {
+             action           : 'i4_lms_handle_check_email',
+             security         : wpcw_js_consts_fe.new_patient_nonce,
+             patient_email    : i4_patient_email
+            };
 
 
-        jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
-           {
-               $j('#i4_email_availability_status').html(response.icon);
-               //@TODO setup conditional logic based on response.status
-               if(response.status == 200 ){
-                    emailCheck = true;
-               }
-               else if( response.status == 409 ){
-                   nextButton.prop( "disabled", true );
-               }
-           }, 'json');
+            jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
+               {
+                   $j('#i4_email_availability_status').html(response.icon);
 
-        });
+                   if(response.status == 200 ){ //OK response
+                        emailCheck = true;
+                   }
 
+                   if(usernameCheck && emailCheck){
+                       nextButton.prop("disabled", false);
+                   }
+               }, 'json');
+
+        }); //end patient email field changes
+
+        //the patient username field changes
         $j("#patient_username").change(function (e) {
+            usernameCheck = false; // assume the username is false everytime this field is changed
+            nextButton.prop( "disabled", true ); //disable the button in case it was enabled previously
 
-            var i4_patient_username = $j(this).val(); //retrieve the patients email
+            i4_patient_username = $j(this).val(); //retrieve the patients email
 
             var data = {
                 action                 : 'i4_lms_handle_check_username',
@@ -169,25 +184,20 @@ jQuery(document).ready(function($j)
                 patient_username       : i4_patient_username
             };
 
-
             jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
             {
                 $j('#i4_username_availability_status').html(response.icon);
 
-                //@TODO setup conditional logic based on response.status
-                if(response.status == 200 ){
+                if(response.status == 200 ){ //OK response
                      usernameCheck = true;
                 }
-                else if( response.status == 409 ){
-                    nextButton.prop( "disabled", true );
+
+                if(usernameCheck && emailCheck){
+                    nextButton.prop("disabled", false);
                 }
             }, 'json');
 
         });
-
-        if (usernameCheck && emailCheck){
-            nextButton.prop( "disabled", false );
-        }
 
    }
 
