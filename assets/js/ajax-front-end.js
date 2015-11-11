@@ -123,51 +123,69 @@ jQuery(document).ready(function($j)
         quizHandler_navigateQuestion('next');
     });
 
-  /**
-   * Verifies patient information prior to allowing the new patient to be inserted
-   *
-   */
-   function verifyPatientInput(){
+   /**
+    * Verifies patient information prior to allowing the new patient to be inserted
+    *
+    */
+    function verifyPatientInput(){
 
-     $j("#patient_email").change(function (e) {
+        $j("#patient_email").change(function (e) {
 
-       var i4_patient_email = $j(this).val(); //retrieve the patients email
+        var i4_patient_email = $j(this).val(); //retrieve the patients email
 
+        var nextButton = $j('#add-new-patient-submit');
+        nextButton.prop( "disabled", true );
 
-       var data = {
+        var data = {
          action           : 'i4_lms_handle_check_email',
          security         : wpcw_js_consts_fe.new_patient_nonce,
          patient_email    : i4_patient_email
-       };
+        };
 
 
-       jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
+        jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
            {
                $j('#i4_email_availability_status').html(response.icon);
                //@TODO setup conditional logic based on response.status
+               if(response.status == 200 ){
+                   var emailCheck = true;
+               }
            }, 'json');
 
-     });
+        });
 
-     $j("#patient_username").change(function (e) {
+        $j("#patient_username").change(function (e) {
 
-       var i4_patient_username = $j(this).val(); //retrieve the patients email
+            var i4_patient_username = $j(this).val(); //retrieve the patients email
+
+            // Get the Mark as Completed button and disable it until the user completes the unit
+            var nextButton = $j('#add-new-patient-submit');
+            nextButton.prop( "disabled", true );
+
+            var data = {
+                action                 : 'i4_lms_handle_check_username',
+                security               : wpcw_js_consts_fe.new_patient_nonce,
+                patient_username       : i4_patient_username
+            };
 
 
-       var data = {
-         action                 : 'i4_lms_handle_check_username',
-         security               : wpcw_js_consts_fe.new_patient_nonce,
-         patient_username       : i4_patient_username
-       };
+            jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
+            {
+                $j('#i4_username_availability_status').html(response.icon);
 
+                //@TODO setup conditional logic based on response.status
+                if(response.status == 200 ){
+                   var usernameCheck = true;
+                }
+            }, 'json');
 
-       jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
-           {
-               $j('#i4_username_availability_status').html(response.icon);
-               //@TODO setup conditional logic based on response.status
-           }, 'json');
+        });
 
-     });
+        if (usernameCheck && emailCheck == true){
+            var nextButton = $j('#add-new-patient-submit');
+            nextButton.prop( "disabled", false );
+        }
+
    }
 
   /**
@@ -177,7 +195,6 @@ jQuery(document).ready(function($j)
    function i4_js_add_new_patient(){
 
     var newPatientForm = $j('#add-new-patient-form form');
-
 
     // The submit button.
        $j('#add-new-patient-submit').on('click', function(e)
