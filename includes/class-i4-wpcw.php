@@ -473,11 +473,9 @@
       $wpdb->show_errors();
       //SELECT `course_title` FROM `wp_wpcw_user_courses` LEFT JOIN wp_wpcw_courses ON wp_wpcw_user_courses.course_id=wp_wpcw_courses.course_id WHERE `user_id`= 3
 
-      $SQL = $wpdb->prepare( "SELECT `course_title` FROM $wpcwdb->user_courses LEFT JOIN $wpcwdb->courses ON $wpcwdb->user_courses.course_id=$wpcwdb->courses.course_id WHERE user_id = %d", $user_id );
-
-      $user_courses = $wpdb->get_results($SQL);
-
-      return $user_courses;
+      $SQL = $wpdb->prepare( "SELECT $wpcwdb->courses.course_id, $wpcwdb->courses.course_title FROM $wpcwdb->user_courses LEFT JOIN $wpcwdb->courses ON $wpcwdb->user_courses.course_id=$wpcwdb->courses.course_id WHERE user_id = %d", $user_id );
+      $results = $wpdb->get_results($SQL, OBJECT_K);
+      return $this->results_to_course_array($results);
     }
    /**
     * Return a list of courses assigned to the user
@@ -492,10 +490,8 @@
       $wpdb->show_errors();
 
       $SQL = "SELECT course_id, course_title FROM $course_table_name ORDER BY course_title";
-      $courses = $wpdb->get_results($SQL, OBJECT_K);
-
-      return $courses;
-
+      $results = $wpdb->get_results($SQL, OBJECT_K);
+      return $this->results_to_course_array($results);
     }
 
 
@@ -518,5 +514,13 @@
 
       return $unit_status;
     }
+
+   function results_to_course_array($query_results) {
+       $courses = array();
+       foreach ($query_results as $key => $course) {
+           $courses[$course->course_id] = $course->course_title;
+       }
+       return $courses;
+   }
 
  }

@@ -52,7 +52,10 @@
          <h3><?php echo get_the_title();?> <span><a href="#" data-reveal-id="new-patient-modal" class="button tiny blue">Add New Patient</a></h3>
        </div>
 
-       <?php $this->i4_new_patient_modal( 'new-patient-modal' );?>
+       <?php
+         $this->i4_new_patient_modal( 'new-patient-modal' );
+         $this->i4_modify_courses_modal(2, "flhospital");
+       ?>
 
        <table class="manage-patients-table">
          <thead>
@@ -195,9 +198,9 @@
       * @since 0.0.1
       * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
       */
-     function i4_modify_courses_modal(){
-         $patient_id = sanitize_text_field($_POST['patient_id']);
-         $patient_login = sanitize_text_field($_POST['patient_name']);
+     function i4_modify_courses_modal($patient_id, $patient_login){
+//         $patient_id = sanitize_text_field($_POST['patient_id']);
+//         $patient_login = sanitize_text_field($_POST['patient_name']);
 
          //retrieve the courses
          $all_courses =  I4Web_LMS()->i4_wpcw->i4_get_all_courses();
@@ -228,10 +231,8 @@
       */
      function i4_courses_to_list( $courses ) {
          $result = '';
-         foreach ($courses as $course){
-             //sanitize the course title
-             $course_title_sanitized = sanitize_title( $course->course_title );
-             $result .= '<li id="'.$course->ID.'">'.$course_title_sanitized.'</li>';
+         foreach ($courses as $index => $course_title){
+             $result .= '<li id="'.$index.'">'.$course_title.'</li>';
          }
          return $result;
      }
