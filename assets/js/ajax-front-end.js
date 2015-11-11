@@ -128,13 +128,15 @@ jQuery(document).ready(function($j)
     *
     */
     function verifyPatientInput(){
+        var emailCheck = false;
+        var usernameCheck = false;
+        var nextButton = $j('#add-new-patient-submit');
+
+        nextButton.prop( "disabled", true );
 
         $j("#patient_email").change(function (e) {
 
         var i4_patient_email = $j(this).val(); //retrieve the patients email
-
-        var nextButton = $j('#add-new-patient-submit');
-        nextButton.prop( "disabled", true );
 
         var data = {
          action           : 'i4_lms_handle_check_email',
@@ -148,7 +150,10 @@ jQuery(document).ready(function($j)
                $j('#i4_email_availability_status').html(response.icon);
                //@TODO setup conditional logic based on response.status
                if(response.status == 200 ){
-                   var emailCheck = true;
+                    emailCheck = true;
+               }
+               else if( response.status == 409 ){
+                   nextButton.prop( "disabled", true );
                }
            }, 'json');
 
@@ -157,10 +162,6 @@ jQuery(document).ready(function($j)
         $j("#patient_username").change(function (e) {
 
             var i4_patient_username = $j(this).val(); //retrieve the patients email
-
-            // Get the Mark as Completed button and disable it until the user completes the unit
-            var nextButton = $j('#add-new-patient-submit');
-            nextButton.prop( "disabled", true );
 
             var data = {
                 action                 : 'i4_lms_handle_check_username',
@@ -175,14 +176,16 @@ jQuery(document).ready(function($j)
 
                 //@TODO setup conditional logic based on response.status
                 if(response.status == 200 ){
-                   var usernameCheck = true;
+                     usernameCheck = true;
+                }
+                else if( response.status == 409 ){
+                    nextButton.prop( "disabled", true );
                 }
             }, 'json');
 
         });
 
-        if (usernameCheck && emailCheck == true){
-            var nextButton = $j('#add-new-patient-submit');
+        if (usernameCheck && emailCheck){
             nextButton.prop( "disabled", false );
         }
 
