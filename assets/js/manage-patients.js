@@ -15,9 +15,9 @@ jQuery( document ).ready( function( $ ) {
             var patientId = $("#patientId").val();
 
             var data = {
-                action: 'i4_lms_handle_update_patient_courses',
-                patient_id: patientId,
-                courses: courseIds
+                action      : 'i4_lms_handle_update_patient_courses',
+                patientId   : patientId,
+                courses     : courseIds
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {

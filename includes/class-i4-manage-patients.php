@@ -210,20 +210,22 @@
          $unassigned_courses = array_diff($all_courses, $user_courses);
 
          $html = '<div id="modify-courses-' .$patient_id. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-                    <input id="patientId" type="hidden" name="patientId" value="'.$patient_id.'"/>
-                    <h3 id="modalTitle">Manage Courses for <i>'.$patient_name .'</i> </h3>
-                    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-                    <ul id="available-courses" class="connectedSortable">
+                    <form action="" method="POST" id="modify-courses-form">
+                        <input id="patientId" type="hidden" name="patientId" value="'.$patient_id.'"/>
+                        <h3 id="modalTitle">Manage Courses for <i>'.$patient_name .'</i> </h3>
+                        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                        <ul id="available-courses" class="connectedSortable">
          ';
 
          $html .= $this->i4_courses_to_list($unassigned_courses);
-         $html .=   '</ul>
-                     <ul id="user-courses" class="connectedSortable">
+         $html .=      '</ul>
+                        <ul id="user-courses" class="connectedSortable">
          ';
          $html .= $this->i4_courses_to_list($user_courses);
-         $html .=   '</ul>
-                   <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
-               </div>
+         $html .=      '</ul>
+                        <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
+                    </form>
+                  </div>
          ';
          echo $html;
          die();
