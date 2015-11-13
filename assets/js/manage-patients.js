@@ -3,11 +3,6 @@ jQuery( document ).ready( function( $ ) {
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
-        $( "#available-courses, #user-courses" ).sortable({
-            connectWith: ".connectedSortable",
-            revert: true
-        }).disableSelection();
-
         $('#update-patient-courses-submit').on('click', function(e) {
             e.preventDefault();
 
@@ -59,6 +54,10 @@ jQuery( document ).ready( function( $ ) {
                       $.get(wpcw_js_consts_fe.ajaxurl, modalData, function(modalResponse) {
                           // Add the modify courses modal to the body
                           $('body').append(modalResponse);
+                          $( '#available-courses, #user-courses' ).sortable({
+                              connectWith: ".connectedSortable",
+                              revert: true
+                          }).disableSelection();
                           // Hide the new user modal
                           $('#new-patient-modal').foundation('reveal', 'close');
                           // Open the modify courses modal
