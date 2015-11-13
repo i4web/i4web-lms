@@ -27,7 +27,7 @@
        add_shortcode( 'i4_manage_patients', array( $this, 'i4_lms_manage_patients_shortcode' ) );
        add_action('wp_ajax_i4_lms_handle_update_patient_courses', array( $this, 'i4_update_patient_courses') );
        add_action('wp_ajax_i4_lms_handle_add_new_patient', array( $this, 'i4_ajax_add_new_patient') );
-       add_action('wp_ajax_i4_lms_get_modify_courses_modal', array( $this, 'i4_modify_courses_modal') );
+       add_action('wp_ajax_i4_lms_get_user_courses', array( $this, 'i4_get_user_courses') );
 
      }
 
@@ -57,6 +57,7 @@
 
        <?php
          $this->i4_new_patient_modal( 'new-patient-modal' );
+         $this->i4_modify_courses_modal();
        ?>
 
        <table class="manage-patients-table">
@@ -194,40 +195,37 @@
          return $content;
      }
 
+     function i4_modify_courses_modal() {
+         $html = '<div id="modify-courses-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                    <form action="" method="POST" id="modify-courses-form">
+                        <input id="patientId" type="hidden" name="patientId" value=""/>
+                        <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>
+                        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                        <ul id="available-courses" class="connectedSortable"></ul>
+                        <ul id="user-courses" class="connectedSortable"></ul>
+                        <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
+                    </form>
+                  </div>
+         ';
+         echo $html;
+     }
+
      /**
-      * Generate Manage Courses Modal
-      *
-      * @since 0.0.1
-      * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
+      * Get user course information
       */
-     function i4_modify_courses_modal(){
+     function i4_get_user_courses() {
+         $result = array();
          $patient_id = sanitize_text_field($_GET['patientId']);
-         $patient_name = sanitize_text_field($_GET['patientName']);
 
          //retrieve the courses
          $all_courses =  I4Web_LMS()->i4_wpcw->i4_get_all_courses();
          $user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
          $unassigned_courses = array_diff($all_courses, $user_courses);
 
-         $html = '<div id="modify-courses-' .$patient_id. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-                    <form action="" method="POST" id="modify-courses-form">
-                        <input id="patientId" type="hidden" name="patientId" value="'.$patient_id.'"/>
-                        <h3 id="modalTitle">Manage Courses for <i>'.$patient_name .'</i> </h3>
-                        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-                        <ul id="available-courses" class="connectedSortable">
-         ';
+         $result['assigned_courses'] = $user_courses;
+         $result['unassigned_courses'] = $unassigned_courses;
 
-         $html .= $this->i4_courses_to_list($unassigned_courses);
-         $html .=      '</ul>
-                        <ul id="user-courses" class="connectedSortable">
-         ';
-         $html .= $this->i4_courses_to_list($user_courses);
-         $html .=      '</ul>
-                        <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
-                    </form>
-                  </div>
-         ';
-         echo $html;
+         echo json_encode($result);
          die();
      }
 
@@ -275,23 +273,12 @@
 
          die();
      }
-     /**
-      * Generate the list elements from a list of courses
-      */
-     function i4_courses_to_list( $courses ) {
-         $result = '';
-         foreach ($courses as $index => $course_title){
-             $result .= '<li id="'.$index.'">'.$course_title.'</li>';
-         }
-         return $result;
-     }
 
      /**
       * @param $patient_id - The ID of the patient whose courses are being modified
       * @param $new_user_courses - The list of courses that the user is assigned after the modifications in the modal
       */
      function i4_update_patient_courses() {
-         $response = array();
          $patient_id = sanitize_text_field($_POST['patientId']);
          $new_user_courses = $_POST['courses'];
 
@@ -302,8 +289,6 @@
          $this->add_courses($patient_id, $added_courses);
          $this->remove_courses($patient_id, $removed_courses);
 
-         $response['status'] = 200;
-         echo json_encode($response);
          die();
      }
 

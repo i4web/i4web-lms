@@ -3,6 +3,11 @@ jQuery( document ).ready( function( $ ) {
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
+        $( '#available-courses, #user-courses' ).sortable({
+            connectWith: ".connectedSortable",
+            revert: true
+        }).disableSelection();
+
         $('#update-patient-courses-submit').on('click', function(e) {
             e.preventDefault();
 
@@ -15,12 +20,16 @@ jQuery( document ).ready( function( $ ) {
                 courses     : courseIds
             };
 
-            $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
-                if (response.status == 200) {
-                    var modifyCoursesModal = $('#modify-courses-' + patientId);
-                    modifyCoursesModal.foundation('reveal', 'close');
-                    modifyCoursesModal.remove();
-                }
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
+                $('#modify-courses-modal').foundation('reveal', 'close');
+
+                // Unset the patient ID and name in the modal
+                $('#patientId').removeAttr('value');
+                $('#modifyCoursesTitle').children('i').empty();
+
+                // Unset the courses in the sortable
+                $('#available-courses').empty();
+                $('#user-courses').empty();
             });
         });
 
@@ -46,26 +55,42 @@ jQuery( document ).ready( function( $ ) {
             $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
                   if( response.status == 200 ){
                       var patientId = response.patient_id;
-                      var modalData = {
-                          action        : 'i4_lms_get_modify_courses_modal',
-                          patientId     : patientId,
-                          patientName   : response.patient_name
+                      var coursesData = {
+                          action        : 'i4_lms_get_user_courses',
+                          patientId     : patientId
                       };
-                      $.get(wpcw_js_consts_fe.ajaxurl, modalData, function(modalResponse) {
-                          // Add the modify courses modal to the body
-                          $('body').append(modalResponse);
-                          $( '#available-courses, #user-courses' ).sortable({
-                              connectWith: ".connectedSortable",
-                              revert: true
-                          }).disableSelection();
+                      $.get(wpcw_js_consts_fe.ajaxurl, coursesData, function(coursesResponse) {
+                          // Set the patient ID and name in the modal
+                          $('#patientId').val(patientId);
+                          $('#modifyCoursesTitle').children('i').html(i4_patient_firstname + " " + i4_patient_lastname);
+
+                          // Set the courses in the sortables
+                          var unassignedCourses = $('#available-courses');
+                          $.each(coursesResponse.unassigned_courses, function(id, name) {
+                              var li = courseToListItem(id, name);
+                              unassignedCourses.append(li);
+                          });
+
+                          var assignedCourses = $('#user-courses');
+                          $.each(coursesResponse.assigned_courses, function(id, name) {
+                              var li = courseToListItem(id, name);
+                              assignedCourses.append(li);
+                          });
+
                           // Hide the new user modal
                           $('#new-patient-modal').foundation('reveal', 'close');
                           // Open the modify courses modal
-                          $('#modify-courses-' + patientId).foundation('reveal', 'open');
-                      });
+                          $('#modify-courses-modal').foundation('reveal', 'open');
+                      }, 'json');
                   }
               }, 'json');
         });
+
+        function courseToListItem(id, name) {
+            var li = document.createElement("li");
+            $(li).attr('id', id).text(name);
+            return li;
+        }
     });
 
    /**
