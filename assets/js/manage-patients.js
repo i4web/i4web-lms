@@ -8,75 +8,65 @@ jQuery( document ).ready( function( $ ) {
             revert: true
         }).disableSelection();
 
-        $("#update-patient-courses-submit").on('click', function(e) {
+        $('#update-patient-courses-submit').on('click', function(e) {
             e.preventDefault();
 
-            var patientId = $("#patientId").val();
             var courseIds = $("#user-courses").sortable("toArray");
+            var patientId = $("#patientId").val();
+
             var data = {
                 action: 'i4_lms_handle_update_patient_courses',
                 patient_id: patientId,
                 courses: courseIds
             };
 
-            $.post(wpcw_js_consts_fe.ajaxurl, data);
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
+                if (response.status == 200) {
+                    var modifyCoursesModal = $('#modify-courses-' + patientId);
+                    modifyCoursesModal.foundation('reveal', 'close');
+                    modifyCoursesModal.remove();
+                }
+            });
         });
 
-        var newPatientForm = $j('#add-new-patient-form form');
-        var newPatientId;
-
-        // The submit button.
+        // The new user submit button.
         $('#add-new-patient-submit').on('click', function(e){
             e.preventDefault();
-            $('#new-patient-modal').foundation('reveal', 'close');
 
-            var i4_patient_email = $j('#patient_email').val(); //retrieve the patients email
-            var i4_patient_username = $j('#patient_username').val(); //retrieve the patients email
-            var i4_patient_firstname = $j('#patient_fname').val();
-            var i4_patient_lastname = $j('#patient_lname').val();
+            var i4_patient_email = $('#patient_email').val(); //retrieve the patients email
+            var i4_patient_username = $('#patient_username').val(); //retrieve the patients email
+            var i4_patient_firstname = $('#patient_fname').val();
+            var i4_patient_lastname = $('#patient_lname').val();
 
-        // Trigger AJAX request to allow the user to retake the quiz.
-          var data = {
-            action              : 'i4_lms_handle_add_new_patient',
-            security            : wpcw_js_consts_fe.new_patient_nonce,
-            patient_email       : i4_patient_email,
-            patient_username    : i4_patient_username,
-            patient_fname       : i4_patient_firstname,
-            patient_lname       : i4_patient_lastname
-
+            // Trigger AJAX request to allow the user to retake the quiz.
+            var data = {
+              action              : 'i4_lms_handle_add_new_patient',
+              security            : wpcw_js_consts_fe.new_patient_nonce,
+              patient_email       : i4_patient_email,
+              patient_username    : i4_patient_username,
+              patient_fname       : i4_patient_firstname,
+              patient_lname       : i4_patient_lastname
             };
 
-        jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function(response)
-          {
-              if( response.status == 200 ){
-                  newPatientId = response.patient_id;
-                  $('#modify-courses-2').foundation('reveal', 'open');
-                  alert(newPatientId);
-              }
-
-          }, 'json');
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
+                  if( response.status == 200 ){
+                      var patientId = response.patient_id;
+                      var modalData = {
+                          action        : 'i4_lms_get_modify_courses_modal',
+                          patientId     : patientId,
+                          patientName   : response.patient_name
+                      };
+                      $.get(wpcw_js_consts_fe.ajaxurl, modalData, function(modalResponse) {
+                          // Add the modify courses modal to the body
+                          $('body').append(modalResponse);
+                          // Hide the new user modal
+                          $('#new-patient-modal').foundation('reveal', 'close');
+                          // Open the modify courses modal
+                          $('#modify-courses-' + patientId).foundation('reveal', 'open');
+                      });
+                  }
+              }, 'json');
         });
-
-
-        //$('#add-new-patient-submit').on('click', function() {
-        //    $('#new-patient-modal').foundation('reveal', 'close');
-
-            // Create new patient
-            //var patientId = -1;
-            //var data = {
-            //    action: 'i4_lms_handle_create_patient',
-            //    email: ...,
-            //    name: ...,
-            //    ...
-            //};
-            //$.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
-            //    if (response is success) {
-            //        // Get patient ID and open modal
-            //        patientId = response.patientId;
-            //        $('#modify-courses-2').foundation('reveal', 'open');
-            //    }
-            //});
-        //});
     });
 
    /**

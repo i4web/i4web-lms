@@ -27,6 +27,7 @@
        add_shortcode( 'i4_manage_patients', array( $this, 'i4_lms_manage_patients_shortcode' ) );
        add_action('wp_ajax_i4_lms_handle_update_patient_courses', array( $this, 'i4_update_patient_courses') );
        add_action('wp_ajax_i4_lms_handle_add_new_patient', array( $this, 'i4_ajax_add_new_patient') );
+       add_action('wp_ajax_i4_lms_get_modify_courses_modal', array( $this, 'i4_modify_courses_modal') );
 
      }
 
@@ -56,7 +57,6 @@
 
        <?php
          $this->i4_new_patient_modal( 'new-patient-modal' );
-         $this->i4_modify_courses_modal(2, "flhospital");
        ?>
 
        <table class="manage-patients-table">
@@ -178,14 +178,14 @@
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">
-                          <input type="hidden" name="action" value="add-new-patient"/>
-                          <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
+                            <input type="hidden" name="action" value="add-new-patient"/>
+                            <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                         </form>
                         <div class="row">
                           <div class="large-12 columns">
-                          <div id="i4_new_patient_message"></div>
+                            <div id="i4_new_patient_message"></div>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                     </div>
@@ -200,9 +200,9 @@
       * @since 0.0.1
       * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
       */
-     function i4_modify_courses_modal($patient_id, $patient_login){
-//         $patient_id = sanitize_text_field($_POST['patient_id']);
-//         $patient_login = sanitize_text_field($_POST['patient_name']);
+     function i4_modify_courses_modal(){
+         $patient_id = sanitize_text_field($_GET['patientId']);
+         $patient_name = sanitize_text_field($_GET['patientName']);
 
          //retrieve the courses
          $all_courses =  I4Web_LMS()->i4_wpcw->i4_get_all_courses();
@@ -211,7 +211,7 @@
 
          $html = '<div id="modify-courses-' .$patient_id. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                     <input id="patientId" type="hidden" name="patientId" value="'.$patient_id.'"/>
-                    <h3 id="modalTitle">Manage Courses for <i>'.$patient_login .'</i> </h3>
+                    <h3 id="modalTitle">Manage Courses for <i>'.$patient_name .'</i> </h3>
                     <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                     <ul id="available-courses" class="connectedSortable">
          ';
@@ -226,6 +226,7 @@
                </div>
          ';
          echo $html;
+         die();
      }
 
     /**
@@ -248,22 +249,25 @@
              die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
          }
 
+         $first_name = $_POST['patient_fname'];
+         $last_name = $_POST['patient_lname'];
          $patient_array = array(
              'user_login'   => sanitize_text_field($_POST['patient_username']),
              'user_email'   => sanitize_text_field($_POST['patient_email']),
-             'first_name'   => sanitize_text_field($_POST['patient_fname']),
-             'last_name'    => sanitize_text_field($_POST['patient_lname']),
+             'first_name'   => sanitize_text_field($first_name),
+             'last_name'    => sanitize_text_field($last_name),
              'role'         => 'patient'
          );
 
          $patient_id = I4Web_LMS()->i4_manage_patients->i4_insert_patient( $patient_array );
 
-         if( !$patient_id){
+         if (!$patient_id){
              $response['status'] = 409;
          }
-         else{
+         else {
              $response['status'] = 200;
              $response['patient_id'] = $patient_id;
+             $response['patient_name'] = $first_name . " " . $last_name;
          }
          echo json_encode($response);
 
@@ -285,6 +289,7 @@
       * @param $new_user_courses - The list of courses that the user is assigned after the modifications in the modal
       */
      function i4_update_patient_courses() {
+         $response = array();
          $patient_id = sanitize_text_field($_POST['patientId']);
          $new_user_courses = $_POST['courses'];
 
@@ -294,6 +299,10 @@
 
          $this->add_courses($patient_id, $added_courses);
          $this->remove_courses($patient_id, $removed_courses);
+
+         $response['status'] = 200;
+         echo json_encode($response);
+         die();
      }
 
      function add_courses($patient_id, $courses) {
