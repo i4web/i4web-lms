@@ -517,8 +517,8 @@
 
    function results_to_course_array($query_results) {
        $courses = array();
-       foreach ($query_results as $key => $course) {
-           $courses[$course->course_id] = $course->course_title;
+       foreach ($query_results as $id => $course) {
+           $courses[$id] = $course->course_title;
        }
        return $courses;
    }
