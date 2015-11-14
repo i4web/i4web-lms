@@ -27,6 +27,7 @@
        add_shortcode( 'i4_manage_patients', array( $this, 'i4_lms_manage_patients_shortcode' ) );
        add_action('wp_ajax_i4_lms_handle_update_patient_courses', array( $this, 'i4_update_patient_courses') );
        add_action('wp_ajax_i4_lms_handle_add_new_patient', array( $this, 'i4_ajax_add_new_patient') );
+       add_action('wp_ajax_i4_lms_get_user_courses', array( $this, 'i4_get_user_courses') );
 
      }
 
@@ -56,7 +57,7 @@
 
        <?php
          $this->i4_new_patient_modal( 'new-patient-modal' );
-         $this->i4_modify_courses_modal(2, "flhospital");
+         $this->i4_modify_courses_modal();
        ?>
 
        <table class="manage-patients-table">
@@ -72,9 +73,9 @@
            <?php foreach($patients as $patient){ //loop through each of the patients
               $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
              ?>
-             <tr>
-               <td><?php echo $patient->user_login;?></td>
-               <td><?php echo $patient->user_email;?></td>
+             <tr id="<?php echo $patient->ID ?>">
+               <td class="patient-name"><?php echo $patient->user_nicename;?></td>
+               <td class="patient-email"><?php echo $patient->user_email;?></td>
                <td>
                  <?php foreach($patient_courses as $patient_course){
                    echo $patient_course->course_title .'<br>';
@@ -82,7 +83,7 @@
                </td>
                <td>
                  <span class="manage-patient-action"><a href="#" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" title="Modify Courses" data-reveal-id="<?php echo 'modify-courses-' .$patient->ID;?>"><i class="fa fa-list"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" title="Modify Courses"><i class="fa fa-list"></i></a></span>
                  <span class="manage-patient-action"><a href="#" title="Remove Patient"><i class="fa fa-times"></i></a>
                </td>
              </tr>
@@ -178,14 +179,14 @@
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">
-                          <input type="hidden" name="action" value="add-new-patient"/>
-                          <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
+                            <input type="hidden" name="action" value="add-new-patient"/>
+                            <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                         </form>
                         <div class="row">
                           <div class="large-12 columns">
-                          <div id="i4_new_patient_message"></div>
+                            <div id="i4_new_patient_message"></div>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                     </div>
@@ -194,38 +195,46 @@
          return $content;
      }
 
+     function i4_modify_courses_modal() {
+         $html = '<div id="modify-courses-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                    <form action="" method="POST" id="modify-courses-form">
+                        <input id="patientId" type="hidden" name="patientId" value=""/>
+                        <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>
+                        <a class="close-reveal-modal" aria-label="Close">&#215;</a>
+                        <div class="courses-table">
+                            <div class="courses-row">
+                                <div class="courses-header">Available Courses</div>
+                                <div class="courses-header">Assigned Courses</div>
+                            </div>
+                            <div class="courses-row">
+                                <ul id="available-courses" class="connectedSortable"></ul>
+                                <ul id="user-courses" class="connectedSortable"></ul>
+                            </div>
+                        </div>
+                        <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
+                    </form>
+                  </div>
+         ';
+         echo $html;
+     }
+
      /**
-      * Generate Manage Courses Modal
-      *
-      * @since 0.0.1
-      * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
+      * Get user course information
       */
-     function i4_modify_courses_modal($patient_id, $patient_login){
-//         $patient_id = sanitize_text_field($_POST['patient_id']);
-//         $patient_login = sanitize_text_field($_POST['patient_name']);
+     function i4_get_user_courses() {
+         $result = array();
+         $patient_id = sanitize_text_field($_GET['patientId']);
 
          //retrieve the courses
          $all_courses =  I4Web_LMS()->i4_wpcw->i4_get_all_courses();
          $user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
          $unassigned_courses = array_diff($all_courses, $user_courses);
 
-         $html = '<div id="modify-courses-' .$patient_id. '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-                    <input id="patientId" type="hidden" name="patientId" value="'.$patient_id.'"/>
-                    <h3 id="modalTitle">Manage Courses for <i>'.$patient_login .'</i> </h3>
-                    <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-                    <ul id="available-courses" class="connectedSortable">
-         ';
+         $result['assigned_courses'] = $user_courses;
+         $result['unassigned_courses'] = $unassigned_courses;
 
-         $html .= $this->i4_courses_to_list($unassigned_courses);
-         $html .=   '</ul>
-                     <ul id="user-courses" class="connectedSortable">
-         ';
-         $html .= $this->i4_courses_to_list($user_courses);
-         $html .=   '</ul>
-                   <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
-               </div>
-         ';
-         echo $html;
+         echo json_encode($result);
+         die();
      }
 
     /**
@@ -248,36 +257,29 @@
              die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
          }
 
+         $first_name = sanitize_text_field($_POST['patient_fname']);
+         $last_name = sanitize_text_field($_POST['patient_lname']);
+         $user_nicename = $first_name . " " . $last_name;
          $patient_array = array(
              'user_login'   => sanitize_text_field($_POST['patient_username']),
              'user_email'   => sanitize_text_field($_POST['patient_email']),
-             'first_name'   => sanitize_text_field($_POST['patient_fname']),
-             'last_name'    => sanitize_text_field($_POST['patient_lname']),
+             'user_nicename'   => $user_nicename,
              'role'         => 'patient'
          );
 
          $patient_id = I4Web_LMS()->i4_manage_patients->i4_insert_patient( $patient_array );
 
-         if( !$patient_id){
+         if (!$patient_id){
              $response['status'] = 409;
          }
-         else{
+         else {
              $response['status'] = 200;
              $response['patient_id'] = $patient_id;
+             $response['patient_name'] = $user_nicename;
          }
          echo json_encode($response);
 
          die();
-     }
-     /**
-      * Generate the list elements from a list of courses
-      */
-     function i4_courses_to_list( $courses ) {
-         $result = '';
-         foreach ($courses as $index => $course_title){
-             $result .= '<li id="'.$index.'">'.$course_title.'</li>';
-         }
-         return $result;
      }
 
      /**
@@ -286,25 +288,32 @@
       */
      function i4_update_patient_courses() {
          $patient_id = sanitize_text_field($_POST['patientId']);
-         $new_user_courses = $_POST['courses'];
+         $new_user_courses = array_flip($_POST['courses']);
 
          $current_user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
-         $added_courses = array_diff($new_user_courses, $current_user_courses);
-         $removed_courses = array_diff($current_user_courses, $new_user_courses);
+         if (count($new_user_courses) > 0) {
+             $added_courses = array_diff_key($new_user_courses, $current_user_courses);
+             $removed_courses = array_diff_key($current_user_courses, $new_user_courses);
 
-         $this->add_courses($patient_id, $added_courses);
-         $this->remove_courses($patient_id, $removed_courses);
+             $this->add_courses($patient_id, $added_courses);
+             $this->remove_courses($patient_id, $removed_courses);
+         }
+         else {
+             $this->remove_courses($patient_id, $current_user_courses);
+         }
+
+         die();
      }
 
      function add_courses($patient_id, $courses) {
          global $wpdb;
          $enrollment_date = date('Y-m-d H:i:s');
-         foreach($courses as $course) {
+         foreach($courses as $id => $course) {
              $wpdb->query(
                  $wpdb->prepare(
                      "INSERT INTO wp_wpcw_user_courses(user_id, course_id, course_enrolment_date) VALUES(%d, %d, %s)",
                      $patient_id,
-                     sanitize_text_field($course),
+                     sanitize_text_field($id),
                      $enrollment_date
                  )
              );
@@ -313,12 +322,12 @@
 
      function remove_courses($patient_id, $courses) {
          global $wpdb;
-         foreach($courses as $course) {
+         foreach($courses as $id => $course) {
              $wpdb->query(
                  $wpdb->prepare(
                      "DELETE FROM wp_wpcw_user_courses WHERE user_id = %d AND course_id = %d",
                      $patient_id,
-                     sanitize_text_field($course)
+                     sanitize_text_field($id)
                  )
              );
          }

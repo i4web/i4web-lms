@@ -1,0 +1,24 @@
+.courses-table {
+    display: table;
+    width: 100%;
+}
+
+.courses-row {
+    display: table-row;
+    width: 100%;
+}
+
+.courses-header {
+    display: table-cell;
+}
+
+ul.connectedSortable {
+    border: 1px solid black;
+    width: 50%;
+    list-style-type: none;
+    display: table-cell;
+}
+
+ul.connectedSortable li {
+    list-style-type: none;
+}
