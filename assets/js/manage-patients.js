@@ -10,7 +10,7 @@ jQuery( document ).ready( function( $ ) {
 
         $('.fa-list').on('click', function() {
             var patientId = $(this).closest('tr').attr('id');
-            var patientName = $(this).closest('.patient-name').text();
+            var patientName = $(this).closest('td').siblings('.patient-name').text();
             showModifyCoursesModal(patientId, patientName);
         });
 
@@ -28,14 +28,6 @@ jQuery( document ).ready( function( $ ) {
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 $('#modify-courses-modal').foundation('reveal', 'close');
-
-                // Unset the patient ID and name in the modal
-                $('#patientId').removeAttr('value');
-                $('#modifyCoursesTitle').children('i').empty();
-
-                // Unset the courses in the sortable
-                $('#available-courses').empty();
-                $('#user-courses').empty();
             });
         });
 
@@ -70,7 +62,19 @@ jQuery( document ).ready( function( $ ) {
               }, 'json');
         });
 
+        function clearModifyCoursesModal() {
+            // Unset the patient ID and name in the modal
+            $('#patientId').removeAttr('value');
+            $('#modifyCoursesTitle').children('i').empty();
+
+            // Unset the courses in the sortable
+            $('#available-courses').empty();
+            $('#user-courses').empty();
+        }
+
         function showModifyCoursesModal(patientId, patientName) {
+            clearModifyCoursesModal();
+
             var data = {
                 action        : 'i4_lms_get_user_courses',
                 patientId     : patientId
