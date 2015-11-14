@@ -82,9 +82,9 @@
                  }?>
                </td>
                <td>
-                 <span class="manage-patient-action"><a href="#" id="edit-patient" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" id="modify-courses" title="Modify Courses"><i class="fa fa-list"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" id="remove-patient" title="Remove Patient"><i class="fa fa-times"></i></a>
+                 <span class="manage-patient-action"><a href="#" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" title="Modify Courses"><i class="fa fa-list"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" title="Remove Patient"><i class="fa fa-times"></i></a>
                </td>
              </tr>
 

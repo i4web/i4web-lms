@@ -8,10 +8,23 @@ jQuery( document ).ready( function( $ ) {
             revert: true
         }).disableSelection();
 
+        // WHen clicking the modify courses button
         $('.fa-list').on('click', function() {
             var patientId = $(this).closest('tr').attr('id');
             var patientName = $(this).closest('td').siblings('.patient-name').text();
             showModifyCoursesModal(patientId, patientName);
+        });
+
+        // When clicking the edit patient button
+        $('.fa-pencil').on('click', function() {
+            var patientId = $(this).closest('tr').attr('id');
+            //editPatient(patientId);
+        });
+
+        // When clicking the remove patient button
+        $('.fa-times').on('click', function() {
+            var patientId = $(this).closest('tr').attr('id');
+            //removePatient(patientId);
         });
 
         $('#update-patient-courses-submit').on('click', function(e) {
