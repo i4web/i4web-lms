@@ -282,14 +282,19 @@
       */
      function i4_update_patient_courses() {
          $patient_id = sanitize_text_field($_POST['patientId']);
-         $new_user_courses = $_POST['courses'];
+         $new_user_courses = array_flip($_POST['courses']);
 
          $current_user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
-         $added_courses = array_diff($new_user_courses, $current_user_courses);
-         $removed_courses = array_diff($current_user_courses, $new_user_courses);
+         if (count($new_user_courses) > 0) {
+             $added_courses = array_diff_key($new_user_courses, $current_user_courses);
+             $removed_courses = array_diff_key($current_user_courses, $new_user_courses);
 
-         $this->add_courses($patient_id, $added_courses);
-         $this->remove_courses($patient_id, $removed_courses);
+             $this->add_courses($patient_id, $added_courses);
+             $this->remove_courses($patient_id, $removed_courses);
+         }
+         else {
+             $this->remove_courses($patient_id, $current_user_courses);
+         }
 
          die();
      }
@@ -297,12 +302,12 @@
      function add_courses($patient_id, $courses) {
          global $wpdb;
          $enrollment_date = date('Y-m-d H:i:s');
-         foreach($courses as $course) {
+         foreach($courses as $id => $course) {
              $wpdb->query(
                  $wpdb->prepare(
                      "INSERT INTO wp_wpcw_user_courses(user_id, course_id, course_enrolment_date) VALUES(%d, %d, %s)",
                      $patient_id,
-                     sanitize_text_field($course),
+                     sanitize_text_field($id),
                      $enrollment_date
                  )
              );
@@ -311,12 +316,12 @@
 
      function remove_courses($patient_id, $courses) {
          global $wpdb;
-         foreach($courses as $course) {
+         foreach($courses as $id => $course) {
              $wpdb->query(
                  $wpdb->prepare(
                      "DELETE FROM wp_wpcw_user_courses WHERE user_id = %d AND course_id = %d",
                      $patient_id,
-                     sanitize_text_field($course)
+                     sanitize_text_field($id)
                  )
              );
          }
