@@ -202,8 +202,14 @@
                         <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>
                         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                         <div class="courses-table">
-                            <ul id="available-courses" class="connectedSortable"></ul>
-                            <ul id="user-courses" class="connectedSortable"></ul>
+                            <div class="courses-row">
+                                <div class="courses-header">Available Courses</div>
+                                <div class="courses-header">Assigned Courses</div>
+                            </div>
+                            <div class="courses-row">
+                                <ul id="available-courses" class="connectedSortable"></ul>
+                                <ul id="user-courses" class="connectedSortable"></ul>
+                            </div>
                         </div>
                         <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
                     </form>
