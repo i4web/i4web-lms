@@ -73,18 +73,18 @@
            <?php foreach($patients as $patient){ //loop through each of the patients
               $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
              ?>
-             <tr>
-               <td><?php echo $patient->user_login;?></td>
-               <td><?php echo $patient->user_email;?></td>
+             <tr id="<?php echo $patient->ID ?>">
+               <td class="patient-name"><?php echo $patient->user_nicename;?></td>
+               <td class="patient-email"><?php echo $patient->user_email;?></td>
                <td>
                  <?php foreach($patient_courses as $patient_course){
                    echo $patient_course->course_title .'<br>';
                  }?>
                </td>
                <td>
-                 <span class="manage-patient-action"><a href="#" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" title="Modify Courses" data-reveal-id="<?php echo 'modify-courses-' .$patient->ID;?>"><i class="fa fa-list"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" title="Remove Patient"><i class="fa fa-times"></i></a>
+                 <span class="manage-patient-action"><a href="#" id="edit-patient" title="Edit Patient"><i class="fa fa-pencil"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" id="modify-courses" title="Modify Courses"><i class="fa fa-list"></i></a></span>
+                 <span class="manage-patient-action"><a href="#" id="remove-patient" title="Remove Patient"><i class="fa fa-times"></i></a>
                </td>
              </tr>
 
@@ -249,13 +249,13 @@
              die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
          }
 
-         $first_name = $_POST['patient_fname'];
-         $last_name = $_POST['patient_lname'];
+         $first_name = sanitize_text_field($_POST['patient_fname']);
+         $last_name = sanitize_text_field($_POST['patient_lname']);
+         $user_nicename = $first_name . " " . $last_name;
          $patient_array = array(
              'user_login'   => sanitize_text_field($_POST['patient_username']),
              'user_email'   => sanitize_text_field($_POST['patient_email']),
-             'first_name'   => sanitize_text_field($first_name),
-             'last_name'    => sanitize_text_field($last_name),
+             'user_nicename'   => $user_nicename,
              'role'         => 'patient'
          );
 
@@ -267,7 +267,7 @@
          else {
              $response['status'] = 200;
              $response['patient_id'] = $patient_id;
-             $response['patient_name'] = $first_name . " " . $last_name;
+             $response['patient_name'] = $user_nicename;
          }
          echo json_encode($response);
 
