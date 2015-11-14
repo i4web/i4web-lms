@@ -201,8 +201,10 @@
                         <input id="patientId" type="hidden" name="patientId" value=""/>
                         <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>
                         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
-                        <ul id="available-courses" class="connectedSortable"></ul>
-                        <ul id="user-courses" class="connectedSortable"></ul>
+                        <div class="courses-table">
+                            <ul id="available-courses" class="connectedSortable"></ul>
+                            <ul id="user-courses" class="connectedSortable"></ul>
+                        </div>
                         <button class="button tiny blue" type="submit" id="update-patient-courses-submit">Done</button>
                     </form>
                   </div>
