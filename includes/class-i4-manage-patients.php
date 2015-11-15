@@ -80,8 +80,8 @@ class I4Web_LMS_Manage_Patients {
                     <td class="patient-name"><?php echo $patient->user_nicename; ?></td>
                     <td class="patient-email"><?php echo $patient->user_email; ?></td>
                     <td>
-                        <?php foreach ($patient_courses as $patient_course) {
-                            echo $patient_course->course_title . '<br>';
+                        <?php foreach ($patient_courses as $course_id => $course_title) {
+                            echo $course_title . '<br>';
                         } ?>
                     </td>
                     <td>
