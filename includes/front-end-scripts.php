@@ -19,7 +19,8 @@ function i4_lms_scripts() {
     wp_enqueue_script('vimeo-froogaloop', I4_PLUGIN_URL . 'assets/js/froogaloop.min.js', array(), '2.0', false);
     wp_enqueue_script('i4-main-js', I4_PLUGIN_URL . 'assets/js/main.js', array('jquery'), '0.0.1', true);
     wp_enqueue_script('i4-course-js', I4_PLUGIN_URL . 'assets/js/course.js', array('jquery', 'vimeo-froogaloop', 'i4-ajax-front-end'), '0.0.1', true);
-    wp_enqueue_script('i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable'), '0.0.1', true);
+    wp_enqueue_script('confirm-with-reveal', I4_PLUGIN_URL . 'assets/js/confirm-with-reveal.min.js', array('jquery'), '0.0.1', true);
+    wp_enqueue_script('i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable', 'confirm-with-reveal'), '0.0.1', true);
     wp_enqueue_script('password-strength-meter');
     wp_dequeue_script('wpcw-frontend');
 
@@ -63,7 +64,7 @@ function i4_lms_scripts() {
 }
 
 function i4_lms_styles() {
-    wp_enqueue_style('i4-manage-patients-css', I4_PLUGIN_URL . 'assets/css/manage-patients.css', false, '0.0.1');
+    wp_enqueue_style('i4-manage-patients-css', I4_PLUGIN_URL . 'assets/css/manage-patients.css', false, '0.0.2');
 }
 
 add_action('wp_enqueue_scripts', 'i4_lms_scripts');

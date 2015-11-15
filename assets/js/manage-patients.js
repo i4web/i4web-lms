@@ -1,5 +1,11 @@
 jQuery(document).ready(function ($) {
-    $(function () {
+    $(function() {
+        $(document).confirmWithReveal({
+            ok_class: 'button blue confirm-button',
+            cancel_class: 'button secondary cancel-button',
+            footer_class: 'confirm-buttons'
+        });
+
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
@@ -24,8 +30,25 @@ jQuery(document).ready(function ($) {
 
         // When clicking the remove patient button
         $(managePatientsTable).on('click', '.fa-times', function () {
+            var patientName = $(this).closest('td').siblings('.patient-name').text();
+            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove <i>' + patientName + '</i>?"}');
+        });
+
+        // Handle the event where the user has confirmed the deletion of the patient
+        $('.remove-patient').on('confirm.reveal', function() {
             var patientId = $(this).closest('tr').attr('id');
-            //removePatient(patientId);
+            var data = {
+                action: 'i4_lms_remove_patient',
+                patientId: patientId
+            };
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
+                // Remove the confirm modal
+                $('.reveal-modal').remove();
+                $('.reveal-modal-bg').hide();
+
+                // Remove the patient
+                $('#' + patientId).remove();
+            });
         });
 
         $('#update-patient-courses-submit').on('click', function (e) {
@@ -41,8 +64,8 @@ jQuery(document).ready(function ($) {
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function () {
-                var patientCourses = $('#' + patientId).find('.patient-courses');
-                patientCourses.empty();
+//                var patientCourses = $('#' + patientId).find('.patient-courses');
+//                patientCourses.empty();
                 $('#modify-courses-modal').foundation('reveal', 'close');
             });
         });
