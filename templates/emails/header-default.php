@@ -3,27 +3,29 @@
  * Default Email Header
  * Taken from Easy Digital Downloads
  *
- * @author 		i-4Web
- * @package 	I4Web_LMS
+ * @author        i-4Web
+ * @package    I4Web_LMS
  * @version   1.0.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) {
+    exit;
+} // Exit if accessed directly
 
 //Retrieve the Branding Settings
 
 $email_branding = I4Web_LMS()->i4_custom_login_page->retrieve_custom_settings();
-$email_logo = esc_attr( $email_branding['i4-lms-login-logo'] );
-$email_bg = esc_attr( $email_branding['i4-lms-secondary-color'] );
-$email_font_color = esc_attr( $email_branding['i4-lms-primary-color'] );
+$email_logo = esc_attr($email_branding['i4-lms-login-logo']);
+$email_bg = esc_attr($email_branding['i4-lms-secondary-color']);
+$email_font_color = esc_attr($email_branding['i4-lms-primary-color']);
 
-$branding_settings = (array) get_option( 'i4-lms-settings' );
+$branding_settings = (array)get_option('i4-lms-settings');
 
-$email_logo = esc_attr( $email_branding['i4-lms-login-logo'] );
+$email_logo = esc_attr($email_branding['i4-lms-login-logo']);
 
 // For gmail compatibility, including CSS styles in head/body are stripped out therefore styles need to be inline. These variables contain rules which are added to the template inline. !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
 $body = "
-	background-color: ".$email_bg.";
+	background-color: " . $email_bg . ";
 	border: 1px solid #EEE;
 	font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
 ";
@@ -77,42 +79,44 @@ $header_content_h1 = "
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title><?php echo get_bloginfo( 'name' ); ?></title>
-	</head>
-	<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="<?php echo $body; ?>">
-		<div style="<?php echo $wrapper; ?>">
-		<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
-			<tr>
-				<td align="center" valign="top">
-					<?php if( ! empty( $email_logo ) ) : ?>
-						<div id="template_header_image">
-							<?php echo '<p style="margin-top:0;"><img src="' . esc_url( $email_logo ) . '" alt="' . get_bloginfo( 'name' ) . '" /></p>'; ?>
-						</div>
-					<?php endif; ?>
-					<table border="0" cellpadding="0" cellspacing="0" width="520" id="template_container" style="<?php echo $template_container; ?>">
-						<tr>
-							<td align="center" valign="top">
-								<!-- Header -->
-								<table border="0" cellpadding="0" cellspacing="0" width="520" id="template_header" style="<?php echo $template_header; ?>" bgcolor="#ffffff">
-									<tr>
-										<td>
-											<h1 style="<?php echo $header_content_h1; ?>"><?php echo I4Web_LMS()->i4_emails->get_heading(); ?></h1>
-										</td>
-									</tr>
-								</table>
-								<!-- End Header -->
-							</td>
-						</tr>
-						<tr>
-							<td align="center" valign="top">
-								<!-- Body -->
-								<table border="0" cellpadding="0" cellspacing="0" width="520" id="template_body">
-									<tr>
-										<td valign="top" style="<?php echo $body_content; ?>">
-											<!-- Content -->
-											<table border="0" cellpadding="20" cellspacing="0" width="100%">
-												<tr>
-													<td valign="top">
-														<div style="<?php echo $body_content_inner; ?>">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title><?php echo get_bloginfo('name'); ?></title>
+</head>
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0" style="<?php echo $body; ?>">
+<div style="<?php echo $wrapper; ?>">
+    <table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+        <tr>
+            <td align="center" valign="top">
+                <?php if (!empty($email_logo)) : ?>
+                    <div id="template_header_image">
+                        <?php echo '<p style="margin-top:0;"><img src="' . esc_url($email_logo) . '" alt="' . get_bloginfo('name') . '" /></p>'; ?>
+                    </div>
+                <?php endif; ?>
+                <table border="0" cellpadding="0" cellspacing="0" width="520" id="template_container"
+                       style="<?php echo $template_container; ?>">
+                    <tr>
+                        <td align="center" valign="top">
+                            <!-- Header -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="520" id="template_header"
+                                   style="<?php echo $template_header; ?>" bgcolor="#ffffff">
+                                <tr>
+                                    <td>
+                                        <h1 style="<?php echo $header_content_h1; ?>"><?php echo I4Web_LMS()->i4_emails->get_heading(); ?></h1>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- End Header -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top">
+                            <!-- Body -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="520" id="template_body">
+                                <tr>
+                                    <td valign="top" style="<?php echo $body_content; ?>">
+                                        <!-- Content -->
+                                        <table border="0" cellpadding="20" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td valign="top">
+                                                    <div style="<?php echo $body_content_inner; ?>">

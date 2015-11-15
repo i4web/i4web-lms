@@ -1,19 +1,18 @@
-
 /* Coordinator Admin Page */
-.coordinator{
-  float: left;
-  text-align: center;
-  padding-top: 1%;
-  padding-bottom: 1%;
-  width: 33%;
+.coordinator {
+    float: left;
+    text-align: center;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    width: 33%;
 }
 
 .coordinator img {
-  border-radius: 50%;
+    border-radius: 50%;
 }
 
-@media screen and (max-width:782px){
-  .coordinator{
-    width: 100%;
-  }
+@media screen and (max-width: 782px) {
+    .coordinator {
+        width: 100%;
+    }
 }

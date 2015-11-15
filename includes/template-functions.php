@@ -9,7 +9,9 @@
  */
 
 // Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
 /**
  * Returns the path to the I4Web_LMS templates directory
@@ -18,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * @return string
  */
 function i4_lms_get_templates_dir() {
-	return I4_PLUGIN_DIR . 'templates';
+    return I4_PLUGIN_DIR . 'templates';
 }
 
 /**
@@ -30,7 +32,7 @@ function i4_lms_get_templates_dir() {
  *
  * @param string $slug
  * @param string $name Optional. Default null
- * @param bool   $load
+ * @param bool $load
  *
  * @return string
  *
@@ -38,21 +40,22 @@ function i4_lms_get_templates_dir() {
  * @uses load_template()
  * @uses get_template_part()
  */
-function i4_lms_get_template_part( $slug, $name = null, $load = true ) {
-	// Execute code for this part
-	do_action( 'get_template_part_' . $slug, $slug, $name );
+function i4_lms_get_template_part($slug, $name = null, $load = true) {
+    // Execute code for this part
+    do_action('get_template_part_' . $slug, $slug, $name);
 
-	// Setup possible parts
-	$templates = array();
-	if ( isset( $name ) )
-		$templates[] = $slug . '-' . $name . '.php';
-	$templates[] = $slug . '.php';
+    // Setup possible parts
+    $templates = array();
+    if (isset($name)) {
+        $templates[] = $slug . '-' . $name . '.php';
+    }
+    $templates[] = $slug . '.php';
 
-	// Allow template parts to be filtered
-	$templates = apply_filters( 'i4_lms_get_template_part', $templates, $slug, $name );
+    // Allow template parts to be filtered
+    $templates = apply_filters('i4_lms_get_template_part', $templates, $slug, $name);
 
-	// Return the part that is found
-	return i4_lms_locate_template( $templates, $load, false );
+    // Return the part that is found
+    return i4_lms_locate_template($templates, $load, false);
 }
 
 /**
@@ -72,38 +75,40 @@ function i4_lms_get_template_part( $slug, $name = null, $load = true ) {
  *   Has no effect if $load is false.
  * @return string The template filename if one is located.
  */
-function i4_lms_locate_template( $template_names, $load = false, $require_once = true ) {
-	// No file found yet
-	$located = false;
+function i4_lms_locate_template($template_names, $load = false, $require_once = true) {
+    // No file found yet
+    $located = false;
 
-	// Try to find a template file
-	foreach ( (array) $template_names as $template_name ) {
+    // Try to find a template file
+    foreach ((array)$template_names as $template_name) {
 
-		// Continue if template is empty
-		if ( empty( $template_name ) )
-			continue;
+        // Continue if template is empty
+        if (empty($template_name)) {
+            continue;
+        }
 
-		// Trim off any slashes from the template name
-		$template_name = ltrim( $template_name, '/' );
+        // Trim off any slashes from the template name
+        $template_name = ltrim($template_name, '/');
 
-		// try locating this template file by looping through the template paths
-		foreach( i4_lms_get_theme_template_paths() as $template_path ) {
+        // try locating this template file by looping through the template paths
+        foreach (i4_lms_get_theme_template_paths() as $template_path) {
 
-			if( file_exists( $template_path . $template_name ) ) {
-				$located = $template_path . $template_name;
-				break;
-			}
-		}
+            if (file_exists($template_path . $template_name)) {
+                $located = $template_path . $template_name;
+                break;
+            }
+        }
 
-		if( $located ) {
-			break;
-		}
-	}
+        if ($located) {
+            break;
+        }
+    }
 
-	if ( ( true == $load ) && ! empty( $located ) )
-		load_template( $located, $require_once );
+    if ((true == $load) && !empty($located)) {
+        load_template($located, $require_once);
+    }
 
-	return $located;
+    return $located;
 }
 
 /**
@@ -114,20 +119,20 @@ function i4_lms_locate_template( $template_names, $load = false, $require_once =
  */
 function i4_lms_get_theme_template_paths() {
 
-	$template_dir = i4_lms_get_theme_template_dir_name();
+    $template_dir = i4_lms_get_theme_template_dir_name();
 
-	$file_paths = array(
-		1 => trailingslashit( get_stylesheet_directory() ) . $template_dir,
-		10 => trailingslashit( get_template_directory() ) . $template_dir,
-		100 => i4_lms_get_templates_dir()
-	);
+    $file_paths = array(
+        1 => trailingslashit(get_stylesheet_directory()) . $template_dir,
+        10 => trailingslashit(get_template_directory()) . $template_dir,
+        100 => i4_lms_get_templates_dir()
+    );
 
-	$file_paths = apply_filters( 'i4_lms_template_paths', $file_paths );
+    $file_paths = apply_filters('i4_lms_template_paths', $file_paths);
 
-	// sort the file paths based on priority
-	ksort( $file_paths, SORT_NUMERIC );
+    // sort the file paths based on priority
+    ksort($file_paths, SORT_NUMERIC);
 
-	return array_map( 'trailingslashit', $file_paths );
+    return array_map('trailingslashit', $file_paths);
 }
 
 /**
@@ -137,7 +142,7 @@ function i4_lms_get_theme_template_paths() {
  *
  * @since 1.0.0
  * @return string
-*/
+ */
 function i4_lms_get_theme_template_dir_name() {
-	return trailingslashit( apply_filters( 'i4_lms_templates_dir', 'i4_lms_templates' ) );
+    return trailingslashit(apply_filters('i4_lms_templates_dir', 'i4_lms_templates'));
 }
