@@ -170,15 +170,10 @@ jQuery(document).ready(function ($) {
 
         function insertPatient(patient) {
             var patientRow = createRow(patient);
-
-            var patientName = patient.name.toLowerCase();
-            var names = $('td:first-child').map(function() {
-                return $(this).text().toLowerCase()
-            });
-            names.push(patientName);
-            var sorted = $.makeArray(names.sort());
-            var insertIndex = sorted.indexOf(patientName);
-            $('tr:nth-child(' + (insertIndex + 1) + ')', patientsList).before(patientRow);
+            var $patientRow = $(patientRow);
+            var resort = true;
+            $(managePatientsTable).find('tbody').append($patientRow).trigger('addRows', [$patientRow, resort]);
+            return false;
         }
 
         function createRow(patient) {
