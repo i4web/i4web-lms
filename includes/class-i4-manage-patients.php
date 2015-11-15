@@ -111,7 +111,11 @@ class I4Web_LMS_Manage_Patients {
 
         $wpdb->show_errors();
 
-        $SQL = "SELECT u.ID, u.user_login, u.user_nicename, u.user_email FROM wp_users u INNER JOIN wp_usermeta m ON m.user_id = u.ID WHERE m.meta_key = 'wp_capabilities' AND m.meta_value LIKE '%patient%' ORDER BY u.user_registered";
+        $SQL = "SELECT u.ID, u.user_login, u.user_nicename, u.user_email FROM wp_users u
+                INNER JOIN wp_usermeta m ON m.user_id = u.ID
+                WHERE m.meta_key = 'wp_capabilities'
+                  AND m.meta_value LIKE '%patient%'
+                ORDER BY LOWER(u.user_nicename)";
         $patients = $wpdb->get_results($SQL, OBJECT_K);
 
         return $patients;
