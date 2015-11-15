@@ -7,6 +7,8 @@ jQuery(document).ready(function ($) {
             footer_class: 'confirm-buttons'
         });
 
+        $("#manage-patients-table").tablesorter();
+
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
