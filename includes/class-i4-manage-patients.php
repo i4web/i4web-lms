@@ -73,7 +73,7 @@ class I4Web_LMS_Manage_Patients {
                 <th>Actions</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="patients-list">
             <?php foreach ($patients as $patient) { //loop through each of the patients
                 $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
                 ?>
