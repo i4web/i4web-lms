@@ -67,10 +67,10 @@ class I4Web_LMS_Manage_Patients {
         <table id="manage-patients-table" class="manage-patients-table tablesorter">
             <thead>
             <tr>
-                <th>Patient Name</th>
-                <th>Patient Email</th>
-                <th>Patient Courses</th>
-                <th>Actions</th>
+                <th data-sorter="text">Patient Name</th>
+                <th data-sorter="text">Patient Email</th>
+                <th data-sorter="false">Patient Courses</th>
+                <th data-sorter="false">Actions</th>
             </tr>
             </thead>
             <tbody id="patients-list">

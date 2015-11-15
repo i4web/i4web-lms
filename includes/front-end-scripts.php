@@ -23,7 +23,7 @@ function i4_lms_scripts() {
     wp_enqueue_script('tablesorter', I4_PLUGIN_URL . 'assets/js/jquery.tablesorter.min.js', array('jquery'), '2.24.5', true);
     wp_enqueue_script('tablesorter-pager', I4_PLUGIN_URL . 'assets/js/jquery.tablesorter.pager.js', array('jquery', 'tablesorter'), '2.24.5', true);
     wp_enqueue_script('tablesorter-widgets', I4_PLUGIN_URL . 'assets/js/jquery.tablesorter.widgets.js', array('jquery', 'tablesorter'), '2.24.5', true);
-    wp_enqueue_script('i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable', 'confirm-with-reveal', 'tablesorter'), '0.0.1', true);
+    wp_enqueue_script('i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable', 'confirm-with-reveal', 'tablesorter', 'tablesorter-widgets'), '0.0.1', true);
     wp_enqueue_script('touchpunch', I4_PLUGIN_URL . 'assets/js/jquery.ui.touch-punch.min.js', array('jquery', 'i4-manage-patients-js'), '0.0.1', true);
     wp_enqueue_script('password-strength-meter');
     wp_dequeue_script('wpcw-frontend');

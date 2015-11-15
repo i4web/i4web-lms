@@ -7,7 +7,17 @@ jQuery(document).ready(function ($) {
             footer_class: 'confirm-buttons'
         });
 
-        $("#manage-patients-table").tablesorter();
+        var managePatientsTable = $('#manage-patients-table');
+        $(managePatientsTable).tablesorter({
+            // Initial sort is patient name in ascending order
+            sortList: [[0,0]],
+            widgets: ['filter'],
+            headers: {
+                2: { filter: false },
+                3: { filter: false }
+            }
+        });
+
 
         //verify the input by the user when adding a new patient
         verifyPatientInput();
