@@ -21,6 +21,7 @@ function i4_lms_scripts() {
     wp_enqueue_script('i4-course-js', I4_PLUGIN_URL . 'assets/js/course.js', array('jquery', 'vimeo-froogaloop', 'i4-ajax-front-end'), '0.0.1', true);
     wp_enqueue_script('confirm-with-reveal', I4_PLUGIN_URL . 'assets/js/confirm-with-reveal.min.js', array('jquery'), '0.0.1', true);
     wp_enqueue_script('i4-manage-patients-js', I4_PLUGIN_URL . 'assets/js/manage-patients.js', array('jquery', 'jquery-ui-sortable', 'confirm-with-reveal'), '0.0.1', true);
+    wp_enqueue_script('touchpunch', I4_PLUGIN_URL . 'assets/js/jquery.ui.touch-punch.min.js', array('jquery', 'i4-manage-patients-js'), '0.0.1', true);
     wp_enqueue_script('password-strength-meter');
     wp_dequeue_script('wpcw-frontend');
 
