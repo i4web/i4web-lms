@@ -79,7 +79,7 @@ jQuery(document).ready(function ($) {
 
                 // Remove the patient
                 $('#' + patientId).remove();
-                $(managePatientsTable).trigger("updateAll", [ true ]);
+                $(managePatientsTable).trigger("update", [ true ]);
             });
         });
 
