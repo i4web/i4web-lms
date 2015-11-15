@@ -64,6 +64,23 @@ class I4Web_LMS_Manage_Patients {
         $this->i4_modify_courses_modal();
         ?>
 
+        <div id="pager" class="pager">
+            <form>
+                Page: <select class="gotoPage" title="Select page number"></select>
+                <img class="first"/>
+                <img class="prev"/>
+                <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+                <img class="next"/>
+                <img class="last"/>
+                <select class="pagesize">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                    <option value="all">All Rows</option>
+                </select>
+            </form>
+        </div>
         <table id="manage-patients-table" class="manage-patients-table tablesorter">
             <thead>
             <tr>

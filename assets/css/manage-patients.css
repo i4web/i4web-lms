@@ -41,7 +41,3 @@ ul.connectedSortable li {
 .reveal-modal div.confirm-buttons .confirm-button, .reveal-modal div.confirm-buttons .cancel-button {
     width: 40%;
 }
-
-tr.filtered {
-    display: none;
-}

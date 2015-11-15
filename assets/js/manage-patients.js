@@ -15,9 +15,25 @@ jQuery(document).ready(function ($) {
             headers: {
                 2: { filter: false },
                 3: { filter: false }
-            }
+            },
+            cancelSelection: true,
+            ignoreCase: true,
+            sortInitialOrder: "asc"
         });
 
+        pagerOptions = {
+            container: $(".pager"),
+            output: '{startRow} - {endRow} / {filteredRows}',
+            fixedHeight: false,
+            removeRows: false,
+
+            cssGoto: '.gotoPage',
+            cssNext: '.next',
+            cssPrev: '.prev',
+            cssFirst: '.first',
+            cssLast: '.last'
+        };
+        managePatientsTable.tablesorterPager(pagerOptions);
 
         //verify the input by the user when adding a new patient
         verifyPatientInput();
