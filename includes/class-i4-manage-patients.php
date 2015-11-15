@@ -78,14 +78,14 @@ class I4Web_LMS_Manage_Patients {
                 $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
                 ?>
                 <tr id="<?php echo $patient->ID ?>">
-                    <td class="patient-name"><?php echo $patient->user_nicename; ?></td>
+                    <td class="patient-name"><?php echo $patient->display_name; ?></td>
                     <td class="patient-email"><?php echo $patient->user_email; ?></td>
-                    <td>
+                    <td class="patient-courses">
                         <?php foreach ($patient_courses as $course_id => $course_title) {
                             echo $course_title . '<br>';
                         } ?>
                     </td>
-                    <td>
+                    <td class="patient-actions">
                         <span class="manage-patient-action">
                             <a href="#" title="Edit Patient">
                                 <i class="fa fa-pencil"></i>
@@ -122,7 +122,11 @@ class I4Web_LMS_Manage_Patients {
 
         $wpdb->show_errors();
 
-        $SQL = "SELECT u.ID, u.user_login, u.user_nicename, u.user_email FROM wp_users u INNER JOIN wp_usermeta m ON m.user_id = u.ID WHERE m.meta_key = 'wp_capabilities' AND m.meta_value LIKE '%patient%' ORDER BY u.user_registered";
+        $SQL = "SELECT u.ID, u.user_login, u.display_name, u.user_email FROM wp_users u
+                INNER JOIN wp_usermeta m ON m.user_id = u.ID
+                WHERE m.meta_key = 'wp_capabilities'
+                  AND m.meta_value LIKE '%patient%'
+                ORDER BY LOWER(u.display_name)";
         $patients = $wpdb->get_results($SQL, OBJECT_K);
 
         return $patients;
@@ -275,11 +279,11 @@ class I4Web_LMS_Manage_Patients {
 
         $first_name = sanitize_text_field($_POST['patient_fname']);
         $last_name = sanitize_text_field($_POST['patient_lname']);
-        $user_nicename = $first_name . " " . $last_name;
         $patient_array = array(
             'user_login' => sanitize_text_field($_POST['patient_username']),
             'user_email' => sanitize_text_field($_POST['patient_email']),
-            'user_nicename' => $user_nicename,
+            'first_name'   => $first_name,
+            'last_name'    => $last_name,
             'role' => 'patient'
         );
 
@@ -289,9 +293,10 @@ class I4Web_LMS_Manage_Patients {
             $response['status'] = 409;
         }
         else {
+            $display_name = $first_name . " " . $last_name;
             $response['status'] = 200;
             $response['patient_id'] = $patient_id;
-            $response['patient_name'] = $user_nicename;
+            $response['patient_name'] = $display_name;
         }
         echo json_encode($response);
 
