@@ -1,6 +1,7 @@
 jQuery(document).ready(function ($) {
     $(function() {
         $(document).confirmWithReveal({
+            modal_class: 'reveal-confirm-modal',
             ok_class: 'button blue confirm-button',
             cancel_class: 'button secondary cancel-button',
             footer_class: 'confirm-buttons'
@@ -14,28 +15,30 @@ jQuery(document).ready(function ($) {
             revert: true
         }).disableSelection();
 
-        var managePatientsTable = $('.manage-patients-table');
+        var patientsList = $('#patients-list');
         // When clicking the modify courses button
-        $(managePatientsTable).on('click', '.fa-list', function () {
-            var patientId = $(this).closest('tr').attr('id');
-            var patientName = $(this).closest('td').siblings('.patient-name').text();
-            showModifyCoursesModal(patientId, patientName);
+        $(patientsList).on('click', '.fa-list', function() {
+            var patient = {
+                id: $(this).closest('tr').attr('id'),
+                name: $(this).closest('td').siblings('.patient-name').text()
+            };
+            showModifyCoursesModal(patient);
         });
 
         // When clicking the edit patient button
-        $(managePatientsTable).on('click', '.fa-pencil', function () {
+        $(patientsList).on('click', '.fa-pencil', function() {
             var patientId = $(this).closest('tr').attr('id');
             //editPatient(patientId);
         });
 
         // When clicking the remove patient button
-        $(managePatientsTable).on('click', '.fa-times', function () {
+        $(patientsList).on('click', '.fa-times', function() {
             var patientName = $(this).closest('td').siblings('.patient-name').text();
             $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove <i>' + patientName + '</i>?"}');
         });
 
         // Handle the event where the user has confirmed the deletion of the patient
-        $('.remove-patient').on('confirm.reveal', function() {
+        $(patientsList).on('confirm.reveal', '.remove-patient', function() {
             var patientId = $(this).closest('tr').attr('id');
             var data = {
                 action: 'i4_lms_remove_patient',
@@ -43,7 +46,7 @@ jQuery(document).ready(function ($) {
             };
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 // Remove the confirm modal
-                $('.reveal-modal').remove();
+                $('.reveal-confirm-modal').remove();
                 $('.reveal-modal-bg').hide();
 
                 // Remove the patient
@@ -63,9 +66,10 @@ jQuery(document).ready(function ($) {
                 courses: courseIds
             };
 
-            $.post(wpcw_js_consts_fe.ajaxurl, data, function () {
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
 //                var patientCourses = $('#' + patientId).find('.patient-courses');
 //                patientCourses.empty();
+//                render courses here
                 $('#modify-courses-modal').foundation('reveal', 'close');
             });
         });
@@ -97,7 +101,7 @@ jQuery(document).ready(function ($) {
                         email: i4_patient_email
                     };
 
-                    $.when(showModifyCoursesModal(patient)).done(function () {
+                    $.when(showModifyCoursesModal(patient)).done(function() {
                         insertPatient(patient);
                         // Hide the new user modal
                         $('#new-patient-modal').foundation('reveal', 'close');
@@ -156,13 +160,13 @@ jQuery(document).ready(function ($) {
             var patientRow = createRow(patient);
 
             var patientName = patient.name.toLowerCase();
-            var names = $('td:first-child').map(function () {
+            var names = $('td:first-child').map(function() {
                 return $(this).text().toLowerCase()
             });
             names.push(patientName);
             var sorted = $.makeArray(names.sort());
             var insertIndex = sorted.indexOf(patientName);
-            $('tr:nth-child(' + (insertIndex + 1) + ')', managePatientsTable).before(patientRow);
+            $('tr:nth-child(' + (insertIndex + 1) + ')', patientsList).before(patientRow);
         }
 
         function createRow(patient) {
@@ -175,7 +179,7 @@ jQuery(document).ready(function ($) {
             var actions = createCell('', 'patient-actions');
             var editPatientAction = createAction('Edit Patient', 'fa-pencil');
             var modifyCoursesAction = createAction('Modify Courses', 'fa-list');
-            var removePatientAction = createAction('Remove Patient', 'fa-times');
+            var removePatientAction = createAction('Remove Patient', 'fa-times', 'remove-patient');
 
             tr.appendChild(name);
             tr.appendChild(email);
@@ -196,7 +200,7 @@ jQuery(document).ready(function ($) {
             return td;
         }
 
-        function createAction(title, icon) {
+        function createAction(title, iconClass, aClass) {
             var span = document.createElement('span');
             $(span).addClass('manage-patient-action');
 
@@ -205,9 +209,12 @@ jQuery(document).ready(function ($) {
                 href: '#',
                 title: title
             });
+            if (aClass) {
+                $(a).addClass(aClass);
+            }
 
             var i = document.createElement('i');
-            $(i).addClass('fa ' + icon);
+            $(i).addClass('fa ' + iconClass);
 
             a.appendChild(i);
             span.appendChild(a);
