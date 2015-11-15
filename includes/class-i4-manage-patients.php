@@ -30,6 +30,7 @@ class I4Web_LMS_Manage_Patients {
         add_action('wp_ajax_i4_lms_handle_update_patient_courses', array($this, 'i4_update_patient_courses'));
         add_action('wp_ajax_i4_lms_handle_add_new_patient', array($this, 'i4_ajax_add_new_patient'));
         add_action('wp_ajax_i4_lms_get_user_courses', array($this, 'i4_get_user_courses'));
+        add_action('wp_ajax_i4_lms_remove_patient', array($this, 'i4_remove_patient'));
 
     }
 
@@ -85,11 +86,21 @@ class I4Web_LMS_Manage_Patients {
                         } ?>
                     </td>
                     <td>
-                        <span class="manage-patient-action"><a href="#" title="Edit Patient"><i
-                                    class="fa fa-pencil"></i></a></span>
-                        <span class="manage-patient-action"><a href="#" title="Modify Courses"><i
-                                    class="fa fa-list"></i></a></span>
-                 <span class="manage-patient-action"><a href="#" title="Remove Patient"><i class="fa fa-times"></i></a>
+                        <span class="manage-patient-action">
+                            <a href="#" title="Edit Patient">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </span>
+                        <span class="manage-patient-action">
+                            <a href="#" title="Modify Courses">
+                                <i class="fa fa-list"></i>
+                            </a>
+                        </span>
+                        <span class="manage-patient-action">
+                            <a href="#" data-confirm class="remove-patient" title="Remove Patient">
+                                <i class="fa fa-times"></i>
+                            </a>
+                        </span>
                     </td>
                 </tr>
 
@@ -339,7 +350,6 @@ class I4Web_LMS_Manage_Patients {
     }
 
     function i4_insert_patient($patient_array) {
-
         $patient_id = wp_insert_user($patient_array);
 
         if (!is_wp_error($patient_id)) {
@@ -351,5 +361,28 @@ class I4Web_LMS_Manage_Patients {
         else {
             return false;
         }
+    }
+
+    function i4_remove_patient() {
+        global $wpdb;
+        // I'd prefer to use DELETE, but JQuery doesn't support it natively
+        $patient_id = $_POST['patientId'];
+        echo $patient_id;
+
+        // Remove user data from the wp_courseware tables
+        $remove_from_tables = array("wp_wpcw_user_progress", "wp_wpcw_user_progress_quizzes", "wp_wpcw_user_courses");
+        foreach ($remove_from_tables as $table) {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "DELETE FROM %s WHERE user_id = %d",
+                    $table,
+                    $patient_id
+                )
+            );
+        }
+
+        // The WP delete user function handles removing metadata for the user
+        wp_delete_user($patient_id);
+        die();
     }
 }

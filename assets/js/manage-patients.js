@@ -1,5 +1,7 @@
 jQuery(document).ready(function ($) {
-    $(function () {
+    $(function() {
+        $(document).confirmWithReveal();
+
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
@@ -9,22 +11,39 @@ jQuery(document).ready(function ($) {
         }).disableSelection();
 
         // WHen clicking the modify courses button
-        $('.fa-list').on('click', function () {
+        $('.fa-list').on('click', function() {
             var patientId = $(this).closest('tr').attr('id');
             var patientName = $(this).closest('td').siblings('.patient-name').text();
             showModifyCoursesModal(patientId, patientName);
         });
 
         // When clicking the edit patient button
-        $('.fa-pencil').on('click', function () {
+        $('.fa-pencil').on('click', function() {
             var patientId = $(this).closest('tr').attr('id');
             //editPatient(patientId);
         });
 
-        // When clicking the remove patient button
-        $('.fa-times').on('click', function () {
+        // When clicking the remove patient button, show a confirm dialog
+        $('.fa-times').on('click', function() {
+            var patientName = $(this).closest('td').siblings('.patient-name').text();
+            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove ' + patientName + '?"}');
+        });
+
+        // Handle the event where the user has confirmed the deletion of the patient
+        $('.remove-patient').on('confirm.reveal', function() {
             var patientId = $(this).closest('tr').attr('id');
-            //removePatient(patientId);
+            var data = {
+                action: 'i4_lms_remove_patient',
+                patientId: patientId
+            };
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
+                // Remove the confirm modal
+                $('.reveal-modal').remove();
+                $('.reveal-modal-bg').hide();
+
+                // Remove the patient
+                $('#' + patientId).remove();
+            });
         });
 
         $('#update-patient-courses-submit').on('click', function (e) {
@@ -39,7 +58,7 @@ jQuery(document).ready(function ($) {
                 courses: courseIds
             };
 
-            $.post(wpcw_js_consts_fe.ajaxurl, data, function () {
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 $('#modify-courses-modal').foundation('reveal', 'close');
             });
         });
@@ -67,7 +86,7 @@ jQuery(document).ready(function ($) {
                 if (response.status == 200) {
                     var patientId = response.patient_id;
                     var patientName = i4_patient_firstname + " " + i4_patient_lastname;
-                    $.when(showModifyCoursesModal(patientId, patientName)).done(function () {
+                    $.when(showModifyCoursesModal(patientId, patientName)).done(function() {
                         // Hide the new user modal
                         $('#new-patient-modal').foundation('reveal', 'close');
                     });
@@ -119,6 +138,31 @@ jQuery(document).ready(function ($) {
             var li = document.createElement("li");
             $(li).attr('id', id).text(name);
             return li;
+        }
+
+        function confirm(question) {
+            var defer = $.Deferred();
+            $('<div></div>')
+                .html(question)
+                .dialog({
+                    autoOpen: true,
+                    modal: true,
+                    title: 'Confirm Removal',
+                    buttons: {
+                        "Yes": function() {
+                            defer.resolve("true");
+                            $(this).dialog("close");
+                        },
+                        "No": function() {
+                            defer.resolve("false");
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function() {
+                        $(this).remove();
+                    }
+                });
+            return defer.promise();
         }
     });
 
