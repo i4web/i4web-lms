@@ -59,10 +59,7 @@ class I4_LMS_WPCW {
 
         $user_id = get_current_user_id();
 
-        $SQL = "SELECT *
-			FROM $wpcwdb->courses
-			ORDER BY course_title ASC
-			";
+        $SQL = "SELECT * FROM $wpcwdb->courses ORDER BY course_title ASC";
 
         $courseCount = 0;
         $courses = $wpdb->get_results($SQL);
@@ -141,11 +138,11 @@ class I4_LMS_WPCW {
                 /*  printf('<table class="widefat wpcw_tbl wpcw_tbl_progress">');
 
                   printf('<thead>');
-                  printf('<th>%s</th>', 															__('Unit', 'wp_courseware'));
-                  printf('<th class="wpcw_center">%s</th>', 								__('Completed', 'wp_courseware'));
-                  printf('<th class="wpcw_center wpcw_tbl_progress_quiz_name">%s</th>', 	__('Quiz Name', 'wp_courseware'));
-                  printf('<th class="wpcw_center">%s</th>', 								__('Quiz Status', 'wp_courseware'));
-                  printf('<th class="wpcw_center">%s</th>', 								__('Actions', 'wp_courseware'));
+                  printf('<th>%s</th>',                   __('Unit', 'wp_courseware'));
+                  printf('<th class="wpcw_center">%s</th>',            __('Completed', 'wp_courseware'));
+                  printf('<th class="wpcw_center wpcw_tbl_progress_quiz_name">%s</th>',     __('Quiz Name', 'wp_courseware'));
+                  printf('<th class="wpcw_center">%s</th>',            __('Quiz Status', 'wp_courseware'));
+                  printf('<th class="wpcw_center">%s</th>',            __('Actions', 'wp_courseware'));
                   printf('</thead><tbody>');
 
                 // #### 2 - Fetch all associated modules
@@ -309,11 +306,7 @@ class I4_LMS_WPCW {
         global $wpcwdb, $wpdb;
         $wpdb->show_errors();
 
-        $SQL = $wpdb->prepare("
-  		SELECT *
-  		FROM $wpcwdb->user_courses
-  		WHERE user_id = %d AND course_id = %d
-  	", $userID, $courseID);
+        $SQL = $wpdb->prepare("SELECT * FROM $wpcwdb->user_courses WHERE user_id = %d AND course_id = %d", $userID, $courseID);
 
         return ($wpdb->get_row($SQL) != false);
     }
@@ -370,11 +363,9 @@ class I4_LMS_WPCW {
         $completed_status = "complete";
 
         //Here we grab the unit info for units that are completed for the users course.
-        $SQL = $wpdb->prepare("
-     SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
-     ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
-     WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d
-   ", $course_id, $completed_status, $user_id);
+        $SQL = $wpdb->prepare("SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
+            ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
+            WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d", $course_id, $completed_status, $user_id);
 
         //Store the Completed units Array
         $completed_units = $wpdb->get_results($SQL);
@@ -398,11 +389,9 @@ class I4_LMS_WPCW {
         $completed_status = "complete";
 
         //Here we grab the unit info for units that are completed for the users course.
-        $SQL = $wpdb->prepare("
-      SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
-      ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
-      WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d
-    ", $course_id, $completed_status, $user_id);
+        $SQL = $wpdb->prepare("SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
+            ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
+            WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d", $course_id, $completed_status, $user_id);
 
         //Store the Completed units Array
         $completed_units = $wpdb->get_results($SQL);
@@ -435,11 +424,9 @@ class I4_LMS_WPCW {
         $completed_status = "complete";
 
         //Here we grab the unit info for units that are completed for the users course.
-        $SQL = $wpdb->prepare("
-       SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
-       ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
-       WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d
-     ", $course_id, $completed_status, $user_id);
+        $SQL = $wpdb->prepare("SELECT * FROM $wpcwdb->units_meta LEFT JOIN $wpcwdb->user_progress
+            ON $wpcwdb->units_meta.unit_id=$wpcwdb->user_progress.unit_id
+            WHERE parent_course_id = %d AND unit_completed_status = %s AND user_id = %d", $course_id, $completed_status, $user_id);
 
         //Store the Completed units Array
         $completed_units = $wpdb->get_results($SQL);

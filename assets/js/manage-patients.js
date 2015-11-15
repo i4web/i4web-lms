@@ -8,21 +8,22 @@ jQuery(document).ready(function ($) {
             revert: true
         }).disableSelection();
 
-        // WHen clicking the modify courses button
-        $('.fa-list').on('click', function () {
+        var managePatientsTable = $('.manage-patients-table');
+        // When clicking the modify courses button
+        $(managePatientsTable).on('click', '.fa-list', function () {
             var patientId = $(this).closest('tr').attr('id');
             var patientName = $(this).closest('td').siblings('.patient-name').text();
             showModifyCoursesModal(patientId, patientName);
         });
 
         // When clicking the edit patient button
-        $('.fa-pencil').on('click', function () {
+        $(managePatientsTable).on('click', '.fa-pencil', function () {
             var patientId = $(this).closest('tr').attr('id');
             //editPatient(patientId);
         });
 
         // When clicking the remove patient button
-        $('.fa-times').on('click', function () {
+        $(managePatientsTable).on('click', '.fa-times', function () {
             var patientId = $(this).closest('tr').attr('id');
             //removePatient(patientId);
         });
@@ -40,6 +41,8 @@ jQuery(document).ready(function ($) {
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function () {
+                var patientCourses = $('#' + patientId).find('.patient-courses');
+                patientCourses.empty();
                 $('#modify-courses-modal').foundation('reveal', 'close');
             });
         });
@@ -65,9 +68,14 @@ jQuery(document).ready(function ($) {
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
-                    var patientId = response.patient_id;
-                    var patientName = i4_patient_firstname + " " + i4_patient_lastname;
-                    $.when(showModifyCoursesModal(patientId, patientName)).done(function () {
+                    var patient = {
+                        id: response.patient_id,
+                        name: i4_patient_firstname + " " + i4_patient_lastname,
+                        email: i4_patient_email
+                    };
+
+                    $.when(showModifyCoursesModal(patient)).done(function () {
+                        insertPatient(patient);
                         // Hide the new user modal
                         $('#new-patient-modal').foundation('reveal', 'close');
                     });
@@ -85,17 +93,17 @@ jQuery(document).ready(function ($) {
             $('#user-courses').empty();
         }
 
-        function showModifyCoursesModal(patientId, patientName) {
+        function showModifyCoursesModal(patient) {
             clearModifyCoursesModal();
 
             var data = {
                 action: 'i4_lms_get_user_courses',
-                patientId: patientId
+                patientId: patient.id
             };
             $.get(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 // Set the patient ID and name in the modal
-                $('#patientId').val(patientId);
-                $('#modifyCoursesTitle').children('i').html(patientName);
+                $('#patientId').val(patient.id);
+                $('#modifyCoursesTitle').children('i').html(patient.name);
 
                 // Set the courses in the sortables
                 var unassignedCourses = $('#available-courses');
@@ -119,6 +127,69 @@ jQuery(document).ready(function ($) {
             var li = document.createElement("li");
             $(li).attr('id', id).text(name);
             return li;
+        }
+
+        function insertPatient(patient) {
+            var patientRow = createRow(patient);
+
+            var patientName = patient.name.toLowerCase();
+            var names = $('td:first-child').map(function () {
+                return $(this).text().toLowerCase()
+            });
+            names.push(patientName);
+            var sorted = $.makeArray(names.sort());
+            var insertIndex = sorted.indexOf(patientName);
+            $('tr:nth-child(' + (insertIndex + 1) + ')', managePatientsTable).before(patientRow);
+        }
+
+        function createRow(patient) {
+            var tr = document.createElement('tr');
+            $(tr).attr('id', patient.id);
+
+            var name = createCell(patient.name, 'patient-name');
+            var email = createCell(patient.email, 'patient-email');
+            var courses = createCell('', 'patient-courses');
+            var actions = createCell('', 'patient-actions');
+            var editPatientAction = createAction('Edit Patient', 'fa-pencil');
+            var modifyCoursesAction = createAction('Modify Courses', 'fa-list');
+            var removePatientAction = createAction('Remove Patient', 'fa-times');
+
+            tr.appendChild(name);
+            tr.appendChild(email);
+            tr.appendChild(courses);
+
+            actions.appendChild(editPatientAction);
+            actions.appendChild(modifyCoursesAction);
+            actions.appendChild(removePatientAction);
+            tr.appendChild(actions);
+
+            return tr;
+        }
+
+        function createCell(text, className) {
+            var td = document.createElement('td');
+            $(td).text(text);
+            $(td).addClass(className);
+            return td;
+        }
+
+        function createAction(title, icon) {
+            var span = document.createElement('span');
+            $(span).addClass('manage-patient-action');
+
+            var a = document.createElement('a');
+            $(a).attr({
+                href: '#',
+                title: title
+            });
+
+            var i = document.createElement('i');
+            $(i).addClass('fa ' + icon);
+
+            a.appendChild(i);
+            span.appendChild(a);
+
+            return span;
         }
     });
 

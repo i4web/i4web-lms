@@ -75,14 +75,14 @@
                 $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
                 ?>
                 <tr id="<?php echo $patient->ID ?>">
-                    <td class="patient-name"><?php echo $patient->user_nicename; ?></td>
+                    <td class="patient-name"><?php echo $patient->display_name; ?></td>
                     <td class="patient-email"><?php echo $patient->user_email; ?></td>
-                    <td>
-                        <?php foreach ($patient_courses as $course_id => $course_title) {
-                            echo $course_title . '<br>';
+                    <td class="patient-courses">
+                        <?php foreach ($patient_courses as $patient_course) {
+                            echo $patient_course->course_title . '<br>';
                         } ?>
                     </td>
-                    <td>
+                    <td class="patient-actions">
                         <span class="manage-patient-action"><a href="#" title="Edit Patient"><i
                                     class="fa fa-pencil"></i></a></span>
                         <span class="manage-patient-action"><a href="#" title="Modify Courses"><i
@@ -109,8 +109,12 @@
 
        $wpdb->show_errors();
 
-       $SQL = "SELECT u.ID, u.user_login, u.user_nicename, u.user_email FROM wp_users u INNER JOIN wp_usermeta m ON m.user_id = u.ID WHERE m.meta_key = 'wp_capabilities' AND m.meta_value LIKE '%patient%' ORDER BY u.user_registered";
-       $patients = $wpdb->get_results($SQL, OBJECT_K);
+        $SQL = "SELECT u.ID, u.user_login, u.display_name, u.user_email FROM wp_users u
+                INNER JOIN wp_usermeta m ON m.user_id = u.ID
+                WHERE m.meta_key = 'wp_capabilities'
+                  AND m.meta_value LIKE '%patient%'
+                ORDER BY LOWER(u.display_name)";
+        $patients = $wpdb->get_results($SQL, OBJECT_K);
 
        return $patients;
      }
@@ -244,110 +248,111 @@
      * Called when adding a new patient.
      *
      */
-     function i4_ajax_add_new_patient(){
-         global $current_i4_user;
+    function i4_ajax_add_new_patient() {
+        global $current_i4_user;
 
-         $response = array();
-         // Security check
-         $security_check = check_ajax_referer( 'add_new_patient_nonce', 'security', false );
+        $response = array();
+        // Security check
+        $security_check = check_ajax_referer('add_new_patient_nonce', 'security', false);
 
-         if ( !$security_check ) {
-             die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
-         }
+        if (!$security_check) {
+            die (__('Sorry, we are unable to perform this action. Contact support if you are receiving this in error!', 'i4'));
+        }
 
-         //Perform a permissions check just in case
-         if ( !user_can( $current_i4_user, 'manage_patients' ) ){
-             die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
-         }
+        //Perform a permissions check just in case
+        if (!user_can($current_i4_user, 'manage_patients')) {
+            die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
+        }
 
-         $first_name = sanitize_text_field($_POST['patient_fname']);
-         $last_name = sanitize_text_field($_POST['patient_lname']);
-         $user_nicename = $first_name . " " . $last_name;
-         $patient_array = array(
-             'user_login'   => sanitize_text_field($_POST['patient_username']),
-             'user_email'   => sanitize_text_field($_POST['patient_email']),
-             'user_nicename'   => $user_nicename,
-             'role'         => 'patient'
-         );
+        $first_name = sanitize_text_field($_POST['patient_fname']);
+        $last_name = sanitize_text_field($_POST['patient_lname']);
+        $patient_array = array(
+            'user_login' => sanitize_text_field($_POST['patient_username']),
+            'user_email' => sanitize_text_field($_POST['patient_email']),
+            'first_name'   => $first_name,
+            'last_name'    => $last_name,
+            'role' => 'patient'
+        );
 
-         $patient_id = I4Web_LMS()->i4_manage_patients->i4_insert_patient( $patient_array );
+        $patient_id = I4Web_LMS()->i4_manage_patients->i4_insert_patient($patient_array);
 
-         if (!$patient_id){
-             $response['status'] = 409;
-         }
-         else {
-             $response['status'] = 200;
-             $response['patient_id'] = $patient_id;
-             $response['patient_name'] = $user_nicename;
-         }
-         echo json_encode($response);
+        if (!$patient_id) {
+            $response['status'] = 409;
+        }
+        else {
+            $display_name = $first_name . " " . $last_name;
+            $response['status'] = 200;
+            $response['patient_id'] = $patient_id;
+            $response['patient_name'] = $display_name;
+        }
+        echo json_encode($response);
 
-         die();
-     }
+        die();
+    }
 
-     /**
-      * @param $patient_id - The ID of the patient whose courses are being modified
-      * @param $new_user_courses - The list of courses that the user is assigned after the modifications in the modal
-      */
-     function i4_update_patient_courses() {
-         $patient_id = sanitize_text_field($_POST['patientId']);
-         $new_user_courses = array_flip($_POST['courses']);
+    /**
+     * @param $patient_id - The ID of the patient whose courses are being modified
+     * @param $new_user_courses - The list of courses that the user is assigned after the modifications in the modal
+     */
+    function i4_update_patient_courses() {
+        $patient_id = sanitize_text_field($_POST['patientId']);
+        $new_user_courses = array_flip($_POST['courses']);
 
-         $current_user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
-         if (count($new_user_courses) > 0) {
-             $added_courses = array_diff_key($new_user_courses, $current_user_courses);
-             $removed_courses = array_diff_key($current_user_courses, $new_user_courses);
+        $current_user_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient_id);
+        if (count($new_user_courses) > 0) {
+            $added_courses = array_diff_key($new_user_courses, $current_user_courses);
+            $removed_courses = array_diff_key($current_user_courses, $new_user_courses);
 
-             $this->add_courses($patient_id, $added_courses);
-             $this->remove_courses($patient_id, $removed_courses);
-         }
-         else {
-             $this->remove_courses($patient_id, $current_user_courses);
-         }
+            $this->add_courses($patient_id, $added_courses);
+            $this->remove_courses($patient_id, $removed_courses);
+        }
+        else {
+            $this->remove_courses($patient_id, $current_user_courses);
+        }
 
-         die();
-     }
+        die();
+    }
 
-     function add_courses($patient_id, $courses) {
-         global $wpdb;
-         $enrollment_date = date('Y-m-d H:i:s');
-         foreach($courses as $id => $course) {
-             $wpdb->query(
-                 $wpdb->prepare(
-                     "INSERT INTO wp_wpcw_user_courses(user_id, course_id, course_enrolment_date) VALUES(%d, %d, %s)",
-                     $patient_id,
-                     sanitize_text_field($id),
-                     $enrollment_date
-                 )
-             );
-         }
-     }
+    function add_courses($patient_id, $courses) {
+        global $wpdb;
+        $enrollment_date = date('Y-m-d H:i:s');
+        foreach ($courses as $id => $course) {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "INSERT INTO wp_wpcw_user_courses(user_id, course_id, course_enrolment_date) VALUES(%d, %d, %s)",
+                    $patient_id,
+                    sanitize_text_field($id),
+                    $enrollment_date
+                )
+            );
+        }
+    }
 
-     function remove_courses($patient_id, $courses) {
-         global $wpdb;
-         foreach($courses as $id => $course) {
-             $wpdb->query(
-                 $wpdb->prepare(
-                     "DELETE FROM wp_wpcw_user_courses WHERE user_id = %d AND course_id = %d",
-                     $patient_id,
-                     sanitize_text_field($id)
-                 )
-             );
-         }
-     }
+    function remove_courses($patient_id, $courses) {
+        global $wpdb;
+        foreach ($courses as $id => $course) {
+            $wpdb->query(
+                $wpdb->prepare(
+                    "DELETE FROM wp_wpcw_user_courses WHERE user_id = %d AND course_id = %d",
+                    $patient_id,
+                    sanitize_text_field($id)
+                )
+            );
+        }
+    }
 
-     function i4_insert_patient( $patient_array ){
+    function i4_insert_patient($patient_array) {
 
-         $patient_id = wp_insert_user( $patient_array );
+        $patient_id = wp_insert_user($patient_array);
 
-         if ( ! is_wp_error( $patient_id ) ) {
-             //Send off a new user notification to the admin and the new patient
-             wp_new_user_notification( $patient_id, $deprecated = null, $notify = 'both' );
+        if (!is_wp_error($patient_id)) {
+            //Send off a new user notification to the admin and the new patient
+            wp_new_user_notification($patient_id, $deprecated = null, $notify = 'both');
 
-             return $patient_id;
-         }
-         else{
-             return false;
-         }
-     }
-  }
+            return $patient_id;
+        }
+        else {
+            return false;
+        }
+    }
+}
