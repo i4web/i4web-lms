@@ -64,7 +64,7 @@ function i4_lms_scripts() {
 }
 
 function i4_lms_styles() {
-    wp_enqueue_style('i4-manage-patients-css', I4_PLUGIN_URL . 'assets/css/manage-patients.css', false, '0.0.1');
+    wp_enqueue_style('i4-manage-patients-css', I4_PLUGIN_URL . 'assets/css/manage-patients.css', false, '0.0.2');
 }
 
 add_action('wp_enqueue_scripts', 'i4_lms_scripts');

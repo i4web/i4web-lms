@@ -1,6 +1,10 @@
 jQuery(document).ready(function ($) {
     $(function() {
-        $(document).confirmWithReveal();
+        $(document).confirmWithReveal({
+            ok_class: 'button blue confirm-button',
+            cancel_class: 'button secondary cancel-button',
+            footer_class: 'confirm-buttons'
+        });
 
         //verify the input by the user when adding a new patient
         verifyPatientInput();
@@ -26,7 +30,7 @@ jQuery(document).ready(function ($) {
         // When clicking the remove patient button, show a confirm dialog
         $('.fa-times').on('click', function() {
             var patientName = $(this).closest('td').siblings('.patient-name').text();
-            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove ' + patientName + '?"}');
+            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove <i>' + patientName + '</i>?"}');
         });
 
         // Handle the event where the user has confirmed the deletion of the patient

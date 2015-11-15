@@ -32,3 +32,12 @@ ul.connectedSortable li {
 #available-courses li:hover {
     cursor: move;
 }
+
+.reveal-modal div.confirm-buttons {
+    width: 200px;
+    margin: 0 auto;
+}
+
+.reveal-modal div.confirm-buttons .confirm-button, .reveal-modal div.confirm-buttons .cancel-button {
+    width: 40%;
+}
