@@ -1,4 +1,4 @@
-jQuery( document ).ready( function( $ ) {
+jQuery(document).ready(function ($) {
     setCurrentLinkActive();
 
     var iframe = $('#unit-video')[0];
@@ -13,7 +13,7 @@ jQuery( document ).ready( function( $ ) {
     markCompleteButton.addClass('disabled');
 
     // When the player is ready, add listener for finish event
-    player.addEvent('ready', function() {
+    player.addEvent('ready', function () {
         if (userCompletedUnit) {
             enableMarkCompleteButton();
             showCompletionBanner();
@@ -52,8 +52,8 @@ jQuery( document ).ready( function( $ ) {
     function markUnitComplete() {
         var courseid = $(this).attr('id');
         var data = {
-            action:         'i4_lms_handle_unit_track_progress',
-            id:             courseid,
+            action: 'i4_lms_handle_unit_track_progress',
+            id: courseid,
             progress_nonce: wpcw_js_consts_fe.progress_nonce
         };
 
@@ -63,7 +63,7 @@ jQuery( document ).ready( function( $ ) {
         // Hide any navigation boxes
         $('.wpcw_fe_navigation_box').hide();
 
-        $.post(wpcw_js_consts_fe.ajaxurl, data, function(response) {
+        $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
             $('#wpcw_fe_' + courseid).hide().html(response).fadeIn();
         });
 
@@ -104,7 +104,7 @@ jQuery( document ).ready( function( $ ) {
             if (path == href) {
                 jQuery(this).closest('li').addClass('active');
             }
-            if (path == '' && href == 'http://celebrationhealtheducation.com'){ // for the home page since the path is empty
+            if (path == '' && href == 'http://celebrationhealtheducation.com') { // for the home page since the path is empty
                 jQuery(this).closest('li').addClass('active');
             }
 
