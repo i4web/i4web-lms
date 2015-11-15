@@ -64,13 +64,13 @@ class I4Web_LMS_Manage_Patients {
         $this->i4_modify_courses_modal();
         ?>
 
-        <table class="manage-patients-table">
+        <table id="manage-patients-table" class="manage-patients-table tablesorter">
             <thead>
             <tr>
-                <th>Patient Username</th>
-                <th>Patient Email</th>
-                <th>Patient Courses</th>
-                <th>Actions</th>
+                <th data-sorter="text">Patient Name</th>
+                <th data-sorter="text">Patient Email</th>
+                <th data-sorter="false">Patient Courses</th>
+                <th data-sorter="false">Actions</th>
             </tr>
             </thead>
             <tbody id="patients-list">
