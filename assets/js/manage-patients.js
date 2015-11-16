@@ -86,7 +86,8 @@ jQuery(document).ready(function ($) {
         $('#update-patient-courses-submit').on('click', function (e) {
             e.preventDefault();
 
-            var courseIds = $("#user-courses").sortable("toArray");
+            var userCourses = $("#user-courses");
+            var courseIds = userCourses.sortable("toArray");
             var patientId = $("#patientId").val();
 
             var data = {
@@ -96,9 +97,25 @@ jQuery(document).ready(function ($) {
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
-//                var patientCourses = $('#' + patientId).find('.patient-courses');
-//                patientCourses.empty();
-//                render courses here
+                var patientCourses = $('#' + patientId).find('.patient-courses');
+
+                // Sort the assigned courses by name
+                var courses = $(userCourses).find('li');
+                courses.sort(function(a, b) {
+                    return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
+                });
+
+                // Generate the HTML for the assigned courses
+                var coursesText = "";
+                var numCourses = courses.size();
+                for (var i = 0; i < numCourses; i++) {
+                    coursesText += courses[i].textContent;
+                    if (i < numCourses - 1) {
+                        coursesText += "<br/>";
+                    }
+                }
+                $(patientCourses).html(coursesText);
+
                 $('#modify-courses-modal').foundation('reveal', 'close');
             });
         });
