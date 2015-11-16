@@ -31,6 +31,8 @@ class I4Web_LMS_Manage_Patients {
         add_action('wp_ajax_i4_lms_handle_add_new_patient', array($this, 'i4_ajax_add_new_patient'));
         add_action('wp_ajax_i4_lms_get_user_courses', array($this, 'i4_get_user_courses'));
         add_action('wp_ajax_i4_lms_remove_patient', array($this, 'i4_remove_patient'));
+        add_action('wp_ajax_i4_lms_update_patient', array($this, 'i4_update_patient'));
+        add_action('wp_ajax_i4_lms_get_patient_info', array($this, 'i4_get_patient_info'));
 
     }
 
@@ -55,12 +57,12 @@ class I4Web_LMS_Manage_Patients {
         $patients = $this->i4_get_patients();
         ?>
         <div class="page-title">
-            <h3><?php echo get_the_title(); ?> <span><a href="#" data-reveal-id="new-patient-modal"
+            <h3><?php echo get_the_title(); ?> <span><a href="#" data-reveal-id="edit-patient-modal"
                                                         class="button tiny blue">Add New Patient</a></h3>
         </div>
 
         <?php
-        $this->i4_new_patient_modal('new-patient-modal');
+        $this->i4_new_patient_modal();
         $this->i4_modify_courses_modal();
         ?>
 
@@ -155,9 +157,9 @@ class I4Web_LMS_Manage_Patients {
      * @since 0.0.1
      * @param string ID of the modal we want to generate. Should match the data-reveal-id of the element that we're using to trigger the modal
      */
-    function i4_new_patient_modal($modal_id) {
+    function i4_new_patient_modal() {
 
-        $html = '<div id="' . $modal_id . '" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+        $html = '<div id="edit-patient-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                       <h3 id="modalTitle">Add New Patient</h3>
                       <a class="close-reveal-modal" aria-label="Close">&#215;</a>';
 
@@ -176,7 +178,8 @@ class I4Web_LMS_Manage_Patients {
     function i4_add_new_patient_form() {
 
         $content = '<div class="form-container">
-                      <form action="" method="POST" id="add-new-patient-form" class="form-horizontal add-new-patient-form">
+                      <form action="" method="POST" id="edit-patient-form" class="form-horizontal edit-patient-form">
+                        <input id="patientId" name="patientId" type="hidden" value=""/>
                         <div class="row">
                           <div class="large-12 columns">
                           <div class="row collapse">
@@ -216,8 +219,8 @@ class I4Web_LMS_Manage_Patients {
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">
-                            <input type="hidden" name="action" value="add-new-patient"/>
-                            <button class="button tiny blue" type="submit" id="add-new-patient-submit">Next</button>
+                            <input type="hidden" name="action" value="edit-patient"/>
+                            <button class="button tiny blue" type="submit" id="edit-patient-submit">Next</button>
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                         </form>
@@ -235,7 +238,7 @@ class I4Web_LMS_Manage_Patients {
     function i4_modify_courses_modal() {
         $html = '<div id="modify-courses-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                     <form action="" method="POST" id="modify-courses-form">
-                        <input id="patientId" type="hidden" name="patientId" value=""/>
+                        <input id="coursesPatientId" type="hidden" name="patientId" value=""/>
                         <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>
                         <a class="close-reveal-modal" aria-label="Close">&#215;</a>
                         <div class="courses-table">
@@ -317,6 +320,58 @@ class I4Web_LMS_Manage_Patients {
         }
         echo json_encode($response);
 
+        die();
+    }
+
+    function i4_get_patient_info() {
+        $result = array();
+        $patient = get_user_by('id', $_GET['patient_id']);
+
+        $result['email'] = $patient->user_email;
+        $result['first_name'] = $patient->first_name;
+        $result['last_name'] = $patient->last_name;
+        $result['user_login'] = $patient->user_login;
+
+        echo json_encode($result);
+        die();
+    }
+
+    /**
+     * Called when updating a patient.
+     *
+     */
+    function i4_update_patient() {
+        global $current_i4_user, $wpdb;
+
+        $response = array();
+
+        //Perform a permissions check just in case
+        if (!user_can($current_i4_user, 'manage_patients')) {
+            die (__('Sorry but you do not have the proper permissions to perform this action. Contact support if you are receiving this in error', 'i4'));
+        }
+
+        $patient_id = $_POST['patient_id'];
+        $first_name = sanitize_text_field($_POST['patient_fname']);
+        $last_name = sanitize_text_field($_POST['patient_lname']);
+        $patient_array = array(
+            'ID' => $patient_id,
+            'user_email' => sanitize_text_field($_POST['patient_email']),
+            'first_name'   => $first_name,
+            'last_name'    => $last_name
+        );
+
+        wp_update_user($patient_array);
+        $wpdb->query(
+            $wpdb->prepare(
+                "UPDATE wp_users SET display_name=%s WHERE id=%d",
+                $first_name . " " . $last_name,
+                $patient_id
+            )
+        );
+
+        $response['status'] = 200;
+        $response['patient_id'] = $patient_id;
+        echo json_encode($response);
         die();
     }
 
