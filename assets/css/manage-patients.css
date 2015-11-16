@@ -20,16 +20,13 @@ ul.connectedSortable {
 
 ul.connectedSortable li {
     list-style-type: none;
-}
-
-#available-courses li {
     background-color: #e6e6e6;
     border-radius: 5px;
     padding: 10px;
     margin: 10px 0px 10px;
 }
 
-#available-courses li:hover {
+ul.connectedSortable li:hover {
     cursor: move;
 }
 

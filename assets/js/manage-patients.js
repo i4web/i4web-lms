@@ -7,6 +7,34 @@ jQuery(document).ready(function ($) {
             footer_class: 'confirm-buttons'
         });
 
+        var managePatientsTable = $('#manage-patients-table');
+        $(managePatientsTable).tablesorter({
+            // Initial sort is patient name in ascending order
+            sortList: [[0,0]],
+            widgets: ['filter'],
+            headers: {
+                2: { filter: false },
+                3: { filter: false }
+            },
+            cancelSelection: true,
+            ignoreCase: true,
+            sortInitialOrder: "asc"
+        });
+
+        pagerOptions = {
+            container: $(".pager"),
+            output: '{startRow} - {endRow} / {filteredRows}',
+            fixedHeight: false,
+            removeRows: false,
+
+            cssGoto: '.gotoPage',
+            cssNext: '.next',
+            cssPrev: '.prev',
+            cssFirst: '.first',
+            cssLast: '.last'
+        };
+        managePatientsTable.tablesorterPager(pagerOptions);
+
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
@@ -51,6 +79,7 @@ jQuery(document).ready(function ($) {
 
                 // Remove the patient
                 $('#' + patientId).remove();
+                $(managePatientsTable).trigger("update", [ true ]);
             });
         });
 
@@ -68,9 +97,25 @@ jQuery(document).ready(function ($) {
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
-//                var patientCourses = $('#' + patientId).find('.patient-courses');
-//                patientCourses.empty();
-//                render courses here
+                var patientCourses = $('#' + patientId).find('.patient-courses');
+
+                // Sort the assigned courses by name
+                var courses = $(userCourses).find('li');
+                courses.sort(function(a, b) {
+                    return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
+                });
+
+                // Generate the HTML for the assigned courses
+                var coursesText = "";
+                var numCourses = courses.size();
+                for (var i = 0; i < numCourses; i++) {
+                    coursesText += courses[i].textContent;
+                    if (i < numCourses - 1) {
+                        coursesText += "<br/>";
+                    }
+                }
+                $(patientCourses).html(coursesText);
+
                 $('#modify-courses-modal').foundation('reveal', 'close');
                 clearModifyCoursesModal();
             });
@@ -235,15 +280,10 @@ jQuery(document).ready(function ($) {
 
         function insertPatient(patient) {
             var patientRow = createRow(patient);
-
-            var patientName = patient.name.toLowerCase();
-            var names = $('td:first-child').map(function() {
-                return $(this).text().toLowerCase()
-            });
-            names.push(patientName);
-            var sorted = $.makeArray(names.sort());
-            var insertIndex = sorted.indexOf(patientName);
-            $('tr:nth-child(' + (insertIndex + 1) + ')', patientsList).before(patientRow);
+            var $patientRow = $(patientRow);
+            var resort = true;
+            $(managePatientsTable).find('tbody').append($patientRow).trigger('addRows', [$patientRow, resort]);
+            return false;
         }
 
         function createRow(patient) {
