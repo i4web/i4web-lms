@@ -179,12 +179,15 @@ jQuery(document).ready(function ($) {
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
             $('#patient_email').removeAttr('value');
-            $('#patient_username').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
             $('#edit-patient-submit').text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
+
+            var username = $('#patient_username');
+            $(username).removeAttr('value');
+            $(username).removeAttr('disabled');
         }
 
         function clearModifyCoursesModal() {
