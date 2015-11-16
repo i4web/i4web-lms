@@ -7,6 +7,34 @@ jQuery(document).ready(function ($) {
             footer_class: 'confirm-buttons'
         });
 
+        var managePatientsTable = $('#manage-patients-table');
+        $(managePatientsTable).tablesorter({
+            // Initial sort is patient name in ascending order
+            sortList: [[0,0]],
+            widgets: ['filter'],
+            headers: {
+                2: { filter: false },
+                3: { filter: false }
+            },
+            cancelSelection: true,
+            ignoreCase: true,
+            sortInitialOrder: "asc"
+        });
+
+        pagerOptions = {
+            container: $(".pager"),
+            output: '{startRow} - {endRow} / {filteredRows}',
+            fixedHeight: false,
+            removeRows: false,
+
+            cssGoto: '.gotoPage',
+            cssNext: '.next',
+            cssPrev: '.prev',
+            cssFirst: '.first',
+            cssLast: '.last'
+        };
+        managePatientsTable.tablesorterPager(pagerOptions);
+
         //verify the input by the user when adding a new patient
         verifyPatientInput();
 
@@ -14,6 +42,10 @@ jQuery(document).ready(function ($) {
             connectWith: ".connectedSortable",
             revert: true
         }).disableSelection();
+
+        $('#add-patients').on('click', function() {
+            showEditPatientModal(true);
+        });
 
         var patientsList = $('#patients-list');
         // When clicking the modify courses button
@@ -28,7 +60,7 @@ jQuery(document).ready(function ($) {
         // When clicking the edit patient button
         $(patientsList).on('click', '.fa-pencil', function() {
             var patientId = $(this).closest('tr').attr('id');
-            //editPatient(patientId);
+            showEditPatientModal(false, patientId);
         });
 
         // When clicking the remove patient button
@@ -51,14 +83,16 @@ jQuery(document).ready(function ($) {
 
                 // Remove the patient
                 $('#' + patientId).remove();
+                $(managePatientsTable).trigger("update", [ true ]);
             });
         });
 
         $('#update-patient-courses-submit').on('click', function (e) {
             e.preventDefault();
 
-            var courseIds = $("#user-courses").sortable("toArray");
-            var patientId = $("#patientId").val();
+            var userCourses = $("#user-courses");
+            var courseIds = userCourses.sortable("toArray");
+            var patientId = $("#coursesPatientId").val();
 
             var data = {
                 action: 'i4_lms_handle_update_patient_courses',
@@ -67,31 +101,57 @@ jQuery(document).ready(function ($) {
             };
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
-//                var patientCourses = $('#' + patientId).find('.patient-courses');
-//                patientCourses.empty();
-//                render courses here
+                var patientCourses = $('#' + patientId).find('.patient-courses');
+
+                // Sort the assigned courses by name
+                var courses = $(userCourses).find('li');
+                courses.sort(function(a, b) {
+                    return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
+                });
+
+                // Generate the HTML for the assigned courses
+                var coursesText = "";
+                var numCourses = courses.size();
+                for (var i = 0; i < numCourses; i++) {
+                    coursesText += courses[i].textContent;
+                    if (i < numCourses - 1) {
+                        coursesText += "<br/>";
+                    }
+                }
+                $(patientCourses).html(coursesText);
+
                 $('#modify-courses-modal').foundation('reveal', 'close');
+                clearModifyCoursesModal();
             });
         });
 
         // The new user submit button.
-        $('#add-new-patient-submit').on('click', function (e) {
+        $('#edit-patient-submit').on('click', function (e) {
             e.preventDefault();
 
-            var i4_patient_email = $('#patient_email').val(); //retrieve the patients email
-            var i4_patient_username = $('#patient_username').val(); //retrieve the patients email
+            var i4_patient_email = $('#patient_email').val();
             var i4_patient_firstname = $('#patient_fname').val();
             var i4_patient_lastname = $('#patient_lname').val();
 
-            // Trigger AJAX request to allow the user to retake the quiz.
+            var patientId = $('#patientId').val();
             var data = {
-                action: 'i4_lms_handle_add_new_patient',
-                security: wpcw_js_consts_fe.new_patient_nonce,
                 patient_email: i4_patient_email,
-                patient_username: i4_patient_username,
                 patient_fname: i4_patient_firstname,
                 patient_lname: i4_patient_lastname
             };
+
+            if (patientId) {
+                // Editing an existing patient
+                data.action = 'i4_lms_update_patient';
+                data.patient_id = patientId;
+            }
+            else {
+                // Adding a new patient
+                var i4_patient_username = $('#patient_username').val();
+                data.action = 'i4_lms_handle_add_new_patient';
+                data.security = wpcw_js_consts_fe.new_patient_nonce;
+                data.patient_username = i4_patient_username;
+            }
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
@@ -101,23 +161,95 @@ jQuery(document).ready(function ($) {
                         email: i4_patient_email
                     };
 
-                    $.when(showModifyCoursesModal(patient)).done(function() {
-                        insertPatient(patient);
+                    if (!patientId) {
+                        $.when(showModifyCoursesModal(patient)).done(function () {
+                            insertPatient(patient);
+                            // Hide the new user modal
+                            $('#edit-patient-modal').foundation('reveal', 'close');
+                            clearEditPatientModal();
+                        });
+                    }
+                    else {
+                        updatePatient(patient);
                         // Hide the new user modal
-                        $('#new-patient-modal').foundation('reveal', 'close');
-                    });
+                        $('#edit-patient-modal').foundation('reveal', 'close');
+                        clearEditPatientModal();
+                    }
                 }
             }, 'json');
         });
 
-        function clearModifyCoursesModal() {
+        function clearEditPatientModal() {
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
+            $('#patient_email').removeAttr('value');
+            $('#patient_fname').removeAttr('value');
+            $('#patient_lname').removeAttr('value');
+            $('#edit-patient-submit').text('Next');
+            $('#i4_email_availability_status').empty();
+            $('#i4_username_availability_status').empty();
+
+            var username = $('#patient_username');
+            $(username).removeAttr('value');
+            $(username).removeAttr('disabled');
+
+            $('#modalTitle').text("Add New Patient");
+        }
+
+        function clearModifyCoursesModal() {
+            // Unset the patient ID and name in the modal
+            $('#coursesPatientId').removeAttr('value');
             $('#modifyCoursesTitle').children('i').empty();
 
             // Unset the courses in the sortable
             $('#available-courses').empty();
             $('#user-courses').empty();
+        }
+
+        function showEditPatientModal(isNewPatient, patientId) {
+            clearEditPatientModal();
+
+            var patient = {};
+            var data = {
+                action: 'i4_lms_get_patient_info',
+                patient_id: patientId
+            };
+
+            var editPatientModal = $('#edit-patient-modal');
+            if (!isNewPatient) {
+                $.when($.get(wpcw_js_consts_fe.ajaxurl, data, function (response) {
+                    patient = {
+                        email: response.email,
+                        username: response.user_login,
+                        fname: response.first_name,
+                        lname: response.last_name
+                    };
+                }, 'json').done(function () {
+                    $(editPatientModal).find('#patientId').val(patientId);
+
+                    $('#modalTitle').text("Edit Patient");
+
+                    var email = $(editPatientModal).find('#patient_email');
+                    $(email).val(patient.email);
+
+                    var username = $(editPatientModal).find('#patient_username');
+                    $(username).attr('disabled', true);
+                    $(username).val(patient.username);
+
+                    var fname = $(editPatientModal).find('#patient_fname');
+                    $(fname).val(patient.fname);
+
+                    var lname = $(editPatientModal).find('#patient_lname');
+                    $(lname).val(patient.lname);
+
+                    $('#edit-patient-submit').text('Done');
+
+                    $(editPatientModal).foundation('reveal', 'open');
+                }));
+            }
+            else {
+                $(editPatientModal).foundation('reveal', 'open');
+            }
         }
 
         function showModifyCoursesModal(patient) {
@@ -129,7 +261,7 @@ jQuery(document).ready(function ($) {
             };
             $.get(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 // Set the patient ID and name in the modal
-                $('#patientId').val(patient.id);
+                $('#coursesPatientId').val(patient.id);
                 $('#modifyCoursesTitle').children('i').html(patient.name);
 
                 // Set the courses in the sortables
@@ -156,17 +288,18 @@ jQuery(document).ready(function ($) {
             return li;
         }
 
+        function updatePatient(patient) {
+            var patientRow = $('#' + patient.id);
+            $('.patient-name', patientRow).text(patient.name);
+            $('.patient-email', patientRow).text(patient.email);
+        }
+
         function insertPatient(patient) {
             var patientRow = createRow(patient);
-
-            var patientName = patient.name.toLowerCase();
-            var names = $('td:first-child').map(function() {
-                return $(this).text().toLowerCase()
-            });
-            names.push(patientName);
-            var sorted = $.makeArray(names.sort());
-            var insertIndex = sorted.indexOf(patientName);
-            $('tr:nth-child(' + (insertIndex + 1) + ')', patientsList).before(patientRow);
+            var $patientRow = $(patientRow);
+            var resort = true;
+            $(managePatientsTable).find('tbody').append($patientRow).trigger('addRows', [$patientRow, resort]);
+            return false;
         }
 
         function createRow(patient) {

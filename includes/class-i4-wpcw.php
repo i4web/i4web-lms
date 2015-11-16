@@ -462,7 +462,7 @@ class I4_LMS_WPCW {
         $wpdb->show_errors();
         //SELECT `course_title` FROM `wp_wpcw_user_courses` LEFT JOIN wp_wpcw_courses ON wp_wpcw_user_courses.course_id=wp_wpcw_courses.course_id WHERE `user_id`= 3
 
-        $SQL = $wpdb->prepare("SELECT $wpcwdb->courses.course_id, $wpcwdb->courses.course_title FROM $wpcwdb->user_courses LEFT JOIN $wpcwdb->courses ON $wpcwdb->user_courses.course_id=$wpcwdb->courses.course_id WHERE user_id = %d", $user_id);
+        $SQL = $wpdb->prepare("SELECT $wpcwdb->courses.course_id, $wpcwdb->courses.course_title FROM $wpcwdb->user_courses LEFT JOIN $wpcwdb->courses ON $wpcwdb->user_courses.course_id=$wpcwdb->courses.course_id WHERE user_id = %d ORDER BY LOWER($wpcwdb->courses.course_title)", $user_id);
         $results = $wpdb->get_results($SQL, OBJECT_K);
         return $this->results_to_course_array($results);
     }
