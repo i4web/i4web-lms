@@ -57,8 +57,7 @@ class I4Web_LMS_Manage_Patients {
         $patients = $this->i4_get_patients();
         ?>
         <div class="page-title">
-            <h3><?php echo get_the_title(); ?> <span><a href="#" data-reveal-id="edit-patient-modal"
-                                                        class="button tiny blue">Add New Patient</a></h3>
+            <h3><?php echo get_the_title(); ?> <span><a id="add-patients" href="#" class="button tiny blue">Add New Patient</a></h3>
         </div>
 
         <?php
