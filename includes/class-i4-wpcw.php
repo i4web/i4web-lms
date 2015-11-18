@@ -87,7 +87,7 @@ class I4_LMS_WPCW {
                 printf(__('<div class="my-course-wrapper">'));
                 printf(__('<div class="my-course-meta">'));
                 printf(__('<div class="my-course-title" >'));
-                printf(__('<h3 class="wpcw_tbl_progress_course">Course - %s</h3>'), $course->course_title);
+                printf(__('<h3 class="wpcw_tbl_progress_course">%s</h3>'), $course->course_title);
                 printf(__('</div> <!-- end my-course-title -->'));
                 printf(__('<div class="my-course-pct-complete">%s%% Complete</div>'), $i4_percent_completed);
                 printf(__('</div><!-- end course-meta -->'));
@@ -96,6 +96,7 @@ class I4_LMS_WPCW {
 
                 //Let's get the modules for the course
                 if ($modules) {
+                    $module_count = 1;
                     foreach ($modules as $module) {
 
                         //get the units for the module
@@ -103,7 +104,7 @@ class I4_LMS_WPCW {
 
                         //display the module title
                         printf('<div class="my-course-module-title">');
-                        printf(__('<p>%s</p>'), $module->module_title);
+                        printf(__('<p>Module #%d - %s</p>'), $module_count, $module->module_title);
                         printf('</div> <!-- end my-course-module-title -->');
 
                         //create a table for each of the units in the module
@@ -113,14 +114,14 @@ class I4_LMS_WPCW {
                         if ($units) {
                             foreach ($units as $unit) {
                                 printf('<tr>');
-                                printf('<td class="large-8 small-6 columns">');
-                                printf(('<a href="%s" title="%s" class="my-course-link"><i class="fa fa-play-circle-o"></i> %s</a>'), get_the_permalink($unit->ID), $unit->post_title, $unit->post_title);
+                                printf('<td class="my-course-unit-title">');
+                                printf(('<a href="%s" title="%s" class="my-course-link">%s</a>'), get_the_permalink($unit->ID), $unit->post_title, $unit->post_title);
                                 //  printf('</td>');
                                 printf('</td>');
-                                printf('<td class="large-4 small-6 columns">');
+                                printf('<td class="my-course-unit-action">');
                                 //If the unit is in the completed units array, display the completed checkmark.
                                 if (in_array($unit->ID, $i4_completed_units)) {
-                                    printf('<div class="right completed-icon"><i class="fa fa-check font-success completed-icon"></i> Completed!</div>');
+                                    printf('<div class="right completed-icon"><i class="fa fa-check font-success completed-icon"></i></div>');
                                 }
                                 else {
                                     printf(__('<a class="button my-courses-button tiny blue right" title="Begin %s" href="%s">Begin</a>'), $unit->post_title, get_the_permalink($unit->ID));
@@ -131,7 +132,7 @@ class I4_LMS_WPCW {
                         }
 
                         printf('</table> <!-- my-course-units-table -->');
-
+                        $module_count++;
                     }
                 }
 
