@@ -64,67 +64,73 @@ class I4Web_LMS_Manage_Patients {
         $this->i4_new_patient_modal();
         $this->i4_modify_courses_modal();
         ?>
-
-        <div id="pager" class="pager">
-            <form>
-                Page: <select class="gotoPage" title="Select page number"></select>
-                <img class="first"/>
-                <img class="prev"/>
-                <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
-                <img class="next"/>
-                <img class="last"/>
-                <select class="pagesize">
-                    <option value="10">10</option>
-                    <option value="25">25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="all">All Rows</option>
-                </select>
-            </form>
-        </div>
-        <table id="manage-patients-table" class="manage-patients-table tablesorter">
-            <thead>
-            <tr>
-                <th data-sorter="text">Patient Name</th>
-                <th data-sorter="text">Patient Email</th>
-                <th data-sorter="false">Patient Courses</th>
-                <th data-sorter="false">Actions</th>
-            </tr>
-            </thead>
-            <tbody id="patients-list">
-            <?php foreach ($patients as $patient) { //loop through each of the patients
-                $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
-                ?>
-                <tr id="<?php echo $patient->ID ?>">
-                    <td class="patient-name"><?php echo $patient->display_name; ?></td>
-                    <td class="patient-email"><?php echo $patient->user_email; ?></td>
-                    <td class="patient-courses">
-                        <?php foreach ($patient_courses as $course_id => $course_title) {
-                            echo $course_title . '<br>';
-                        } ?>
-                    </td>
-                    <td class="patient-actions">
-                        <span class="manage-patient-action">
-                            <a href="#" title="Edit Patient">
-                                <i class="fa fa-pencil"></i>
-                            </a>
-                        </span>
-                        <span class="manage-patient-action">
-                            <a href="#" title="Modify Courses">
-                                <i class="fa fa-list"></i>
-                            </a>
-                        </span>
-                        <span class="manage-patient-action">
-                            <a href="#" data-confirm class="remove-patient" title="Remove Patient">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </span>
-                    </td>
+        <div class="manage-patients-table-wrapper">
+            <table id="manage-patients-table" class="manage-patients-table tablesorter">
+                <thead>
+                <tr>
+                    <th data-sorter="text">Patient Name</th>
+                    <th data-sorter="text">Patient Email</th>
+                    <th data-sorter="false">Patient Courses</th>
+                    <th data-sorter="false">Actions</th>
                 </tr>
+                </thead>
+                <tbody id="patients-list">
+                <?php foreach ($patients as $patient) { //loop through each of the patients
+                    $patient_courses = I4Web_LMS()->i4_wpcw->i4_get_assigned_courses($patient->ID); //Retrieve the assigned courses for the patient
+                    ?>
+                    <tr id="<?php echo $patient->ID ?>">
+                        <td class="patient-name"><?php echo $patient->display_name; ?></td>
+                        <td class="patient-email"><?php echo $patient->user_email; ?></td>
+                        <td class="patient-courses">
+                            <?php foreach ($patient_courses as $course_id => $course_title) {
+                                echo $course_title . '<br>';
+                            } ?>
+                        </td>
+                        <td class="patient-actions">
+                            <span class="manage-patient-action">
+                                <a href="#" title="Edit Patient">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </span>
+                            <span class="manage-patient-action">
+                                <a href="#" title="Modify Courses">
+                                    <i class="fa fa-list"></i>
+                                </a>
+                            </span>
+                            <span class="manage-patient-action">
+                                <a href="#" data-confirm class="remove-patient" title="Remove Patient">
+                                    <i class="fa fa-times"></i>
+                                </a>
+                            </span>
+                        </td>
+                    </tr>
 
-            <?php } ?>
-            </tbody>
-        </table>
+                <?php } ?>
+                </tbody>
+            </table>
+
+            <div id="pager" class="pager">
+                <form>
+                    Page: <select class="gotoPage" title="Select page number"></select>
+                    <i class="first fa fa-step-backward text-blue"/></i>
+                    <i class="prev fa fa-backward text-blue"/></i>
+                    <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+                    <i class="next fa fa-forward text-blue"/></i>
+                    <i class="last fa fa-step-forward text-blue"/></i>
+                    <div class="right">
+                    Show
+                    <select class="pagesize">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                    Patients
+                    </div>
+                </form>
+            </div>
+
+        </div> <!-- end manage-patients-table-wrapper -->
 
         <?php
     }
@@ -205,16 +211,26 @@ class I4Web_LMS_Manage_Patients {
                         </div> <!-- end row -->
 
                         <div class="row">
-                          <div class="large-12 columns">
-                            <label>First Name</label>
-                            <input type="text" class="patient-fname" id="patient_fname" name="patient_fname" value="" required/>
+                            <div class="large-12 columns">
+                                <div class="row collapse">
+                                    <div class="small-10 columns">
+                                        <input type="text" class="patient-fname" id="patient_fname" name="patient_fname" placeholder="First Name" value="" required/>
+                                    </div> <!-- end .small-10 columns -->
+                                    <div class="small-2 columns">
+                                    </div> <!-- end .small-2 columns -->
+                                </div> <!-- end .row collapse -->
                           </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                         <div class="row">
-                          <div class="large-12 columns">
-                            <label>Last Name</label>
-                            <input type="text" class="patient-lname" id="patient_lname" name="patient_lname" value="" required/>
-                          </div> <!-- end large-12 -->
+                            <div class="large-12 columns">
+                                <div class="row collapse">
+                                    <div class="small-10 columns">
+                                        <input type="text" class="patient-lname" id="patient_lname" name="patient_lname" placeholder="Last Name" value="" required/>
+                                    </div> <!-- end .small-10 columns -->
+                                    <div class="small-2 columns">
+                                    </div> <!-- end .small-2 columns -->
+                                </div> <!-- end .row collapse -->
+                            </div> <!-- end large-12 -->
                         </div> <!-- end row -->
                         <div class="row">
                           <div class="large-12 columns">

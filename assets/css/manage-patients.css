@@ -38,3 +38,39 @@ ul.connectedSortable li:hover {
 .reveal-modal div.confirm-buttons .confirm-button, .reveal-modal div.confirm-buttons .cancel-button {
     width: 40%;
 }
+
+/******************************
+Manage Patients Table
+******************************/
+.manage-patients-table-wrapper {
+    max-width: 100%;
+    overflow-x: scroll;
+}
+
+.manage-patients-table {
+    border-spacing: 0;
+    border: 0;
+}
+
+.manage-patients-table td {
+    border-bottom: 1px solid #e6e6e6;
+    padding: .875rem;
+}
+
+/******************************
+TableSorter
+******************************/
+.tablesorter-pager select {
+    padding-left: .3rem;
+    width: 3rem;
+}
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc{
+    border-color: #2a819f;
+}
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc{
+    border-color: #2a819f;
+}
