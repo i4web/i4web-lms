@@ -271,8 +271,13 @@ class I4Web_LMS_Admin_Menu {
         echo '<div class="wrap">';
         echo '<h2>Manage Coordinators</h2>';
 
-        //add the New Coordinator Form
-        I4Web_LMS()->i4_coordinators->new_coordinator_form();
+        if (isset($_GET['action']) && $_GET['action'] == 'edit') {
+            I4Web_LMS()->i4_coordinators->edit_coordinator_form();
+        }
+        else{
+            //add the New Coordinator Form
+            I4Web_LMS()->i4_coordinators->new_coordinator_form();
+        }
         ?>
 
 
