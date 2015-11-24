@@ -514,9 +514,11 @@ class I4Web_LMS_Coordinators {
         $wpdb->show_errors();
 
         $SQL = $wpdb->prepare("
-  		SELECT *
-  		FROM $table_name
-  		WHERE course_id = %d
+  		SELECT u.ID, u.user_login, u.display_name, u.user_email FROM wp_users u
+                INNER JOIN wp_usermeta m ON m.user_id = u.ID
+                WHERE m.meta_key = 'coordinator_course_id'
+                  AND m.meta_value = %d
+                ORDER BY LOWER(u.display_name)
   	", $course_id);
 
         return $wpdb->get_row($SQL);
