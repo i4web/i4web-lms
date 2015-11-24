@@ -56,8 +56,6 @@ class I4Web_LMS_DB {
     public function create_i4_coordinators_table() {
         global $wpdb;
 
-        //Only run this for the main site in our CandidateSpace network
-
         $charset_collate = $wpdb->get_charset_collate();
 
         $sql = "CREATE TABLE " . $this->i4_coordinators_table_name . "(
