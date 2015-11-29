@@ -1,9 +1,12 @@
 jQuery(document).ready(function ($) {
     $(function() {
         $(document).confirmWithReveal({
-            modal_class: 'reveal-confirm-modal',
-            ok_class: 'button blue confirm-button',
-            cancel_class: 'button secondary cancel-button',
+            modal_class: 'reveal-confirm-modal medium',
+            ok: 'Delete',
+            ok_class: 'button blue confirm-button tiny',
+            body: 'This action is permanent and cannot be undone',
+            cancel_class: 'button primary cancel-button tiny',
+            title_class: 'confirm-heading',
             footer_class: 'confirm-buttons'
         });
 
@@ -66,7 +69,7 @@ jQuery(document).ready(function ($) {
         // When clicking the remove patient button
         $(patientsList).on('click', '.fa-times', function() {
             var patientName = $(this).closest('td').siblings('.patient-name').text();
-            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove <i>' + patientName + '</i>?"}');
+            $(this).closest('a').attr('data-confirm', '{"title": "Are you sure you want to remove <i><strong>' + patientName + '</strong></i>?"}');
         });
 
         // Handle the event where the user has confirmed the deletion of the patient
