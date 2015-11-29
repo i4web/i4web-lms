@@ -1,3 +1,14 @@
+/******************************
+Buttons
+******************************/
+#add-patients {
+    margin-left: 1rem;
+    padding: .5rem .3rem .5rem 0.3rem;
+}
+
+/******************************
+Manage Patients Table
+******************************/
 .courses-table {
     display: table;
     width: 100%;
@@ -12,6 +23,25 @@
     display: table-cell;
 }
 
+.manage-patients-table-wrapper {
+    max-width: 100%;
+    overflow-x: scroll;
+}
+
+.manage-patients-table {
+    border-spacing: 0;
+    border: 0;
+}
+
+.manage-patients-table td {
+    border-bottom: 1px solid #e6e6e6;
+    padding: .875rem;
+}
+
+
+/******************************
+Sortable Courses
+******************************/
 ul.connectedSortable {
     width: 50%;
     list-style-type: none;
@@ -32,6 +62,13 @@ ul.connectedSortable li:hover {
     cursor: move;
 }
 
+/******************************
+Confirm Reveal Modal
+******************************/
+.reveal-confirm-modal {
+    text-align: center;
+}
+
 .reveal-modal div.confirm-buttons {
     width: 200px;
     margin: 0 auto;
@@ -41,23 +78,10 @@ ul.connectedSortable li:hover {
     width: 40%;
 }
 
-/******************************
-Manage Patients Table
-******************************/
-.manage-patients-table-wrapper {
-    max-width: 100%;
-    overflow-x: scroll;
+.confirm-heading {
+    font-size: 1.5rem;
 }
 
-.manage-patients-table {
-    border-spacing: 0;
-    border: 0;
-}
-
-.manage-patients-table td {
-    border-bottom: 1px solid #e6e6e6;
-    padding: .875rem;
-}
 
 /******************************
 TableSorter
