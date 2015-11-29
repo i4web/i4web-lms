@@ -31,6 +31,7 @@ class I4Web_LMS_Login {
         add_action('login_enqueue_scripts', array($this, 'i4_login_logo_img'));
         add_action('login_footer', array($this, 'i4_login_footer_text'));
         add_action('login_head', array($this, 'display_login_site_icon'));
+        add_action('login_message', array($this, 'i4_change_register_message'));
 
     }
 
@@ -80,7 +81,7 @@ class I4Web_LMS_Login {
         $brand_secondary = esc_attr($brand_settings['i4-lms-secondary-color']);
         ?>
         <style type="text/css">
-            body {
+            html,body {
                 background-color: <?php echo $brand_secondary; ?>;
             }
 
@@ -103,9 +104,18 @@ class I4Web_LMS_Login {
                 overflow: hidden;
                 display: block;
             }
-
             .login form {
                 border-radius: 3px;
+                margin-top: 40px;
+            }
+            #login {
+                padding: 2% 0 0;
+            }
+            #reg_passmail {
+                padding: 20px 0 10px 0px;
+                text-align: center;
+                font-style: italic;
+                color: #a7a7a7;
             }
 
             .wp-core-ui .button-group.button-large .button, .wp-core-ui .button.button-large {
@@ -144,12 +154,19 @@ class I4Web_LMS_Login {
                 box-shadow: 0 0 0 rgba(124, 53, 32, 0.8);
             }
 
+            select {
+                width: 100%;
+                height: 33px;
+                margin-top: 10px;
+            }
+
             .login form .input, .login form input[type=checkbox], .login input[type=text] {
                 background: #F6F6F6;
             }
 
             .login-footer {
-                color: <?php echo $brand_primary; ?> height: 100%;
+                color: <?php echo $brand_primary; ?>;
+                height: 100%;
                 margin-top: 25px;
                 max-height: 50px;
                 padding-top: 25px;
@@ -169,9 +186,30 @@ class I4Web_LMS_Login {
                 color: <?php echo $brand_primary; ?>;
                 border-radius: 3px;
             }
-
+            .login #login_error {
+                color: <?php echo $brand_primary; ?>;
+                border: 0;
+                font-size: 20px;
+                text-align: center;
+                color: #EA0202;
+                background: transparent;
+                box-shadow: none;
+            }
             .login .message {
-                border-left: 4px solid <?php echo $brand_primary; ?>;
+                border: 0;
+                background: transparent;
+                box-shadow: none;
+                color: <?php echo $brand_primary; ?>;
+                font-size: 20px;
+                text-align: center;
+                margin-bottom: -20px;
+            }
+
+            /* Large Screens */
+            @media only screen and (min-width: 64.063em) {
+                #login{
+                    width: 40%;
+                }
             }
         </style> <?php
     }
@@ -185,4 +223,24 @@ class I4Web_LMS_Login {
     public function i4_login_footer_text() {
         echo '<div class="login-footer"><p class="i4lms-tagline-login">' . get_bloginfo('description') . '</p><p>&copy; ' . date("Y") . ' ' . get_bloginfo('name') . '. All Rights Reserved.</p></div>';
     }
+
+    /**
+     * Customize the Registration text
+     *
+     * @since 0.0.1
+     * @return void
+     */
+    function i4_change_register_message($message)
+	{
+		// change messages that contain 'Register'
+		if (strpos($message, 'Register') !== FALSE) {
+			$newMessage = "Register for your online course below";
+			return '<p class="message register" style="text-align:center;">' . $newMessage . '</p>';
+		}
+		else {
+			return $message;
+		}
+	}
+
+
 }
