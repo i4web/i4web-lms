@@ -78,11 +78,13 @@ jQuery(document).ready(function ($) {
         if (nextUnit) {
             var nextUnitLink = nextUnit.href;
             var bannerLinkSpan = jQuery('#completed-next-link').get(0);
-            bannerLinkSpan.innerHTML = "Move on to the ";
+            //bannerLinkSpan.innerHTML = "";
 
             var bannerLink = document.createElement('a');
             bannerLink.setAttribute('href', nextUnitLink);
-            bannerLink.innerHTML = "next unit.";
+            bannerLink.setAttribute('class', 'button tiny next-unit-button');
+
+            bannerLink.innerHTML = "Move on to the next unit.";
 
             bannerLinkSpan.appendChild(bannerLink);
         }
