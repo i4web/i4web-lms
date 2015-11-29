@@ -30,7 +30,9 @@ class I4_LMS_WPCW {
         global $wpdb, $wpdb;
 
         add_shortcode('i4_assigned_courses', array($this, 'i4_assigned_courses_shortcode'));
-
+        add_action( 'register_form', array($this, 'i4_register_form'));
+        add_filter( 'user_register', array($this, 'i4_user_register'));
+        add_filter( 'registration_errors', array($this, 'i4_registration_errors' ));
 
     }
 
@@ -512,6 +514,94 @@ class I4_LMS_WPCW {
             $courses[$id] = $course->course_title;
         }
         return $courses;
+    }
+
+    /**
+     * Adds Custom Elements to the Registration form
+     *
+     * @since 0.0.1
+     */
+    function i4_register_form(){
+        $first_name = ( ! empty( $_POST['first_name'] ) ) ? trim( $_POST['first_name'] ) : '';
+        $last_name = ( ! empty( $_POST['last_name'] ) ) ? trim( $_POST['last_name'] ) : '';
+        $courses = $this->i4_get_all_courses();
+    ?>
+        <p>
+            <label for="first_name"><?php _e( 'First Name', 'i4' ) ?><br />
+                <input type="text" name="first_name" id="first_name" class="input" value="<?php echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" />
+            </label>
+        </p>
+        <p>
+            <label for="last_name"><?php _e( 'Last Name', 'i4' ) ?><br />
+                <input type="text" name="last_name" id="last_name" class="input" value="<?php echo esc_attr( wp_unslash( $last_name ) ); ?>" size="25" />
+            </label>
+        </p>
+        <p>
+            <label for="new_patient_course"><?php _e( 'Select a Course', 'i4' ) ?><br />
+                <select name="new_patient_course">
+                <?php foreach($courses as $id => $course){
+                    echo '<option value="'. esc_attr( $id ) .'">'.$course.'</option>';
+                }?>
+                </select>
+                <!-- <input type="text" name="first_name" id="first_name" class="input" value="<?php //echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" /></label> -->
+        </p>
+
+    <?php
+     }
+
+    /**
+     * Save the new patients course into the database.
+     *
+     * @since 0.0.1
+     */
+    function i4_user_register($user_id){
+        $safe_course_id = intval( $_POST['new_patient_course'] );
+
+        if ( ! empty( $_POST['new_patient_course'] && $safe_course_id ) ) {
+            $this->add_single_course( $user_id, $safe_course_id );
+        }
+
+        if ( ! empty( $_POST['first_name'] ) ) {
+            $first_name = sanitize_text_field($_POST['first_name']);
+            update_user_meta( $user_id, 'first_name', $first_name );
+        }
+
+        if ( ! empty( $_POST['last_name'] ) ) {
+            $last_name = sanitize_text_field($_POST['last_name']);
+            update_user_meta( $user_id, 'last_name',  $last_name );
+        }
+
+    }
+
+    function i4_registration_errors( $errors, $sanitized_user_login, $user_email ) {
+
+        if ( empty( $_POST['first_name'] ) || ! empty( $_POST['first_name'] ) && trim( $_POST['first_name'] ) == '' ) {
+            $errors->add( 'first_name_error', __( '<strong>ERROR</strong>: You must enter a first name.', 'i4' ) );
+        }
+
+        if ( empty( $_POST['last_name'] ) || ! empty( $_POST['last_name'] ) && trim( $_POST['last_name'] ) == '' ) {
+            $errors->add( 'last_name_error', __( '<strong>ERROR</strong>: You must enter a last name.', 'i4' ) );
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Adds the new patient to their selected course.
+     *
+     * @since 0.0.1
+     */
+    function add_single_course($patient_id, $course_id) {
+        global $wpdb;
+        $enrollment_date = date('Y-m-d H:i:s');
+            $wpdb->query(
+                $wpdb->prepare(
+                    "INSERT INTO wp_wpcw_user_courses(user_id, course_id, course_enrolment_date) VALUES(%d, %d, %s)",
+                    $patient_id,
+                    sanitize_text_field($course_id),
+                    $enrollment_date
+                )
+            );
     }
 
 }
