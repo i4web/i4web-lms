@@ -28,6 +28,7 @@ if (!function_exists('wp_new_user_notification')) :
         global $wpdb, $wp_hasher;
         $user = get_userdata($user_id);
 
+
         // The blogname option is escaped with esc_html on the way into the database in sanitize_option
         // we want to reverse this for the plain text arena of emails.
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
@@ -37,11 +38,22 @@ if (!function_exists('wp_new_user_notification')) :
         //Setup the Header for the Admin Notification
         $headers = sprintf(__('From: %s <no-reply@%s>'), $blogname, $domain_name) . "\r\n";
 
-        $message = '<p>' . sprintf(__('A new patient has been registered for %s:'), $blogname) . "</p>";
-        $message .= '<p>' . sprintf(__('Username: %s'), $user->user_login) . "</p>";
-        $message .= '<p>' . sprintf(__('E-mail: %s'), $user->user_email) . "</p>";
+        if( user_can( $user, 'coordinator' ) ){
+            //send Coordinator Welcome Email
+            $message = '<p>' . sprintf(__('A new coordinator has been registered for %s:'), $blogname) . "</p>";
+            $message .= '<p>' . sprintf(__('Username: %s'), $user->user_login) . "</p>";
+            $message .= '<p>' . sprintf(__('E-mail: %s'), $user->user_email) . "</p>";
+            I4Web_LMS()->i4_emails->send(get_option('admin_email'), sprintf(__('[%s] New Coordinator Registration'), $blogname), $message);
 
-        I4Web_LMS()->i4_emails->send(get_option('admin_email'), sprintf(__('[%s] New Patient Registration'), $blogname), $message);
+        }
+        else{
+            $message = '<p>' . sprintf(__('A new patient has been registered for %s:'), $blogname) . "</p>";
+            $message .= '<p>' . sprintf(__('Username: %s'), $user->user_login) . "</p>";
+            $message .= '<p>' . sprintf(__('E-mail: %s'), $user->user_email) . "</p>";
+            I4Web_LMS()->i4_emails->send(get_option('admin_email'), sprintf(__('[%s] New Patient Registration'), $blogname), $message);
+
+        }
+
 
         //@wp_mail(get_option('admin_email'), sprintf(__('[%s] New Patient Registration'), $blogname), $message, $headers);
 
@@ -63,15 +75,27 @@ if (!function_exists('wp_new_user_notification')) :
         $hashed = time() . ':' . $wp_hasher->HashPassword($key);
         $wpdb->update($wpdb->users, array('user_activation_key' => $hashed), array('user_login' => $user->user_login));
 
-        $message = sprintf(__('Hi %s,'), $user->first_name) . '<br>';
-        $message .= 'You have been registered for Celebration Health Education online courses.<br><br>';
-        $message .= sprintf(__('Your Username is - <strong> %s </strong>'), $user->user_login) . "\r\n\r\n";
-        $message .= 'All you have to do next is set a password for your account. <br><br>';
-        $message .= 'To set your password, visit the following address: <br><br>';
-        $message .= '<a href="' . site_url() . '/wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login) . '">Set Your Password</a><br><br>';
-//$message .= '<' . site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user->user_login), 'login') . "> <br>";
+        if( user_can( $user, 'coordinator' ) ){
+            $message = sprintf(__('Hi %s,'), $user->first_name) . '<br>';
+            $message .= 'You have been assigned as a Course Coordinator for Celebration Health Education online courses.<br><br>';
+            $message .= sprintf(__('Your Username is - <strong> %s </strong>'), $user->user_login) . "\r\n\r\n";
+            $message .= 'All you have to do next is set a password for your account. <br><br>';
+            $message .= 'To set your password, visit the following address: <br><br>';
+            $message .= '<a href="' . site_url() . '/wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login) . '">Set Your Password</a><br><br>';
+            $message .= 'Once registered, you can access your online course and manage patients 24/7 at ' . site_url() . "<br>";
+        }
+        else{
+            $message = sprintf(__('Hi %s,'), $user->first_name) . '<br>';
+            $message .= 'You have been registered for Celebration Health Education online courses.<br><br>';
+            $message .= sprintf(__('Your Username is - <strong> %s </strong>'), $user->user_login) . "\r\n\r\n";
+            $message .= 'All you have to do next is set a password for your account. <br><br>';
+            $message .= 'To set your password, visit the following address: <br><br>';
+            $message .= '<a href="' . site_url() . '/wp-login.php?action=rp&key=' . $key . '&login=' . rawurlencode($user->user_login) . '">Set Your Password</a><br><br>';
+    //$message .= '<' . site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user->user_login), 'login') . "> <br>";
 
-        $message .= 'Once registered, you can access your online courses 24/7 at ' . site_url() . "<br>";
+            $message .= 'Once registered, you can access your online courses 24/7 at ' . site_url() . "<br>";
+        }
+
 
         //wp_mail($user->user_email, sprintf(__('[%s] Your username and password info'), $blogname), $message);
 
