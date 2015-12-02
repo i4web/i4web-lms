@@ -79,14 +79,41 @@ jQuery(document).ready(function ($) {
                 action: 'i4_lms_remove_patient',
                 patientId: patientId
             };
+
+            var modal = $('.reveal-confirm-modal');
+            var spinner = document.createElement('div');
+            $(spinner).addClass('spinner').appendTo(modal);
+
+            var confirmButtonsDiv = $('div.confirm-buttons');
+            var cancelButton = $(confirmButtonsDiv).find('a.cancel-button');
+            var doneButton = $(confirmButtonsDiv).find('a.confirm-button');
+            var confirmHeader = $(modal).find('h2');
+            var confirmBody = $(modal).find('p');
+
+            // Dim the confirm dialog and show the spinner
+            confirmHeader.fadeTo(500, .2);
+            confirmBody.fadeTo(500, .2);
+            confirmButtonsDiv.fadeTo(500, .2);
+            $(spinner).show();
+            cancelButton.prop('disabled', true);
+            doneButton.prop('disabled', true);
+
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 // Remove the confirm modal
-                $('.reveal-confirm-modal').remove();
+                modal.remove();
                 $('.reveal-modal-bg').hide();
 
                 // Remove the patient
                 $('#' + patientId).remove();
                 $(managePatientsTable).trigger("update", [ true ]);
+
+                // Reset the confirm dialog and hide the spinner
+                confirmHeader.fadeTo(500, 1);
+                confirmBody.fadeTo(500, 1);
+                confirmButtonsDiv.fadeTo(500, 1);
+                $(spinner).remove();
+                cancelButton.prop('disabled', false);
+                doneButton.prop('disabled', false);
             });
         });
 

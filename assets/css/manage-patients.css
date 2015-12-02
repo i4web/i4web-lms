@@ -107,8 +107,11 @@ Modals
     position: absolute;
 }
 
-#modify-courses-modal .spinner,
-#edit-patient-modal .spinner {
+#edit-patient-modal {
+    position: absolute;
+}
+
+.spinner {
     background-image: url(../images/spinner.gif);
     position: absolute;
     top: 50%;
