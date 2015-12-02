@@ -106,14 +106,6 @@ jQuery(document).ready(function ($) {
                 // Remove the patient
                 $('#' + patientId).remove();
                 $(managePatientsTable).trigger("update", [ true ]);
-
-                // Reset the confirm dialog and hide the spinner
-                confirmHeader.fadeTo(500, 1);
-                confirmBody.fadeTo(500, 1);
-                confirmButtonsDiv.fadeTo(500, 1);
-                $(spinner).remove();
-                cancelButton.prop('disabled', false);
-                doneButton.prop('disabled', false);
             });
         });
 
