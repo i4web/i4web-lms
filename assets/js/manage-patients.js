@@ -103,6 +103,13 @@ jQuery(document).ready(function ($) {
                 courses: courseIds
             };
 
+            // Dim the form and show the spinner
+            var form = $('#modify-courses-form');
+            var spinner = $('#modify-courses-spinner');
+            form.fadeTo(500, .2);
+            spinner.show();
+            $('#update-patient-courses-submit').prop('disabled', true);
+
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 var patientCourses = $('#' + patientId).find('.patient-courses');
 
@@ -123,6 +130,8 @@ jQuery(document).ready(function ($) {
                 }
                 $(patientCourses).html(coursesText);
 
+                form.fadeTo(500, 1);
+                spinner.hide();
                 $('#modify-courses-modal').foundation('reveal', 'close');
                 clearModifyCoursesModal();
             });
@@ -200,6 +209,8 @@ jQuery(document).ready(function ($) {
         }
 
         function clearModifyCoursesModal() {
+            $('#update-patient-courses-submit').prop('disabled', false);
+
             // Unset the patient ID and name in the modal
             $('#coursesPatientId').removeAttr('value');
             $('#modifyCoursesTitle').children('i').empty();

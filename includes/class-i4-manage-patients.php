@@ -183,6 +183,7 @@ class I4Web_LMS_Manage_Patients {
     function i4_add_new_patient_form() {
 
         $content = '<div class="form-container">
+                      <div id="edit-patient-spinner" class="spinner"></div>
                       <form action="" method="POST" id="edit-patient-form" class="form-horizontal edit-patient-form">
                         <input id="patientId" name="patientId" type="hidden" value=""/>
                         <div class="row">
@@ -252,6 +253,7 @@ class I4Web_LMS_Manage_Patients {
 
     function i4_modify_courses_modal() {
         $html = '<div id="modify-courses-modal" class="reveal-modal small" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+                    <div id="modify-courses-spinner" class="spinner"></div>
                     <form action="" method="POST" id="modify-courses-form">
                         <input id="coursesPatientId" type="hidden" name="patientId" value=""/>
                         <h3 id="modifyCoursesTitle">Manage Courses for <i></i></h3>

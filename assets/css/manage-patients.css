@@ -38,7 +38,6 @@ Manage Patients Table
     padding: .875rem;
 }
 
-
 /******************************
 Sortable Courses
 ******************************/
@@ -99,4 +98,26 @@ TableSorter
 .tablesorter-default thead .tablesorter-headerSortDown,
 .tablesorter-default thead .tablesorter-headerDesc{
     border-color: #2a819f;
+}
+
+/*****************************
+Modals
+*****************************/
+#modify-courses-modal {
+    position: absolute;
+}
+
+#modify-courses-modal .spinner {
+    background-image: url(../images/spinner.gif);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -25px;
+    margin-top: -25px;
+    text-align: center;
+    z-index: 1000;
+    overflow: auto;
+    width: 50px;
+    height: 52px; /* +2px to fix IE8 */
+    display: none;
 }
