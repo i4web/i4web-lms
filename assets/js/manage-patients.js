@@ -104,10 +104,8 @@ jQuery(document).ready(function ($) {
             };
 
             // Dim the form and show the spinner
-            var form = $('#modify-courses-form');
-            var spinner = $('#modify-courses-spinner');
-            form.fadeTo(500, .2);
-            spinner.show();
+            $('#modify-courses-form').fadeTo(500, .2);
+            $('#modify-courses-spinner').show();
             $('#update-patient-courses-submit').prop('disabled', true);
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
@@ -130,8 +128,6 @@ jQuery(document).ready(function ($) {
                 }
                 $(patientCourses).html(coursesText);
 
-                form.fadeTo(500, 1);
-                spinner.hide();
                 $('#modify-courses-modal').foundation('reveal', 'close');
                 clearModifyCoursesModal();
             });
@@ -165,6 +161,11 @@ jQuery(document).ready(function ($) {
                 data.patient_username = i4_patient_username;
             }
 
+            // Dim the form and show the spinner
+            $('#edit-patient-form').fadeTo(500, .2);
+            $('#edit-patient-spinner').show();
+            $('#edit-patient-submit').prop('disabled', true);
+
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
                     var patient = {
@@ -192,12 +193,17 @@ jQuery(document).ready(function ($) {
         });
 
         function clearEditPatientModal() {
+            var submitButton = $('#edit-patient-submit');
+            $('#edit-patient-form').fadeTo(500, 1);
+            $('#edit-patient-spinner').hide();
+            submitButton.prop('disabled', false);
+
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
             $('#patient_email').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
-            $('#edit-patient-submit').text('Next');
+            submitButton.text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
 
@@ -209,6 +215,8 @@ jQuery(document).ready(function ($) {
         }
 
         function clearModifyCoursesModal() {
+            $('#modify-courses-form').fadeTo(500, 1);
+            $('#modify-courses-spinner').hide();
             $('#update-patient-courses-submit').prop('disabled', false);
 
             // Unset the patient ID and name in the modal
