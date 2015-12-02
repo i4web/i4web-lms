@@ -79,14 +79,41 @@ jQuery(document).ready(function ($) {
                 action: 'i4_lms_remove_patient',
                 patientId: patientId
             };
+
+            var modal = $('.reveal-confirm-modal');
+            var spinner = document.createElement('div');
+            $(spinner).addClass('spinner').appendTo(modal);
+
+            var confirmButtonsDiv = $('div.confirm-buttons');
+            var cancelButton = $(confirmButtonsDiv).find('a.cancel-button');
+            var doneButton = $(confirmButtonsDiv).find('a.confirm-button');
+            var confirmHeader = $(modal).find('h2');
+            var confirmBody = $(modal).find('p');
+
+            // Dim the confirm dialog and show the spinner
+            confirmHeader.fadeTo(500, .2);
+            confirmBody.fadeTo(500, .2);
+            confirmButtonsDiv.fadeTo(500, .2);
+            $(spinner).show();
+            cancelButton.prop('disabled', true);
+            doneButton.prop('disabled', true);
+
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 // Remove the confirm modal
-                $('.reveal-confirm-modal').remove();
+                modal.remove();
                 $('.reveal-modal-bg').hide();
 
                 // Remove the patient
                 $('#' + patientId).remove();
                 $(managePatientsTable).trigger("update", [ true ]);
+
+                // Reset the confirm dialog and hide the spinner
+                confirmHeader.fadeTo(500, 1);
+                confirmBody.fadeTo(500, 1);
+                confirmButtonsDiv.fadeTo(500, 1);
+                $(spinner).remove();
+                cancelButton.prop('disabled', false);
+                doneButton.prop('disabled', false);
             });
         });
 
@@ -102,6 +129,11 @@ jQuery(document).ready(function ($) {
                 patientId: patientId,
                 courses: courseIds
             };
+
+            // Dim the form and show the spinner
+            $('#modify-courses-form').fadeTo(500, .2);
+            $('#modify-courses-spinner').show();
+            $('#update-patient-courses-submit').prop('disabled', true);
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function() {
                 var patientCourses = $('#' + patientId).find('.patient-courses');
@@ -156,6 +188,11 @@ jQuery(document).ready(function ($) {
                 data.patient_username = i4_patient_username;
             }
 
+            // Dim the form and show the spinner
+            $('#edit-patient-form').fadeTo(500, .2);
+            $('#edit-patient-spinner').show();
+            $('#edit-patient-submit').prop('disabled', true);
+
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
                     var patient = {
@@ -183,12 +220,17 @@ jQuery(document).ready(function ($) {
         });
 
         function clearEditPatientModal() {
+            var submitButton = $('#edit-patient-submit');
+            $('#edit-patient-form').fadeTo(500, 1);
+            $('#edit-patient-spinner').hide();
+            submitButton.prop('disabled', false);
+
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
             $('#patient_email').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
-            $('#edit-patient-submit').text('Next');
+            submitButton.text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
 
@@ -200,6 +242,10 @@ jQuery(document).ready(function ($) {
         }
 
         function clearModifyCoursesModal() {
+            $('#modify-courses-form').fadeTo(500, 1);
+            $('#modify-courses-spinner').hide();
+            $('#update-patient-courses-submit').prop('disabled', false);
+
             // Unset the patient ID and name in the modal
             $('#coursesPatientId').removeAttr('value');
             $('#modifyCoursesTitle').children('i').empty();
