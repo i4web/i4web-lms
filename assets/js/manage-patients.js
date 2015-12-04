@@ -181,9 +181,10 @@ jQuery(document).ready(function ($) {
             }
 
             // Dim the form and show the spinner
+            var submitButton = $('#edit-patient-submit');
             $('#edit-patient-form').fadeTo(500, .2);
             $('#edit-patient-spinner').show();
-            $('#edit-patient-submit').prop('disabled', true);
+            submitButton.prop('disabled', true);
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
@@ -208,21 +209,21 @@ jQuery(document).ready(function ($) {
                         clearEditPatientModal();
                     }
                 }
+
+                // Always hide the spinner
+                $('#edit-patient-form').fadeTo(500, 1);
+                $('#edit-patient-spinner').hide();
+                submitButton.prop('disabled', false);
             }, 'json');
         });
 
         function clearEditPatientModal() {
-            var submitButton = $('#edit-patient-submit');
-            $('#edit-patient-form').fadeTo(500, 1);
-            $('#edit-patient-spinner').hide();
-            submitButton.prop('disabled', false);
-
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
             $('#patient_email').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
-            submitButton.text('Next');
+            $('#edit-patient-submit').text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
 
@@ -234,6 +235,7 @@ jQuery(document).ready(function ($) {
         }
 
         function clearModifyCoursesModal() {
+            // Hide the spinner and enable the submit button again
             $('#modify-courses-form').fadeTo(500, 1);
             $('#modify-courses-spinner').hide();
             $('#update-patient-courses-submit').prop('disabled', false);
@@ -411,17 +413,17 @@ jQuery(document).ready(function ($) {
         var i4_patient_email;
         var i4_patient_username;
 
-        var nextButton = $j('#add-new-patient-submit'); //store the nextButton element
+        var nextButton = $('#edit-patient-submit'); //store the nextButton element
 
         nextButton.prop("disabled", true); //lets disable the button immediately.
 
         //the patient email field changes
-        $j("#patient_email").change(function (e) {
+        $("#patient_email").change(function (e) {
 
-            emailCheck = false; //assume the email is false everytime we begin this
+            emailCheck = false; //assume the email is false every time we begin this
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
-            i4_patient_email = $j(this).val(); //retrieve the patients email
+            i4_patient_email = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_email',
@@ -445,11 +447,11 @@ jQuery(document).ready(function ($) {
         }); //end patient email field changes
 
         //the patient username field changes
-        $j("#patient_username").change(function (e) {
-            usernameCheck = false; // assume the username is false everytime this field is changed
+        $("#patient_username").change(function (e) {
+            usernameCheck = false; // assume the username is false every time this field is changed
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
-            i4_patient_username = $j(this).val(); //retrieve the patients email
+            i4_patient_username = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_username',
