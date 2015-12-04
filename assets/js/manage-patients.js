@@ -413,17 +413,17 @@ jQuery(document).ready(function ($) {
         var i4_patient_email;
         var i4_patient_username;
 
-        var nextButton = $j('#add-new-patient-submit'); //store the nextButton element
+        var nextButton = $('#edit-patient-submit'); //store the nextButton element
 
         nextButton.prop("disabled", true); //lets disable the button immediately.
 
         //the patient email field changes
-        $j("#patient_email").change(function (e) {
+        $("#patient_email").change(function (e) {
 
-            emailCheck = false; //assume the email is false everytime we begin this
+            emailCheck = false; //assume the email is false every time we begin this
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
-            i4_patient_email = $j(this).val(); //retrieve the patients email
+            i4_patient_email = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_email',
@@ -447,11 +447,11 @@ jQuery(document).ready(function ($) {
         }); //end patient email field changes
 
         //the patient username field changes
-        $j("#patient_username").change(function (e) {
-            usernameCheck = false; // assume the username is false everytime this field is changed
+        $("#patient_username").change(function (e) {
+            usernameCheck = false; // assume the username is false every time this field is changed
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
-            i4_patient_username = $j(this).val(); //retrieve the patients email
+            i4_patient_username = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_username',
