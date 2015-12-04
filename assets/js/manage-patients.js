@@ -285,7 +285,9 @@ jQuery(document).ready(function ($) {
                     var lname = $(editPatientModal).find('#patient_lname');
                     $(lname).val(patient.lname);
 
-                    $('#edit-patient-submit').text('Done');
+                    var submitButton = $('#edit-patient-submit');
+                    submitButton.text('Done');
+                    submitButton.attr('disabled', false);
 
                     $(editPatientModal).foundation('reveal', 'open');
                 }));
@@ -414,13 +416,14 @@ jQuery(document).ready(function ($) {
         var i4_patient_username;
 
         var nextButton = $('#edit-patient-submit'); //store the nextButton element
-
         nextButton.prop("disabled", true); //lets disable the button immediately.
 
         //the patient email field changes
         $("#patient_email").change(function (e) {
 
+            var usernameField = $('#patient_username');
             emailCheck = false; //assume the email is false every time we begin this
+            usernameCheck = usernameCheck || usernameField.attr('disabled'); // Use the value we already have or true if editing a user
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
             i4_patient_email = $(this).val(); //retrieve the patients email
@@ -433,7 +436,7 @@ jQuery(document).ready(function ($) {
 
 
             jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
-                $j('#i4_email_availability_status').html(response.icon);
+                $('#i4_email_availability_status').html(response.icon);
 
                 if (response.status == 200) { //OK response
                     emailCheck = true;
@@ -460,7 +463,7 @@ jQuery(document).ready(function ($) {
             };
 
             jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
-                $j('#i4_username_availability_status').html(response.icon);
+                $('#i4_username_availability_status').html(response.icon);
 
                 if (response.status == 200) { //OK response
                     usernameCheck = true;
