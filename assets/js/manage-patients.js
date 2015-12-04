@@ -181,9 +181,10 @@ jQuery(document).ready(function ($) {
             }
 
             // Dim the form and show the spinner
+            var submitButton = $('#edit-patient-submit');
             $('#edit-patient-form').fadeTo(500, .2);
             $('#edit-patient-spinner').show();
-            $('#edit-patient-submit').prop('disabled', true);
+            submitButton.prop('disabled', true);
 
             $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
                 if (response.status == 200) {
@@ -208,21 +209,21 @@ jQuery(document).ready(function ($) {
                         clearEditPatientModal();
                     }
                 }
+
+                // Always hide the spinner
+                $('#edit-patient-form').fadeTo(500, 1);
+                $('#edit-patient-spinner').hide();
+                submitButton.prop('disabled', false);
             }, 'json');
         });
 
         function clearEditPatientModal() {
-            var submitButton = $('#edit-patient-submit');
-            $('#edit-patient-form').fadeTo(500, 1);
-            $('#edit-patient-spinner').hide();
-            submitButton.prop('disabled', false);
-
             // Unset the patient ID and name in the modal
             $('#patientId').removeAttr('value');
             $('#patient_email').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
-            submitButton.text('Next');
+            $('#edit-patient-submit').text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
 
@@ -234,6 +235,7 @@ jQuery(document).ready(function ($) {
         }
 
         function clearModifyCoursesModal() {
+            // Hide the spinner and enable the submit button again
             $('#modify-courses-form').fadeTo(500, 1);
             $('#modify-courses-spinner').hide();
             $('#update-patient-courses-submit').prop('disabled', false);
