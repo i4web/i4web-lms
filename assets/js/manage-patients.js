@@ -210,6 +210,8 @@ jQuery(document).ready(function ($) {
                         $('#edit-patient-modal').foundation('reveal', 'close');
                         clearEditPatientModal();
                     }
+                    // Remove the current patient since we no longer need the data
+                    currentPatient = {};
                 }
 
                 // Always hide the spinner
@@ -256,8 +258,6 @@ jQuery(document).ready(function ($) {
 
         function showEditPatientModal(isNewPatient, patientId) {
             clearEditPatientModal();
-
-
 
             var editPatientModal = $('#edit-patient-modal');
             if (!isNewPatient) {
