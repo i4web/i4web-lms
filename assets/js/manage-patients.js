@@ -38,8 +38,10 @@ jQuery(document).ready(function ($) {
         };
         managePatientsTable.tablesorterPager(pagerOptions);
 
-        //verify the input by the user when adding a new patient
-        verifyPatientInput();
+        //set the emailCheck and usernameCheck to false before we do anything
+        var emailCheck = false;
+        var usernameCheck = false;
+        var currentPatient = {};
 
         $('#available-courses, #user-courses').sortable({
             connectWith: ".connectedSortable",
@@ -208,6 +210,8 @@ jQuery(document).ready(function ($) {
                         $('#edit-patient-modal').foundation('reveal', 'close');
                         clearEditPatientModal();
                     }
+                    // Remove the current patient since we no longer need the data
+                    currentPatient = {};
                 }
 
                 // Always hide the spinner
@@ -223,9 +227,12 @@ jQuery(document).ready(function ($) {
             $('#patient_email').removeAttr('value');
             $('#patient_fname').removeAttr('value');
             $('#patient_lname').removeAttr('value');
-            $('#edit-patient-submit').text('Next');
             $('#i4_email_availability_status').empty();
             $('#i4_username_availability_status').empty();
+
+            var submitButton = $('#edit-patient-submit');
+            submitButton.text('Next');
+            submitButton.attr('disabled', true);
 
             var username = $('#patient_username');
             $(username).removeAttr('value');
@@ -252,40 +259,42 @@ jQuery(document).ready(function ($) {
         function showEditPatientModal(isNewPatient, patientId) {
             clearEditPatientModal();
 
-            var patient = {};
-            var data = {
-                action: 'i4_lms_get_patient_info',
-                patient_id: patientId
-            };
-
             var editPatientModal = $('#edit-patient-modal');
             if (!isNewPatient) {
+                var data = {
+                    action: 'i4_lms_get_patient_info',
+                    patient_id: patientId
+                };
+
                 $.when($.get(wpcw_js_consts_fe.ajaxurl, data, function (response) {
-                    patient = {
+                    currentPatient = {
+                        id: patientId,
                         email: response.email,
                         username: response.user_login,
                         fname: response.first_name,
                         lname: response.last_name
                     };
                 }, 'json').done(function () {
-                    $(editPatientModal).find('#patientId').val(patientId);
+                    $(editPatientModal).find('#patientId').val(currentPatient.id);
 
                     $('#modalTitle').text("Edit Patient");
 
                     var email = $(editPatientModal).find('#patient_email');
-                    $(email).val(patient.email);
+                    $(email).val(currentPatient.email);
 
                     var username = $(editPatientModal).find('#patient_username');
                     $(username).attr('disabled', true);
-                    $(username).val(patient.username);
+                    $(username).val(currentPatient.username);
 
                     var fname = $(editPatientModal).find('#patient_fname');
-                    $(fname).val(patient.fname);
+                    $(fname).val(currentPatient.fname);
 
                     var lname = $(editPatientModal).find('#patient_lname');
-                    $(lname).val(patient.lname);
+                    $(lname).val(currentPatient.lname);
 
-                    $('#edit-patient-submit').text('Done');
+                    var submitButton = $('#edit-patient-submit');
+                    submitButton.text('Done');
+                    submitButton.attr('disabled', false);
 
                     $(editPatientModal).foundation('reveal', 'open');
                 }));
@@ -397,33 +406,19 @@ jQuery(document).ready(function ($) {
 
             return span;
         }
-    });
-
-    /**
-     * Verifies patient information prior to allowing the new patient to be inserted
-     *
-     */
-    function verifyPatientInput() {
-
-        //set the emailCheck and usernameCheck to false before we do anything
-        var emailCheck = false;
-        var usernameCheck = false;
-
-        //declare the patient's email and username variables
-        var i4_patient_email;
-        var i4_patient_username;
-
-        var nextButton = $('#edit-patient-submit'); //store the nextButton element
-
-        nextButton.prop("disabled", true); //lets disable the button immediately.
 
         //the patient email field changes
         $("#patient_email").change(function (e) {
+            var usernameField = $('#patient_username');
+            usernameCheck = usernameCheck || usernameField.attr('disabled'); // Use the value we already have or true if editing a user
 
+            var i4_patient_email = $(this).val(); //retrieve the patients email
             emailCheck = false; //assume the email is false every time we begin this
+            if (currentPatient.email) {
+                emailCheck = currentPatient.email === i4_patient_email;
+            }
+            var nextButton = $('#edit-patient-submit'); //store the nextButton element
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
-
-            i4_patient_email = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_email',
@@ -431,9 +426,16 @@ jQuery(document).ready(function ($) {
                 patient_email: i4_patient_email
             };
 
-
-            jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
-                $j('#i4_email_availability_status').html(response.icon);
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
+                var emailStatus = $('#i4_email_availability_status');
+                // If we've reset the data to the patient's existing email, we should show a success
+                if (emailCheck) {
+                    emailStatus.html('<i class="fa fa-check"></i>')
+                }
+                // If the emailCheck is false (new patient or emails don't match) then use the icon from the response
+                else {
+                    emailStatus.html(response.icon);
+                }
 
                 if (response.status == 200) { //OK response
                     emailCheck = true;
@@ -449,9 +451,10 @@ jQuery(document).ready(function ($) {
         //the patient username field changes
         $("#patient_username").change(function (e) {
             usernameCheck = false; // assume the username is false every time this field is changed
+            var nextButton = $('#edit-patient-submit'); //store the nextButton element
             nextButton.prop("disabled", true); //disable the button in case it was enabled previously
 
-            i4_patient_username = $(this).val(); //retrieve the patients email
+            var i4_patient_username = $(this).val(); //retrieve the patients email
 
             var data = {
                 action: 'i4_lms_handle_check_username',
@@ -459,8 +462,8 @@ jQuery(document).ready(function ($) {
                 patient_username: i4_patient_username
             };
 
-            jQuery.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
-                $j('#i4_username_availability_status').html(response.icon);
+            $.post(wpcw_js_consts_fe.ajaxurl, data, function (response) {
+                $('#i4_username_availability_status').html(response.icon);
 
                 if (response.status == 200) { //OK response
                     usernameCheck = true;
@@ -472,6 +475,5 @@ jQuery(document).ready(function ($) {
             }, 'json');
 
         });
-
-    }
+    });
 });
