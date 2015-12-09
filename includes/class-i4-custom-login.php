@@ -1,6 +1,6 @@
 <?php
 /**
- * I4Web_LMS Custom Login Style Class.
+ * I4Web_LMS Custom Login Class.
  *
  * @package I4Web_LMS
  * @subpackage Classes/Custom Login
@@ -32,6 +32,10 @@ class I4Web_LMS_Login {
         add_action('login_footer', array($this, 'i4_login_footer_text'));
         add_action('login_head', array($this, 'display_login_site_icon'));
         add_action('login_message', array($this, 'i4_change_register_message'));
+        add_action('wp_authenticate', array($this, 'i4_email_address_login' ));
+        add_filter( 'gettext', array($this, 'remove_lostpassword_text' ));
+
+
 
     }
 
@@ -231,16 +235,35 @@ class I4Web_LMS_Login {
      * @return void
      */
     function i4_change_register_message($message)
-	{
-		// change messages that contain 'Register'
-		if (strpos($message, 'Register') !== FALSE) {
-			$newMessage = "Register for your online course below";
-			return '<p class="message register" style="text-align:center;">' . $newMessage . '</p>';
-		}
-		else {
-			return $message;
-		}
-	}
+    {
+        // change messages that contain 'Register'
+        if (strpos($message, 'Register') !== FALSE) {
+            $newMessage = "Register for your online course below";
+            return '<p class="message register" style="text-align:center;">' . $newMessage . '</p>';
+        }
+        else {
+            return $message;
+        }
+    }
 
+    /**
+     * Allows the user to login with their email address
+     *
+     * @since 0.0.1
+     * @return void
+     */
+    function i4_email_address_login(&$username) {
+        $user = get_user_by_email($username);
+
+        if(!empty($user->user_login))
+        $username = $user->user_login;
+    }
+
+    function remove_lostpassword_text ( $text ) {
+     if ($text == 'Username'){
+         $text = 'Username or Email';
+     }
+        return $text;
+     }
 
 }
