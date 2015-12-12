@@ -71,7 +71,7 @@ function i4_lms_styles() {
     wp_enqueue_style('tablesorter-css', I4_PLUGIN_URL . 'assets/css/jquery.tablesorter.css', false, '0.0.2');
     wp_enqueue_style('tablesorter-pager-css', I4_PLUGIN_URL . 'assets/css/jquery.tablesorter.pager.css', false, '0.0.2');
     wp_enqueue_style('i4-manage-patients-css', I4_PLUGIN_URL . 'assets/css/manage-patients.css', false, '0.0.2');
-    
+
 }
 
 add_action('wp_enqueue_scripts', 'i4_lms_scripts');
