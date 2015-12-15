@@ -471,7 +471,7 @@ class I4_LMS_WPCW {
     }
 
     /**
-     * Return a list of courses assigned to the user
+     * Return a list of courses
      *
      * @return Array of courses.
      */
