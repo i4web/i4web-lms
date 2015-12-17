@@ -55,6 +55,10 @@ class I4Web_LMS_Manage_Patients {
      */
     function i4_manage_patients() {
         $patients = $this->i4_get_patients();
+
+        global $current_i4_user;
+
+        $user_id = $current_i4_user->ID;
         ?>
         <div class="page-title">
             <h3><?php echo get_the_title(); ?> <span><a id="add-patients" href="#" class="button tiny blue">Add New Patient</a></h3>
@@ -83,7 +87,20 @@ class I4Web_LMS_Manage_Patients {
                         <td class="patient-email"><?php echo $patient->user_email; ?></td>
                         <td class="patient-courses">
                             <?php foreach ($patient_courses as $course_id => $course_title) {
-                                echo $course_title . '<br>';
+
+                                //Retrieve the modules for the users course
+                                $modules = WPCW_courses_getModuleDetailsList( $course_id );
+
+                                //Determine the % of course completion
+                                $i4_percent_completed = I4Web_LMS()->i4_wpcw->i4_lms_percent_course_completed($course_id, $modules, $patient->ID );
+
+                                if($i4_percent_completed < 100){
+                                    echo  $course_title . '<span class="manage-patient-pct-completed"> (' . $i4_percent_completed . '% Completed)</span><br>';
+                                }
+                                else{
+                                    echo $course_title . ' <i class="fa fa-check font-success"></i><br>';
+                                }
+
                             } ?>
                         </td>
                         <td class="patient-actions">
