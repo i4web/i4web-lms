@@ -31,11 +31,33 @@ Manage Patients Table
 .manage-patients-table {
     border-spacing: 0;
     border: 0;
+    width: 100%;
 }
 
 .manage-patients-table td {
     border-bottom: 1px solid #e6e6e6;
     padding: .875rem;
+}
+
+.manage-patient-action {
+    padding: .5rem;
+}
+.manage-patient-action .fa {
+    color: #929292;
+}
+
+.manage-patient-action .fa:hover{
+    color: #2a819f;
+}
+.manage-patient-action .fa-times {
+    color: #7C3520 !important;
+}
+.manage-patient-pct-completed{
+    color: #929292;
+    font-style: italic;
+    font-size: .8rem;
+    margin-top: 10px;
+    padding-right: 1rem;
 }
 
 /******************************
