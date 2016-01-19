@@ -1,6 +1,6 @@
 <?php
 /**
- * I4Web_LMS Admin Menu Class. Helps restrict the website to just registered users
+ * I4Web_LMS Admin Menu Class. Helps create the Admin Menu for the plugin
  *
  * @package I4Web_LMS
  * @subpackage Classes/Force Login
