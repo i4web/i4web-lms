@@ -14,8 +14,8 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * I4Web_LMS_Roles Classes
- * This handles creating roles for the i4Web LMS Plugin
+ * I4Web_LMS_Force_Login Classes
+ * This handles the Force Login for the i4Web LMS Plugin
  *
  * @since 0.0.1
  */
