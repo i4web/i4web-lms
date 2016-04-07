@@ -113,6 +113,14 @@ if (!class_exists('I4Web_LMS')) :
         public $i4_coordinators;
 
         /**
+         * I4Web_LMS_Course_Docs Object
+         *
+         * @var object
+         * @since 1.0.0
+         */
+        public $i4_course_docs;
+
+        /**
          * I4Web_LMS Profile Form Object
          *
          * @var object
@@ -161,6 +169,7 @@ if (!class_exists('I4Web_LMS')) :
                 self::$instance->i4_force_login = new I4Web_LMS_Force_Login();
                 self::$instance->i4_admin_menu = new I4Web_LMS_Admin_Menu();
                 self::$instance->i4_coordinators = new I4Web_LMS_Coordinators();
+                self::$instance->i4_course_docs = new I4Web_LMS_Course_Docs();
                 self::$instance->i4_db = new I4Web_LMS_DB();
                 self::$instance->i4_emails = new I4_LMS_EMAILS();
                 self::$instance->i4_profile = new I4Web_LMS_Profile_Form();
@@ -255,6 +264,7 @@ if (!class_exists('I4Web_LMS')) :
             require_once I4_PLUGIN_DIR . 'includes/class-i4-force-login.php';
             require_once I4_PLUGIN_DIR . 'includes/class-i4-admin-menu.php';
             require_once I4_PLUGIN_DIR . 'includes/class-i4-coordinators.php';
+            require_once I4_PLUGIN_DIR . 'includes/class-i4-course-docs.php';
             require_once I4_PLUGIN_DIR . 'includes/class-i4-announcements-widget.php';
             require_once I4_PLUGIN_DIR . 'includes/class-i4-manage-patients.php';
             require_once I4_PLUGIN_DIR . 'includes/class-i4-profile-form.php';

@@ -46,6 +46,7 @@ class I4Web_LMS_Admin_Menu {
 
         add_submenu_page('i4web-lms-settings', 'Coordinators', 'Coordinators', 'manage_options', 'coordinators', array($this, 'i4_coordinators_page'));
 
+        add_submenu_page('i4web-lms-settings', 'Course Docs', 'Course Docs', 'manage_options', 'course-docs', array($this, 'i4_course_docs_page'));
     }
 
     /**
@@ -258,7 +259,7 @@ class I4Web_LMS_Admin_Menu {
 
 
     /**
-     * Sets up our Site Settings Page
+     * Sets up our Coordinators Page
      *
      * @since 0.0.1
      */
@@ -286,6 +287,31 @@ class I4Web_LMS_Admin_Menu {
         <?php
         I4Web_LMS()->i4_coordinators->i4_lms_display_coordinators(); //Display all coordinators
         echo '</div> <!-- end .wrap -->';
+    }
+
+    /**
+     * Sets up our Course Docs Page
+     *
+     * @since 0.0.1
+     */
+    function i4_course_docs_page() {
+        //Deny access unless the user is an Administrator ( activate_plugins capability )
+        if (!current_user_can('manage_options')) {
+            wp_die(__('Sorry! You do not have sufficient permissions to access this page'));
+        }
+
+        echo '<div class="wrap">';
+        echo '<h2>Course Documents</h2>';
+
+        if (isset($_GET['action']) && $_GET['action'] == 'edit') {
+            I4Web_LMS()->i4_course_docs->edit_course_doc_form();
+        }
+        else{
+            //add the New Coordinator Form
+            I4Web_LMS()->i4_course_docs->new_course_doc_form();
+        }
+        echo '</div> <!-- end .wrap -->';
+
     }
 
 

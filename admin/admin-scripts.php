@@ -13,7 +13,7 @@
  */
 function i4_lms_admin_scripts($hook) {
 
-    if ('toplevel_page_i4web-lms-settings' != $hook && 'i-4web-lms_page_coordinators' != $hook) // Retrieve the hook by echo'ing out the $hook variable. Only enqueue on the settings and coordinator pages
+    if ('toplevel_page_i4web-lms-settings' != $hook && 'i-4web-lms_page_coordinators' != $hook & 'i-4web-lms_page_course-docs' != $hook) // Retrieve the hook by echo'ing out the $hook variable. Only enqueue on the settings and coordinator pages
     {
         return;
     }

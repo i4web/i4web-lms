@@ -29,7 +29,8 @@ function i4_installation() {
 
     $i4_roles->i4_add_capabilities();
 
-    I4Web_LMS()->i4_db->create_i4_coordinators_table(); //current an unused table but can be used in the future
+    I4Web_LMS()->i4_db->create_i4_course_docs_table();   //create the course docs table
+
 
 }
 
