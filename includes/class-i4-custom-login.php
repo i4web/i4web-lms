@@ -212,7 +212,7 @@ class I4Web_LMS_Login {
             /* Large Screens */
             @media only screen and (min-width: 64.063em) {
                 #login{
-                    width: 40%;
+                    width: 30%;
                 }
             }
         </style> <?php
