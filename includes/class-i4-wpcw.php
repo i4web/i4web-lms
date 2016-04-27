@@ -522,31 +522,49 @@ class I4_LMS_WPCW {
      * @since 0.0.1
      */
     function i4_register_form(){
-        $first_name = ( ! empty( $_POST['first_name'] ) ) ? trim( $_POST['first_name'] ) : '';
-        $last_name = ( ! empty( $_POST['last_name'] ) ) ? trim( $_POST['last_name'] ) : '';
-        $courses = $this->i4_get_all_courses();
-    ?>
-        <p>
-            <label for="first_name"><?php _e( 'First Name', 'i4' ) ?><br />
-                <input type="text" name="first_name" id="first_name" class="input" value="<?php echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" />
-            </label>
-        </p>
-        <p>
-            <label for="last_name"><?php _e( 'Last Name', 'i4' ) ?><br />
-                <input type="text" name="last_name" id="last_name" class="input" value="<?php echo esc_attr( wp_unslash( $last_name ) ); ?>" size="25" />
-            </label>
-        </p>
-        <p>
-            <label for="new_patient_course"><?php _e( 'Select a Course', 'i4' ) ?><br />
-                <select name="new_patient_course">
-                <?php foreach($courses as $id => $course){
-                    echo '<option value="'. esc_attr( $id ) .'">'.$course.'</option>';
-                }?>
-                </select>
-                <!-- <input type="text" name="first_name" id="first_name" class="input" value="<?php //echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" /></label> -->
-        </p>
 
-    <?php
+        $i4_settings = (array)get_option('i4-lms-settings');
+
+        $course_id_string =  $i4_settings['i4-lms-course-self-register'];
+
+        if( $course_id_string != '' || $course_id_string != NULL ){ //only display the registration
+            $course_ids = explode(";", $course_id_string);
+
+            //var_dump($course_ids);
+
+            $first_name = ( ! empty( $_POST['first_name'] ) ) ? trim( $_POST['first_name'] ) : '';
+            $last_name = ( ! empty( $_POST['last_name'] ) ) ? trim( $_POST['last_name'] ) : '';
+            $courses = $this->i4_get_all_courses();
+        ?>
+            <p>
+                <label for="first_name"><?php _e( 'First Name', 'i4' ) ?><br />
+                    <input type="text" name="first_name" id="first_name" class="input" value="<?php echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" />
+                </label>
+            </p>
+            <p>
+                <label for="last_name"><?php _e( 'Last Name', 'i4' ) ?><br />
+                    <input type="text" name="last_name" id="last_name" class="input" value="<?php echo esc_attr( wp_unslash( $last_name ) ); ?>" size="25" />
+                </label>
+            </p>
+            <p>
+                <label for="new_patient_course"><?php _e( 'Select a Course', 'i4' ) ?><br />
+                    <select name="new_patient_course">
+                    <?php foreach($courses as $id => $course){
+
+                        $valid_course_id = in_array($id, $course_ids); // search the registration course ids
+
+                        if( $valid_course_id ){
+                            echo '<option value="'. esc_attr( $id ) .'">'.$course.'</option>';
+                        }
+                    }?>
+                    </select>
+                    <!-- <input type="text" name="first_name" id="first_name" class="input" value="<?php //echo esc_attr( wp_unslash( $first_name ) ); ?>" size="25" /></label> -->
+            </p>
+        <?php
+        }
+
+
+
      }
 
     /**

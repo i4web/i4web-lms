@@ -95,6 +95,8 @@ class I4Web_LMS_Admin_Menu {
 
         add_settings_section('i4-lms-course-settings', 'Course Settings', array($this, 'course_section_callback'), 'i4web-lms-settings');
         add_settings_field('i4-lms-course-min-view-pct', 'Minimum Video Viewing %', array($this, 'minimum_viewing_pct_callback'), 'i4web-lms-settings', 'i4-lms-course-settings');
+        add_settings_field('i4-lms-course-self-register', 'Self Registration Courses', array($this, 'self_registration_callback'), 'i4web-lms-settings', 'i4-lms-course-settings');
+
 
 
         add_settings_section('i4-lms-vimeo-api-settings', 'Vimeo Settings', array($this, 'vimeo_section_callback'), 'i4web-lms-settings');
@@ -192,6 +194,21 @@ class I4Web_LMS_Admin_Menu {
 
         echo "<input type='text' name='i4-lms-settings[i4-lms-course-min-view-pct]' value='$min_viewing_pct' /> <br />";
         echo "<span class='description'>Set the minimum % of each video that the patient must watch before they can manually advance. <br> Setting this to 0 will disable the forced viewing of videos</span>";
+
+
+    }
+
+    /**
+     * Call back to our self registration enabled courses setting
+     *
+     * @since 0.0.1
+     */
+    public function self_registration_callback() {
+        $settings = (array)get_option('i4-lms-settings');
+        $self_registration_courses = esc_attr($settings['i4-lms-course-self-register']);
+
+        echo "<input type='text' name='i4-lms-settings[i4-lms-course-self-register]' value='$self_registration_courses' /> <br />";
+        echo "<span class='description'>Enter the course ID's allowed for self registration  <br> Multiple courses may be added using a semi-colon</span>";
 
 
     }
@@ -310,6 +327,9 @@ class I4Web_LMS_Admin_Menu {
             //add the New Coordinator Form
             I4Web_LMS()->i4_course_docs->new_course_doc_form();
         }
+
+        I4Web_LMS()->i4_course_docs->view_course_docs();
+
         echo '</div> <!-- end .wrap -->';
 
     }
