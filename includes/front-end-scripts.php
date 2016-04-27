@@ -30,7 +30,7 @@ function i4_lms_scripts() {
 
     // Variable declarations
     wp_localize_script(
-        'i4-ajax-front-end',     // What we're attaching too
+        'i4-ajax-front-end',     // What we're attaching to
         'wpcw_js_consts_fe',        // Handle for this code
         array(
             'ajaxurl' => admin_url('admin-ajax.php'), // URL for admin AJAX
