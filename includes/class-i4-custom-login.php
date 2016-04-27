@@ -131,6 +131,7 @@ class I4Web_LMS_Login {
                 background-color: <?php echo $brand_primary; ?>;
                 border-color: <?php echo $brand_primary; ?>;
                 box-shadow: none;
+                text-shadow: none;
             }
 
             .wp-core-ui .button-primary.focus, .wp-core-ui .button-primary.hover,
