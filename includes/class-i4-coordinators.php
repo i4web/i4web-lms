@@ -471,7 +471,7 @@ class I4Web_LMS_Coordinators {
     }
 
     /**
-     * Displays the Error message when a Coordinator is not successfully added to the DB
+     * Displays the Success message when a Coordinator is successfully added
      *
      * @since 0.0.1
      */
@@ -482,7 +482,7 @@ class I4Web_LMS_Coordinators {
     }
 
     /**
-     * Displays the Error message when a Coordinator is not successfully added to the DB
+     * Displays the Error message when a Coordinator is not successfully added
      *
      * @since 0.0.1
      */
