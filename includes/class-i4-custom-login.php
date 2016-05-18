@@ -86,7 +86,7 @@ class I4Web_LMS_Login {
         ?>
         <style type="text/css">
             html,body {
-                background-color: <?php echo $brand_secondary; ?>;
+                background-color: <?php echo $brand_secondary; ?> !important;
             }
 
             body.login div#login h1 a {
@@ -128,35 +128,35 @@ class I4Web_LMS_Login {
             }
 
             .wp-core-ui .button-primary {
-                background-color: <?php echo $brand_primary; ?>;
-                border-color: <?php echo $brand_primary; ?>;
-                box-shadow: none;
-                text-shadow: none;
+                background-color: <?php echo $brand_primary; ?> !important;
+                border-color: <?php echo $brand_primary; ?> !important;
+                box-shadow: none !important;
+                text-shadow: none !important;
             }
 
             .wp-core-ui .button-primary.focus, .wp-core-ui .button-primary.hover,
             .wp-core-ui .button-primary:focus, .wp-core-ui .button-primary:hover {
-                background-color: <?php echo $brand_primary; ?>;
-                border-color: <?php echo $brand_primary; ?>;
-                box-shadow: none;
+                background-color: <?php echo $brand_primary; ?> !important;
+                border-color: <?php echo $brand_primary; ?> !important;
+                box-shadow: none !important;
             }
 
             .login #backtoblog a, .login #nav a {
-                color: <?php echo $brand_primary; ?>;
+                color: <?php echo $brand_primary; ?> !important;
             }
 
             .login #backtoblog a:hover, .login #nav a:hover, .login h1 a:hover {
-                color: <?php echo $brand_primary; ?>;
+                color: <?php echo $brand_primary; ?> !important;
             }
 
             #backtoblog {
-                display: none;
+                display: none !important;
             }
 
             input[type=checkbox]:focus, input[type=color]:focus, input[type=date]:focus, input[type=datetime-local]:focus, input[type=datetime]:focus, input[type=email]:focus, input[type=month]:focus, input[type=number]:focus, input[type=password]:focus, input[type=radio]:focus, input[type=search]:focus, input[type=tel]:focus, input[type=text]:focus, input[type=time]:focus, input[type=url]:focus, input[type=week]:focus, select:focus, textarea:focus {
-                border-color: <?php echo $brand_primary; ?>;
-                -webkit-box-shadow: 0 0 0 rgba(124, 53, 32, 0.8);
-                box-shadow: 0 0 0 rgba(124, 53, 32, 0.8);
+                border-color: <?php echo $brand_primary; ?> !important;
+                -webkit-box-shadow: 0 0 0 rgba(124, 53, 32, 0.8) !important;
+                box-shadow: 0 0 0 rgba(124, 53, 32, 0.8) !important;
             }
 
             select {
@@ -179,10 +179,11 @@ class I4Web_LMS_Login {
             }
 
             .i4lms-tagline-login {
-                text-align: center;
+                text-align: center !important;
                 font-size: 15px;
                 font-style: italic;
-                padding-bottom: 16px;
+                padding-bottom: 16px !important;
+                padding-top: 16px !important;
             }
 
             .login #login_error {
@@ -192,22 +193,16 @@ class I4Web_LMS_Login {
                 border-radius: 3px;
             }
             .login #login_error {
-                color: <?php echo $brand_primary; ?>;
+                color: <?php echo $brand_primary; ?> !important;
                 border: 0;
-                font-size: 20px;
-                text-align: center;
-                color: #EA0202;
-                background: transparent;
-                box-shadow: none;
+                font-size: 15px !important;
+                text-align: center !important;
             }
             .login .message {
                 border: 0;
-                background: transparent;
-                box-shadow: none;
                 color: <?php echo $brand_primary; ?>;
-                font-size: 20px;
-                text-align: center;
-                margin-bottom: -20px;
+                font-size: 15px;
+                text-align: center !important;
             }
 
             /* Large Screens */
