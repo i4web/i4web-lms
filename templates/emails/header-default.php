@@ -90,7 +90,7 @@ $header_content_h1 = "
             <td align="center" valign="top">
                 <?php if (!empty($email_logo)) : ?>
                     <div id="template_header_image">
-                        <?php echo '<p style="margin-top:0;"><img src="' . esc_url($email_logo) . '" alt="' . get_bloginfo('name') . '" /></p>'; ?>
+                        <?php echo '<p style="margin-top:0;"><img src="' . esc_url($email_logo) . '" style="width:25%;" alt="' . get_bloginfo('name') . '" /></p>'; ?>
                     </div>
                 <?php endif; ?>
                 <table border="0" cellpadding="0" cellspacing="0" width="520" id="template_container"
