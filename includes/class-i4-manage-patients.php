@@ -55,6 +55,9 @@ class I4Web_LMS_Manage_Patients {
      */
     function i4_manage_patients() {
         $patients = $this->i4_get_patients();
+
+        I4Web_LMS()->i4_coordinators->i4_lms_get_coordinator_course();
+
         ?>
         <div class="page-title">
             <h3><?php echo get_the_title(); ?> <span><a id="add-patients" href="#" class="button tiny blue">Add New Patient</a></h3>
@@ -147,7 +150,20 @@ class I4Web_LMS_Manage_Patients {
                 ORDER BY LOWER(u.display_name)";
         $patients = $wpdb->get_results($SQL, OBJECT_K);
 
+
+        /* New Code...@todo Grab Coordinator's Course ID
+
+        SELECT u.ID, u.user_login, u.display_name, u.user_email, t.user_id, t.course_id FROM (wp_users u
+                INNER JOIN wp_usermeta m ON m.user_id = u.ID)
+                INNER JOIN wp_wpcw_user_courses t on t.user_id = u.ID
+                WHERE m.meta_key = 'wp_capabilities'
+                  AND t.course_id = 1
+                  AND m.meta_value LIKE '%patient%'
+                ORDER BY LOWER(u.display_name)
+        */
         return $patients;
+
+
     }
 
     /**
