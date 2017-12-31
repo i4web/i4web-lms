@@ -568,4 +568,8 @@ class I4Web_LMS_Coordinators {
     	update_usermeta( $user_id, 'coordinator_img', $_POST['coordinator_img'] );
 
     }
+
+    function i4_lms_get_coordinator_course(){
+      echo 'Hello World';
+    }
 }
